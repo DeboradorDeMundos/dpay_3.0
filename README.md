@@ -1,726 +1,465 @@
-# 🏪 DTemite POS - Sistema POS para Facturación Electrónica
+# D-PAY 3.0 — Sistema POS Móvil con Facturación Electrónica
 
-[![React Native](https://img.shields.io/badge/React%20Native-0.75.5-blue.svg)](https://reactnative.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue.svg)](https://www.typescriptlang.org/)
-[![Android](https://img.shields.io/badge/Android-7.0%2B-green.svg)](https://developer.android.com/)
-[![Kozen P8 Neo](https://img.shields.io/badge/Kozen-P8%20Neo-orange.svg)](https://www.kozen.com/)
-[![License](https://img.shields.io/badge/License-Private-red.svg)](LICENSE)
+[![React Native](https://img.shields.io/badge/React%20Native-0.75.5-61DAFB?style=flat-square&logo=react)](https://reactnative.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=flat-square&logo=android)](https://developer.android.com/)
+[![Duoc UC](https://img.shields.io/badge/Duoc%20UC-San%20Bernardo-003366?style=flat-square)](https://www.duoc.cl/)
 
-Sistema de Punto de Venta profesional para terminales **Kozen P8 Neo** y Android desarrollado con **React Native + TypeScript**, especializado en la generación de **Documentos Tributarios Electrónicos (DTE)** según la normativa chilena del SII, con integración completa de pagos con tarjeta vía **Tuu**.
+**Proyecto Capstone — Ingeniería en Informática**  
+Duoc UC, Sede San Bernardo · 2026
 
----
+Aplicación móvil de punto de venta (POS) desarrollada con **React Native + TypeScript**, orientada a la emisión de **Documentos Tributarios Electrónicos (DTE)** según normativa chilena del SII, con soporte de pagos con tarjeta y gestión de ventas offline/online.
 
-## 📋 Tabla de Contenidos
-
-- [🚀 Inicio Rápido para Desarrollo](#-inicio-rápido-para-desarrollo)
-- [Características](#-características-principales)
-- [Stack Tecnológico](#-stack-tecnológico)
-- [Arquitectura](#-arquitectura-del-proyecto)
-- [Instalación](#-instalación-y-configuración)
-- [Funcionalidades](#-funcionalidades-implementadas)
-- [Estado del Proyecto](#-estado-del-proyecto)
-- [API Integration](#-integración-con-api)
-- [Stores](#-stores-zustand)
-- [Sistema de Diseño](#-sistema-de-diseño)
-- [Seguridad](#-seguridad-y-almacenamiento)
-- [Scripts](#-scripts-disponibles)
-- [Troubleshooting](#-troubleshooting)
-- [Contribución](#-contribución)
+Este repositorio es la versión académica del sistema productivo **D-PAY**, adaptada para demostración, pruebas controladas y evolución hacia un modelo **multi-dispositivo** y **multi-pasarela de pago**.
 
 ---
 
-## 🚀 Inicio Rápido para Desarrollo
+## Equipo Capstone
 
-### Desarrollo en POS conectado
+| Integrante | Rol |
+|---|---|
+| **Diego Madrid** | Desarrollo / integración |
+| **Pablo Gutiérrez** | Desarrollo / arquitectura |
+| **Reinhartd Munzenmayer** | Desarrollo / QA |
 
-**1. Conecta tu POS por USB**
-```bash
-# Verifica que esté conectado
-$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
-& "$env:ANDROID_HOME\platform-tools\adb.exe" devices
+**Institución:** Duoc UC — San Bernardo  
+**Repositorio:** [github.com/DeboradorDeMundos/dpay_3.0](https://github.com/DeboradorDeMundos/dpay_3.0)
+
+---
+
+## Tabla de contenidos
+
+- [Visión del proyecto](#visión-del-proyecto)
+- [Modos de operación](#modos-de-operación)
+- [Características implementadas](#características-implementadas)
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Requisitos e instalación](#requisitos-e-instalación)
+- [Desarrollo en dispositivo](#desarrollo-en-dispositivo)
+- [Generar APK release](#generar-apk-release)
+- [Anulación de documentos y pagos](#anulación-de-documentos-y-pagos)
+- [Integración con backend](#integración-con-backend)
+- [Seguridad del repositorio](#seguridad-del-repositorio)
+- [Scripts disponibles](#scripts-disponibles)
+- [Roadmap Capstone](#roadmap-capstone)
+- [Documentación adicional](#documentación-adicional)
+- [Licencia académica](#licencia-académica)
+
+---
+
+## Visión del proyecto
+
+D-PAY 3.0 nace como fork académico de un POS en producción. El objetivo del Capstone es demostrar un flujo comercial completo en dispositivos Android:
+
+1. **Autenticación** de comercio y usuario
+2. **Venta** con catálogo, calculadora y métodos de pago
+3. **Emisión DTE** (boleta, factura, nota de crédito)
+4. **Historial** con filtros, sincronización y anulaciones
+5. **Impresión** térmica Bluetooth y visualización de documentos
+
+A diferencia del sistema productivo original, esta versión prioriza:
+
+- Un **único tenant/sistema de prueba** para demostraciones universitarias
+- **Anulación simplificada** (sin depender de flags restrictivos del backend)
+- Evolución hacia **celular genérico** con pasarelas web (Webpay, Flow, etc.)
+- Mantener compatibilidad con **terminales Kozen + TUU/Haulmer**
+
+---
+
+## Modos de operación
+
+El proyecto contempla dos perfiles de hardware con estrategias de pago distintas:
+
+### 1. Terminal POS Kozen (TUU / Haulmer) — Implementado
+
+Dispositivos dedicados como **Kozen P8 Neo** con la app de pagos **TUU Negocio** (Haulmer) instalada.
+
+| Aspecto | Comportamiento |
+|---|---|
+| Cobro con tarjeta | Intent Android hacia TUU (`com.haulmer.paymentapp`) |
+| Crédito / débito | Nativo en terminal |
+| Cuotas | Configurables desde la app |
+| Impresión voucher | Controlada por D-PAY o TUU según configuración |
+| Entorno QA | Metro/debug → `proqa.dtemite.cl` |
+| APK release | Producción → `pro.dtemite.cl` |
+
+### 2. Celular genérico (multi-pasarela) — Roadmap Capstone
+
+En smartphones Android/iOS sin terminal TUU embebido, el cobro con tarjeta se resolverá mediante **pasarelas de pago web**:
+
+| Pasarela | Estado | Uso previsto |
+|---|---|---|
+| **TUU / Haulmer** | ✅ Implementado | Solo en POS Kozen |
+| **Transbank Webpay** | 🔜 Planificado | Pagos con tarjeta en mobile |
+| **Flow** | 🔜 Planificado | Pagos alternativos / transferencias |
+| **Otras pasarelas** | 🔜 Evaluación | Arquitectura extensible |
+
+**Diseño objetivo:** un adaptador de pagos (`PaymentGateway`) que seleccione el proveedor según el dispositivo detectado:
+
+```
+┌─────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
+│  SalePayment    │────▶│  PaymentGateway      │────▶│  TUU (POS)      │
+│  Screen         │     │  (detección device)  │     │  Webpay (mobile)│
+└─────────────────┘     └──────────────────────┘     │  Flow (mobile)  │
+                                                       └─────────────────┘
 ```
 
-**2. Inicia el entorno de desarrollo (Recomendado)**
-```powershell
-.\start-dev.ps1
+---
+
+## Características implementadas
+
+### Autenticación y sesión
+- Login con RUT chileno, usuario y contraseña
+- Patrón PIN de 4 dígitos y biometría (huella)
+- Descarga inicial de CAFs, catálogo y clientes
+- Token JWT persistente en MMKV
+
+### Ventas
+- Calculadora táctil integrada
+- Catálogo con búsqueda y escaneo de código de barras (Vision Camera)
+- Selección de tipo de documento (boleta, factura, comprobante, etc.)
+- Métodos de pago: efectivo, crédito, débito
+- Propina configurable
+- Modo offline con sincronización posterior
+
+### Documentos tributarios (DTE)
+- Emisión de boletas y facturas electrónicas
+- Notas de crédito (anulación total y corrección de monto)
+- Firma digital SHA1withRSA y timbre TED (PDF417)
+- PDF y compartir documento
+- Integración con API legacy PHP del SII vía backend DTEmite
+
+### Historial (`MySalesScreen`)
+- Filtro por rango de fechas y tipo de documento
+- Búsqueda por folio
+- Documentos locales + documentos del servidor unificados
+- Resumen de ventas del período
+- Sincronización manual de ventas pendientes
+
+### Anulación
+- **Documentos tributarios:** emisión de Nota de Crédito (NC total o corrección)
+- **Pagos sin DTE:** anulación vía API `PUT /pos/transaccion/{id}/anular`
+- **Sin restricción por flag de login** (`permite_nota_credito`) — habilitado para pruebas Capstone
+- Modal simplificado por defecto (NC total); modal extendido si `ncCorreccionMonto` está activo en ajustes
+
+### Impresión
+- Impresora térmica Bluetooth ESC/POS
+- Impresión automática configurable (documento / voucher / ambos)
+- Impresión de TED (código PDF417)
+
+### Payment Hub (integraciones externas)
+- Modo gateway para recibir pagos de sistemas externos
+- Listener de intents de cobro remoto
+- APIs documentadas en `docs/postman/`
+
+### Configuración
+- Logo de empresa, headers/footers de impresión
+- Tipos de documento habilitados
+- Métodos de pago globales
+- Tema claro / oscuro
+- Comisiones D-PAY
+
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología |
+|---|---|
+| Framework | React Native 0.75.5 |
+| Lenguaje | TypeScript 5.9.3 |
+| Estado | Zustand 5 + MMKV |
+| Navegación | React Navigation 7 |
+| Firma DTE | jsrsasign (SHA1withRSA) |
+| PDF | react-native-html-to-pdf |
+| Bluetooth | react-native-bluetooth-escpos-printer |
+| Biometría | react-native-biometrics |
+| Escaneo | react-native-vision-camera |
+| Pagos POS | TUU Negocio (Intent Android) |
+| Build Android | Gradle 8.6 · SDK 35 · minSdk 24 |
+
+---
+
+## Arquitectura
+
 ```
-Este script automáticamente:
-- ✅ Verifica la conexión del dispositivo
-- ✅ Configura port forwarding (Metro → POS)
-- ✅ Inicia Metro Bundler si no está corriendo
-- ✅ Recarga la app en el POS
-
-**3. Visualiza la pantalla del POS en tu PC (scrcpy)**
-```powershell
-.\start-scrcpy.ps1
+dpay_3.0/
+├── android/                 # Proyecto nativo Android (Kotlin/Java)
+│   ├── app/build.gradle     # Signing, React Native, módulos nativos
+│   └── keystore.properties.example
+├── ios/                     # Proyecto iOS (base React Native)
+├── assets/                  # Fuentes, iconos, logos
+├── scripts/
+│   ├── build-release.ps1    # Bundle JS + APK universal
+│   ├── dev-pos.ps1          # Desarrollo en POS conectado
+│   └── patch-bluetooth-printer.js
+├── src/
+│   ├── components/          # UI reutilizable (base, sales, payment, settings)
+│   ├── screens/             # Pantallas principales
+│   ├── services/            # API, PDF, TUU, Payment Hub, TED
+│   ├── stores/              # Zustand (auth, sales, settings, etc.)
+│   ├── navigation/          # Stack navigator
+│   ├── hooks/               # usePrinter, useThemeColors, etc.
+│   ├── utils/               # Formateo, RUT, cálculos DTE
+│   └── types/               # TypeScript interfaces
+├── docs/                    # Postman, planes técnicos
+├── ENDPOINTS_DTEMITE.md     # Referencia de API
+└── CONFIGURACION_ENTORNOS.md
 ```
 
-Opciones disponibles:
-- **Opción 1**: Pantalla completa (recomendado para desarrollo)
-- **Opción 2**: Ventana pequeña (800px)
-- **Opción 3**: Alta calidad (sin comprimir)
-- **Opción 4**: Solo visualización (sin control)
+### Stores principales (Zustand + MMKV)
 
-### Comandos manuales
+| Store | Responsabilidad |
+|---|---|
+| `authStore` | Token, usuario, contraseña codificada para emisión DTE |
+| `salesStore` | Carrito de venta activa |
+| `mySalesStore` | Historial local de ventas |
+| `catalogueStore` | Productos |
+| `settingsStore` | Configuración de impresión, documentos, pagos |
+| `paymentHubStore` | Modo gateway / integraciones externas |
+| `printerStore` | Impresora Bluetooth seleccionada |
+
+---
+
+## Requisitos e instalación
+
+### Requisitos previos
+
+| Herramienta | Versión |
+|---|---|
+| Node.js | 18+ (recomendado 20 LTS) |
+| JDK | 17 o 21 |
+| Android Studio | 2023+ con SDK 35 |
+| Git | Cualquier versión reciente |
+
+### Clonar e instalar
 
 ```powershell
-# Iniciar Metro Bundler
+git clone https://github.com/DeboradorDeMundos/dpay_3.0.git
+cd dpay_3.0
+npm install
+```
+
+### Configuración local (no subir a Git)
+
+```powershell
+# Credenciales de firma APK release (opcional)
+Copy-Item android\keystore.properties.example android\keystore.properties
+# Editar android\keystore.properties con tus valores locales
+```
+
+Archivos ignorados por Git (ver `.gitignore`):
+- `android/keystore.properties`
+- `.env`
+- Colecciones Postman con API keys personales
+- Bundles compilados y logs
+
+---
+
+## Desarrollo en dispositivo
+
+### POS Kozen conectado por USB
+
+```powershell
+# Verificar dispositivo
+adb devices
+
+# Port forwarding para Metro
+adb reverse tcp:8081 tcp:8081
+
+# Iniciar Metro
 npm start
 
-# Compilar e instalar en POS
-npm run android
-
-# Ver logs del dispositivo
-npx react-native log-android
-
-# Recargar app en el POS
-# Opción 1: Agita el dispositivo
-# Opción 2: Presiona 'r' en la terminal de Metro
-# Opción 3: ADB
-$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
-& "$env:ANDROID_HOME\platform-tools\adb.exe" shell input text "RR"
-
-# Port forwarding manual (si falla la conexión a Metro)
-& "$env:ANDROID_HOME\platform-tools\adb.exe" reverse tcp:8081 tcp:8081
-```
-
-### Instalación de scrcpy
-
-Si no tienes scrcpy instalado:
-
-**Con Chocolatey:**
-```powershell
-choco install scrcpy
-```
-
-**Con Scoop:**
-```powershell
-scoop install scrcpy
-```
-
-**Manual:**
-Descarga desde: https://github.com/Genymobile/scrcpy/releases
-
-### Debugging
-- 🔧 Hot Reload: Los cambios se reflejan automáticamente
-- 🐛 Chrome DevTools: Abre el Dev Menu (agita el POS) → "Debug"
-- 📊 React Native Debugger: Recomendado para Redux/Zustand
-- 📱 Flipper: Para debugging avanzado (redes, base de datos, etc.)
-
----
-
-## ✨ Características Principales
-
-### 🔐 Seguridad Avanzada
-- **Autenticación RUT chileno** con validación y formato automático
-- **Patrón PIN de 4 dígitos** para acceso rápido
-- **Biometría** (huella digital / reconocimiento facial)
-- **Almacenamiento encriptado** con MMKV (30x más rápido que AsyncStorage)
-- **Tokens JWT** con renovación automática
-
-### 📱 Funcionalidades de Negocio
-- **Catálogo de productos** con búsqueda en tiempo real
-- **Gestión de ventas** con calculadora táctil integrada
-- **Historial de ventas** con filtros por fecha y sincronización
-- **Impresión térmica Bluetooth** con impresión automática configurable
-- **Modo offline** completo con sincronización automática al SII
-- **Documentos tributarios electrónicos** (Boleta, Factura, Nota de Crédito)
-- **Firma digital** de documentos con algoritmo SHA1withRSA (jsrsasign)
-- **Timbre Electrónico (TED)** con código PDF417 para validación SII
-
-### 💳 Integración Tuu (Pagos con Tarjeta)
-- **Crédito y Débito** vía app Tuu Negocio
-- **Cuotas configurables** para pagos con crédito
-- **Manejo de errores ICE** con mensajes amigables al usuario
-- **Auto-ejecución inteligente** cuando hay un solo método de pago configurado
-- **Cancelación controlada** sin re-ejecuciones automáticas
-
-### 🎨 Experiencia de Usuario
-- **Tema claro/oscuro** con persistencia
-- **Navegación fluida** con React Navigation 7
-- **Diseño adaptativo** siguiendo guías de Material Design
-- **Componentes reutilizables** con TypeScript type-safe
-- **Date pickers nativos** para selección de fechas
-- **Loading unificado** durante sincronización y procesamiento
-
----
-
-## 🚀 Stack Tecnológico
-
-### Core
-- **React Native** 0.75.5 - Framework principal
-- **TypeScript** 5.9.3 - Type safety y mejor DX
-- **JSC** (JavaScript Core) - JS Engine optimizado
-
-### State Management & Storage
-- **Zustand** 5.0.8 - State management simple y performante
-- **MMKV** 2.12.2 - Storage persistente ultra rápido (nativo C++)
-
-### Navegación & UI
-- **React Navigation** 7.x - Stack & Drawer navigation
-- **React Native Gesture Handler** 2.22.1 - Gestos nativos
-- **React Native Reanimated** 3.16.1 - Animaciones 60fps
-- **React Native Modal** 13.0.1 - Modales personalizados
-
-### Documentos & Firma Digital
-- **jsrsasign** 11.1.0 - Firma digital RSA/SHA1
-- **react-native-html-to-pdf** 0.12.0 - Generación de PDFs
-- **react-native-share** 10.2.1 - Compartir documentos
-
-### Hardware & Dispositivo
-- **react-native-biometrics** 3.0.1 - Autenticación biométrica
-- **react-native-ble-manager** 11.5.4 - Bluetooth Low Energy
-- **react-native-bluetooth-escpos-printer** 0.0.5 - Impresión térmica ESC/POS
-- **react-native-device-info** 14.1.1 - Info del dispositivo
-
-### Pagos con Tarjeta
-- **Tuu Negocio** - Integración via Intent Android para pagos con tarjeta
-- **Soporte ICE codes** - Manejo completo de errores de terminal
-
-### Utilidades
-- **date-fns** 4.1.0 - Manejo de fechas
-- **lodash** 4.17.21 - Utilidades JavaScript
-- **base-64** 1.0.0 - Codificación base64
-
----
-
-## 🏗️ Arquitectura del Proyecto
-
-```
-dtemite-pos/
-├── 📱 android/                    # Proyecto Android nativo
-│   ├── app/
-│   │   ├── build.gradle          # Configuración de build (SDK 35)
-│   │   └── src/                  # Código Java/Kotlin nativo
-│   ├── build.gradle              # Build principal
-│   └── gradle.properties         # Configuración de Gradle
-│
-├── 🎨 assets/                     # Recursos estáticos
-│   ├── fonts/                    # Fuentes AllRoundGothic
-│   ├── icons/                    # Iconos PNG
-│   └── images/                   # Imágenes
-│
-├── 📝 src/                        # Código fuente principal
-│   ├── 🧩 components/            # Componentes React
-│   │   ├── base/                 # Componentes reutilizables
-│   │   ├── login/                # Componentes de login
-│   │   ├── sales/                # Componentes de ventas
-│   │   ├── payment/              # Componentes de pago
-│   │   └── settings/             # Componentes de configuración
-│   │
-│   ├── 🗺️ navigation/            # Configuración de navegación
-│   ├── 📺 screens/                # Pantallas principales
-│   ├── 🔌 services/               # Servicios externos (API, PDF, Firma)
-│   ├── 💾 stores/                 # Zustand stores
-│   ├── 🎨 theme/                  # Sistema de diseño
-│   ├── 📐 types/                  # TypeScript types
-│   ├── 🔧 utils/                  # Utilidades
-│   ├── 🪝 hooks/                  # Custom hooks
-│   └── 📊 constants/              # Constantes globales
-│
-├── 📄 Documentación/
-│   ├── ANALISIS_DIFERENCIAS_PROYECTO.md
-│   ├── ANALISIS_LOGO.md
-│   ├── ANALISIS_TIMBRE_SII.md
-│   └── CREDENCIALES_PRUEBA.md
-│
-└── ⚙️ Configuración/
-    ├── babel.config.js
-    ├── metro.config.js
-    ├── tsconfig.json
-    └── package.json
-```
-
----
-
-## 🛠️ Instalación y Configuración
-
-### 📋 Requisitos Previos
-
-| Herramienta | Versión Mínima | Recomendada |
-|-------------|----------------|-------------|
-| **Node.js** | 18.x | 20.19.4+ |
-| **JDK** | 17 | 21 LTS |
-| **Android Studio** | 2023.x | Latest |
-| **Android SDK** | API 24 (7.0) | API 35 (15.0) |
-
-### 🔧 Instalación
-
-```bash
-# 1. Clonar repositorio
-git clone https://bitbucket.org/dtemite/dpay.git
-cd dpay
-
-# 2. Instalar dependencias
-npm install
-
-# 3. Configurar Android Studio
-# - Instalar SDK Platform 35
-# - Configurar ANDROID_HOME y JAVA_HOME
-
-# 4. Ejecutar aplicación
+# Compilar e instalar (otra terminal)
 npm run android
 ```
 
-### ⚙️ Configuración de Gradle
+### Scripts de desarrollo
 
-Verificar `android/gradle.properties`:
+```powershell
+.\scripts\dev-pos.ps1          # Entorno POS automatizado
+npm run scrcpy                 # Ver pantalla del dispositivo en PC
+npx react-native log-android   # Logs en tiempo real
+```
 
-```properties
-# IMPORTANTE: Hermes deshabilitado por estabilidad
-hermesEnabled=false
+En **modo debug** (`__DEV__=true`), la app apunta a QA:
 
-# SDK Versions
-compileSdkVersion=35
-targetSdkVersion=35
-minSdkVersion=24
+```
+https://proqa.dtemite.cl/api
 ```
 
 ---
 
-## 📱 Funcionalidades Implementadas
+## Generar APK release
 
-### ✅ Completo (100%)
+Para una APK que funcione **en el celular sin PC ni Metro**:
 
-#### **LoginScreen** - Autenticación Segura
-- Validación de RUT chileno con formato automático
-- Patrón PIN de 4 dígitos
-- Autenticación biométrica (huella/facial)
-- Descarga automática de datos offline (CAFs, catálogo, clientes)
-- Persistencia de credenciales encriptada
-- Tema claro/oscuro adaptativo
+```powershell
+npm run build:apk
+# Equivalente a: .\scripts\build-release.ps1
+```
 
-#### **CatalogueScreen** - Catálogo de Productos
-- Lista de productos con scroll infinito
-- Búsqueda en tiempo real (código, nombre, descripción)
-- Indicador de stock (número o símbolo ∞)
-- Carga desde API y almacenamiento local MMKV
-- Botón "Agregar al carrito"
+El script realiza:
 
-#### **SaleScreen** - Pantalla Principal de Ventas
-- Calculadora táctil integrada
-- Lista de items del carrito
-- Edición de cantidad y eliminación de items
-- Cálculo automático de subtotal, IVA, total
-- Menú lateral con navegación
+1. Parches nativos (Bluetooth, sonido de escaneo)
+2. Bundle JS embebido (`--dev false` → API producción)
+3. `assembleRelease` con todas las ABI (universal)
+4. APK en `android/app/build/outputs/apk/release/`
 
-#### **PaymentMethodScreen** - Métodos de Pago
-- Selector de método (Efectivo, Crédito, Débito)
-- Input de efectivo con cálculo de vuelto automático
-- Integración completa con Tuu para pagos con tarjeta
-- Auto-ejecución inteligente (1 método configurado)
-- Manejo de cancelación sin re-ejecución
+### Variante solo arm64 (no usar en Kozen P8)
 
-#### **SaleCompletedScreen** - Procesamiento de Venta
-- Sincronización automática con API SII
-- Generación de TED (Timbre Electrónico Digital)
-- Asignación de folio desde servidor
-- Navegación a vista de factura
+```powershell
+npm run build:apk:pos
+```
 
-#### **ViewInvoiceScreen** - Vista de Documento
-- Visualización completa del DTE emitido
-- Impresión automática configurable
-- Impresión manual bajo demanda
-- Compartir documento (PDF)
-- Información de cliente, items, totales
+> **Kozen P8 Neo** usa `armeabi-v7a`. Usar siempre el build universal para ese terminal.
 
-#### **MySalesScreen** - Historial de Ventas
-- Filtro por rango de fechas con date pickers nativos
-- Toggle "Ver detalle de ventas"
-- Indicadores de sincronización (✓ synced, ⟳ pending, ✗ error)
-- Sincronización manual de ventas pendientes
-- Resumen de totales
-- Soporte completo para modo oscuro
+### Entornos en release vs debug
 
-#### **PrinterSettingsScreen** - Configuración de Impresora
-- Escaneo de impresoras Bluetooth
-- Selección y conexión automática
-- Impresión de prueba
-- Reconexión automática al imprimir
-- Manejo de permisos Bluetooth (Android 12+)
-- Persistencia de configuración
+| Modo | API Base | TUU |
+|---|---|---|
+| Debug (Metro) | `proqa.dtemite.cl` | Producción (`com.haulmer.paymentapp`) |
+| Release (APK) | `pro.dtemite.cl` | Producción |
 
-#### **SettingsScreen** - Configuraciones
-- Selector de impresora Bluetooth
-- Logo de empresa (upload, preview, delete)
-- Impresión automática toggle
-- Imprimir TED (código PDF417) toggle
-- Sincronización automática toggle
-- Tipos de documento habilitados por empresa
-- Métodos de pago por tipo de documento
-- Headers y footers personalizados para impresión
-- Tema claro/oscuro
+Configuración en `src/services/apiClient.ts`.
 
-#### **ClientsScreen** - Gestión de Clientes
-- Lista de clientes desde API
-- Búsqueda por RUT o nombre
-- Selección para asociar a venta
-- Datos: RUT, Razón Social, Email
 ---
 
-## 💳 Integración Tuu - Pagos con Tarjeta
+## Anulación de documentos y pagos
 
-### Flujo de Pago
-1. Usuario selecciona método de pago (Crédito/Débito)
-2. App invoca Tuu Negocio via Intent Android
-3. Tuu procesa el pago en terminal
-4. Retorna resultado con `sequenceNumber`
-5. App continúa con emisión de DTE
+Flujo unificado desde **Mis Ventas** (`MySalesScreen`):
 
-### Códigos de Error ICE Manejados
+| Tipo | Acción | API |
+|---|---|---|
+| Boleta / Factura / DTE | Nota de Crédito total o corrección | `emitCreditNote()` → legacy PHP |
+| Pago recibido (sin DTE) | Anular transacción | `PUT /pos/transaccion/{id}/anular` |
+| Nota de crédito | No anulable | — |
 
-| Código | Descripción | Mensaje al Usuario |
-|--------|-------------|-------------------|
-| ICE-000 | Tarjeta no soportada | "La tarjeta ingresada no es válida" |
-| ICE-001 | Tarjeta expirada | "La tarjeta está vencida" |
-| ICE-002 | Fondos insuficientes | "Fondos insuficientes" |
-| ICE-003 | Transacción rechazada | "Transacción rechazada por el banco" |
-| ICE-010 | Sin conexión | "Sin conexión a internet" |
-| ICE-014 | Cancelado por usuario | "Pago cancelado" |
-| ICE-050 | Terminal ocupado | "Terminal ocupado, intente nuevamente" |
+### Comportamiento Capstone
 
-### Payload de Pago
+Para pruebas con un solo sistema de demostración:
+
+- **`permite_nota_credito` del login se ignora** — siempre habilitado en la app
+- **El botón Anular no depende de `emitirDocumento`** en configuración
+- Por defecto se muestra modal simplificado de NC total
+- Si se activa **"NC por corrección de monto"** en ajustes, aparece opción de corrección parcial
+
+> La emisión de NC requiere sesión activa y contraseña codificada (`b64pass`) guardada al login. Si se usa solo patrón/biometría sin regenerar contraseña, puede fallar la NC — volver a ingresar contraseña resuelve el caso.
+
+---
+
+## Integración con backend
+
+### URLs (configuración actual)
+
 ```typescript
-interface TuuPaymentRequest {
-  amount: number;           // Monto total
-  tip: number;              // Propina (-1 = no usar)
-  cashback: number;         // Cashback (-1 = no usar)
-  method: 1 | 2;            // 1=Crédito, 2=Débito
-  installmentsQuantity: number; // Cuotas (0=solicitar, -1=no usar)
-  printVoucherOnApp: boolean;   // false = nosotros imprimimos
-  dteType: number;          // Tipo documento (33, 39, etc.)
-  extraData: {
-    taxIdnValidation: string;   // RUT cliente
-    exemptAmount: number;       // Monto exento
-    netAmount: number;          // Monto neto
-    sourceName: string;         // "DTemite POS"
-    sourceVersion: string;      // "2.0.0"
-  };
-}
+// src/services/apiClient.ts
+export const API_BASE_URL = __DEV__
+  ? 'https://proqa.dtemite.cl/api'      // Debug
+  : 'https://pro.dtemite.cl/api';      // Release APK
 ```
 
----
+### Endpoints principales
 
-## 🔗 Integración con API
-
-### Base URL
-```
-https://prodev.dtemite.cl/api
-```
-
-### Endpoints Principales
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/login` | Autenticación de usuario |
-| GET | `/folios/caf` | Obtener folios CAF disponibles |
-| GET | `/producto` | Obtener catálogo de productos |
-| GET | `/cliente` | Obtener lista de clientes |
+| Método | Ruta | Descripción |
+|---|---|---|
+| POST | `/login` | Autenticación |
+| GET | `/folios/caf` | Folios CAF disponibles |
+| GET | `/producto` | Catálogo |
+| GET | `/cliente` | Clientes |
 | POST | `/documento` | Guardar DTE firmado |
+| GET | `/dpay/documento` | Listar documentos D-PAY |
+| PUT | `/pos/transaccion/{id}/anular` | Anular pago sin DTE |
+| POST | `/dpay/documento/eliminar` | Eliminar boleta (legacy) |
 
-Ver documentación completa de endpoints en la sección [API Integration](#-integración-con-api) del README extendido.
-
----
-
-## 💾 Stores (Zustand)
-
-| Store | Responsabilidad | Persistencia |
-|-------|----------------|--------------|
-| **authStore** | Autenticación, tokens, credenciales | ✅ MMKV |
-| **salesStore** | Carrito de ventas, items | ❌ Temporal |
-| **catalogueStore** | Productos, búsqueda | ✅ MMKV |
-| **mySalesStore** | Historial de ventas | ✅ MMKV |
-| **cafStore** | Folios CAF | ✅ MMKV |
-| **printerStore** | Configuración impresora | ✅ MMKV |
-| **settingsStore** | Configuraciones generales | ✅ MMKV |
-| **themeStore** | Tema claro/oscuro | ✅ MMKV |
-| **alertStore** | Sistema de alertas | ❌ Temporal |
+Documentación extendida:
+- [`ENDPOINTS_DTEMITE.md`](ENDPOINTS_DTEMITE.md)
+- [`ENDPOINTS_DTEMITE_CORE.md`](ENDPOINTS_DTEMITE_CORE.md)
+- [`docs/postman/README.md`](docs/postman/README.md)
 
 ---
 
-## 🎨 Sistema de Diseño
+## Seguridad del repositorio
 
-### Paleta de Colores
+Este es un **repositorio público académico**. No incluye:
 
-#### Modo Claro
-```typescript
-primary: '#75bebf'        // Turquesa - Botones primarios
-secondary: '#213d8b'      // Azul oscuro - Textos principales
-tertiary: '#d4186e'       // Rosa/magenta - Acentos
-background: '#FFFFFF'
-text: '#213d8b'
-```
+- Contraseñas de keystore Android
+- API keys reales
+- Archivos `.env` con credenciales
+- Colecciones Postman personales
 
-#### Modo Oscuro
-```typescript
-primary: '#75bebf'
-secondary: '#75bebf'      // Adaptado para contraste
-tertiary: '#d4186e'
-background: '#1a1a1a'
-text: '#FFFFFF'
-```
+Antes de contribuir, verificar que no se suban secretos. Usar siempre:
+- `android/keystore.properties.example` como plantilla
+- `.env.example` con placeholders
 
-### Espaciado
-```typescript
-xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48, xxxl: 64
-```
+---
 
-### Tipografía
-```typescript
-Fuentes: AllRoundGothicW03-Bold, Medium, Book
-Tamaños: xs(12) → 5xl(48)
-Pesos: light(300) → extrabold(800)
-```
+## Scripts disponibles
 
-### Hook de Tema
-```typescript
-import { useThemeColors } from '../hooks/useThemeColors';
-
-const MyComponent = () => {
-  const themeColors = useThemeColors();
-  return (
-    <View style={{ backgroundColor: themeColors.background }}>
-      <Text style={{ color: themeColors.text }}>Texto adaptativo</Text>
-    </View>
-  );
-};
+```powershell
+npm start              # Metro bundler
+npm run start:reset    # Metro con caché limpia
+npm run android        # Build + run Android
+npm run build:apk      # APK release universal
+npm run build:apk:pos  # APK solo arm64
+npm run scrcpy         # Espejo de pantalla del dispositivo
+npm test               # Jest
+npm run lint           # ESLint
 ```
 
 ---
 
-## 🔐 Seguridad y Almacenamiento
+## Roadmap Capstone
 
-### MMKV Storage
-**MMKV** es 30x más rápido que AsyncStorage y soporta encriptación nativa.
+### Fase 1 — Base funcional ✅
+- [x] POS completo con DTE, historial e impresión
+- [x] Integración TUU en terminal Kozen
+- [x] Anulación simplificada para demo universitaria
+- [x] Repositorio público sanitizado
 
-```typescript
-import { storage } from 'react-native-mmkv';
+### Fase 2 — Mobile multi-pasarela 🔜
+- [ ] Detección de tipo de dispositivo (POS vs smartphone)
+- [ ] Abstracción `PaymentGateway` con selección dinámica
+- [ ] Integración Transbank Webpay (mobile)
+- [ ] Integración Flow u otra pasarela de respaldo
+- [ ] UI de selección de pasarela al pagar con tarjeta
 
-// Guardar
-storage.set('key', JSON.stringify(data));
-
-// Leer
-const data = JSON.parse(storage.getString('key') || '{}');
-
-// Eliminar
-storage.delete('key');
-```
-
-### Keys en MMKV
-
-| Key | Tipo | Descripción |
-|-----|------|-------------|
-| `auth-token` | string | JWT token de sesión |
-| `auth-loginInfo` | JSON | Info del usuario |
-| `auth-savedCredentials` | JSON | Credenciales guardadas |
-| `auth-pattern` | string | PIN de 4 dígitos |
-| `auth-useBiometric` | boolean | Biometría habilitada |
-| `products` | JSON | Catálogo de productos |
-| `clients` | JSON | Lista de clientes |
-| `cafs` | JSON | Folios CAF |
-| `my-sales` | JSON | Historial de ventas |
-| `printer-config` | JSON | Config de impresora |
-| `settings` | JSON | Configuraciones |
-| `theme-isDark` | boolean | Tema oscuro |
-
-### Firma Digital (SHA1withRSA)
-```typescript
-import { KJUR } from 'jsrsasign';
-
-const sig = new KJUR.crypto.Signature({ alg: 'SHA1withRSA' });
-sig.init(privateKey);
-sig.updateString(ddXML);
-const signature = sig.sign();
-```
-
-Ver análisis completo en: `ANALISIS_TIMBRE_SII.md`
+### Fase 3 — Documentación y defensa 🔜
+- [ ] Manual de usuario Capstone
+- [ ] Diagramas de arquitectura y secuencia
+- [ ] Video demo del flujo completo
+- [ ] Informe final de proyecto
 
 ---
 
-## 🛠️ Scripts Disponibles
+## Documentación adicional
 
-```bash
-# Desarrollo
-npm start                    # Metro bundler
-npm run android              # Build + Run Android
-npm run ios                  # Build + Run iOS
-
-# Testing
-npm test                     # Jest tests
-npm run lint                 # ESLint
-npm run format               # Prettier
-
-# Android
-cd android && ./gradlew clean                   # Limpiar build
-cd android && ./gradlew assembleRelease         # Build release
-```
+| Archivo | Contenido |
+|---|---|
+| [`ANALISIS_DPAY.md`](ANALISIS_DPAY.md) | Análisis funcional del sistema |
+| [`CONFIGURACION_ENTORNOS.md`](CONFIGURACION_ENTORNOS.md) | Entornos QA / producción |
+| [`PUBLICACION_TUU.md`](PUBLICACION_TUU.md) | Publicación en tienda TUU |
+| [`docs/PLAN-DTEMITE-PAYMENT-HUB-COMPLETO.md`](docs/PLAN-DTEMITE-PAYMENT-HUB-COMPLETO.md) | Payment Hub |
+| [`docs/postman/`](docs/postman/) | Colecciones Postman (generar con placeholders) |
 
 ---
 
-## 🐛 Troubleshooting
+## Licencia académica
 
-### App se cierra inmediatamente
-```bash
-# Verificar Hermes deshabilitado
-grep hermesEnabled android/gradle.properties
+Proyecto desarrollado con fines **educativos** en el marco del Capstone de Duoc UC San Bernardo.
 
-# Limpiar y reinstalar
-cd android && ./gradlew clean && cd ..
-rm -rf node_modules && npm install
-npm run android
-```
-
-### Productos no aparecen
-```bash
-# Ver logs durante login
-npx react-native log-android | grep -i "productos"
-
-# Verificar MMKV
-import { storage } from 'react-native-mmkv';
-console.log('Products:', storage.getString('products'));
-```
-
-### Date picker no funciona
-```bash
-npm install react-native-date-picker
-cd android && ./gradlew clean && cd ..
-npm run android
-```
-
-### Bluetooth no conecta
-```bash
-# Verificar permisos en AndroidManifest.xml
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
-# Vincular impresora en Android Settings
-```
-
----
-
-## 📊 Estado del Proyecto
-
-### Progreso General: 95%
-
-| Módulo | Progreso | Estado |
-|--------|----------|--------|
-| **Autenticación** | 100% | ✅ Completo |
-| **Catálogo** | 100% | ✅ Completo |
-| **Ventas** | 100% | ✅ Completo |
-| **Historial** | 100% | ✅ Completo |
-| **Impresión** | 100% | ✅ Completo |
-| **Pago Efectivo** | 100% | ✅ Completo |
-| **Pago Tarjeta (Tuu)** | 100% | ✅ Completo |
-| **Documentos DTE** | 100% | ✅ Completo |
-| **Sincronización SII** | 100% | ✅ Completo |
-| **Clientes** | 100% | ✅ Completo |
-| **Configuración** | 100% | ✅ Completo |
-| **Tema Claro/Oscuro** | 100% | ✅ Completo |
-
-### Características Completadas
-
-- ✅ Flujo completo de venta desde calculadora hasta impresión
-- ✅ Integración Tuu para pagos con tarjeta (crédito/débito)
-- ✅ Generación y firma de TED (Timbre Electrónico)
-- ✅ Sincronización automática con API SII
-- ✅ Impresión automática de documentos
-- ✅ Manejo de errores ICE con mensajes amigables
-- ✅ Configuración de métodos de pago por tipo de documento
-- ✅ Modo offline con sincronización posterior
-
-### Próximos Pasos
-
-1. **Testing en producción** con clientes reales
-2. **Optimizaciones de rendimiento** en dispositivos Kozen
-3. **Reportes y estadísticas** de ventas
-4. **Backup y restauración** de datos
-
----
-
-## 👥 Contribución
-
-### Flujo de Trabajo
-
-1. Crear rama feature: `git checkout -b feature/nombre`
-2. Commits descriptivos: `git commit -m "feat: ..."`
-3. Push a Bitbucket: `git push origin feature/nombre`
-4. Crear Pull Request
-5. Code Review y aprobación
-6. Merge a main
-
-### Estándares de Código
-
-- ✅ TypeScript estricto en todos los archivos
-- ✅ Componentes funcionales con hooks
-- ✅ Named exports para utilities, default para components
-- ✅ Sin colores hardcodeados, usar `useThemeColors()`
-- ✅ Comentarios solo cuando sea necesario
-- ✅ Sin código obsoleto o comentado
-
-### Convenciones
-
-| Elemento | Convención | Ejemplo |
-|----------|-----------|---------|
-| Archivos | PascalCase | `LoginScreen.tsx` |
-| Componentes | PascalCase | `Button`, `Card` |
-| Hooks | camelCase + `use` | `useThemeColors` |
-| Variables | camelCase | `userName`, `isLoading` |
-| Constantes | UPPER_SNAKE | `API_BASE_URL` |
-
----
-
-## 📄 Licencia
-
-**Privado** - © 2025 DTemite. Todos los derechos reservados.
-
----
-
-## 📞 Contacto
-
-**Empresa:** DTemite  
-**Proyecto:** DPay - Sistema POS  
-**Repositorio:** https://bitbucket.org/dtemite/dpay
-
-**Equipo de Desarrollo:**
-- **Lead Developer:** Diego Madrid Lang ([diego.madrid@dtemite.cl](mailto:diego.madrid@dtemite.cl))
-- **Project Owners:** Erik Mardones, Felipe Espinoza, Sergio Silva
-
----
-
-## 🎯 Roadmap 2025
-
-### Q1-Q2 2025 ✅
-- [x] Setup inicial del proyecto
-- [x] Sistema de autenticación completo
-- [x] Catálogo de productos
-- [x] Historial de ventas
-- [x] Integración con impresora Bluetooth
-
-### Q3-Q4 2025 ✅
-- [x] Flujo de pago completo
-- [x] Integración Tuu (pagos con tarjeta)
-- [x] Generación de DTE con TED
-- [x] Sincronización con API SII
-- [x] Impresión automática
-- [x] Manejo de errores ICE
-
-### 2026 (Planificado)
-- [ ] Reportes y estadísticas de ventas
-- [ ] Dashboard web para administración
-- [ ] Soporte multi-sucursal
-- [ ] iOS support
-- [ ] Integraciones adicionales de pago
+El código base proviene de un sistema POS comercial; esta versión ha sido adaptada, documentada y sanitizada para uso académico. **No está destinado a despliegue productivo sin revisión de seguridad y autorización del titular original.**
 
 ---
 
 <div align="center">
 
-**🚀 Desarrollado con ❤️ usando React Native + TypeScript**
+**Duoc UC · San Bernardo · 2026**
+
+Diego Madrid · Pablo Gutiérrez · Reinhartd Munzenmayer
 
 [![React Native](https://img.shields.io/badge/React%20Native-0.75.5-61DAFB?style=for-the-badge&logo=react)](https://reactnative.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=for-the-badge&logo=android)](https://developer.android.com/)
 
-**v2.0.0** | Diciembre 2025
+**D-PAY 3.0** · v2.7.0
 
 </div>

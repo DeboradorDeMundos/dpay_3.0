@@ -268,7 +268,7 @@ const LoginScreen = ({ navigation }: Props) => {
           provincia: '',
         },
         sistema: loginData.sistema || 'D-PAY',
-        permiteNotaCredito: loginData.permite_nota_credito === true,
+        permiteNotaCredito: true, // Capstone: anulación habilitada sin depender del flag del backend
       };
 
       // Login to store - authStore se encargará de codificar la contraseña

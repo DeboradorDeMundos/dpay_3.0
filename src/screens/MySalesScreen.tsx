@@ -13,7 +13,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { DateRangeFilter } from '../components/sales/DateRangeFilter';
 import { DocumentCard } from '../components/sales/DocumentCard';
 import type { Sale, SaleItem } from '../types/common';
-import { emitCreditNote, listarDocumentosDpay, obtenerDocumentoDpay, eliminarBoletaDpay, anularTransaccionTuu, type DpayDocument } from '../services/api';
+import { emitCreditNote, listarDocumentosDpay, obtenerDocumentoDpay, anularTransaccionTuu, type DpayDocument } from '../services/api';
 import moment from 'moment';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MySales'>;
@@ -81,11 +81,6 @@ const getTodayEnd = () => {
   return date;
 };
 
-const BOLETA_DOC_TYPES = [39, 41];
-
-const isBoletaDocType = (docType?: number | null): boolean =>
-  docType != null && BOLETA_DOC_TYPES.includes(docType);
-
 export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
   const themeColors = useThemeColors();
   const sales = useMySalesStore((state) => state.sales);
@@ -94,7 +89,6 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
   const { showAlert } = useAlertStore();
   const emitirDocumento = useSettingsStore((state) => state.emitirDocumento);
   const ncCorreccionMonto = useSettingsStore((state) => state.ncCorreccionMonto);
-  const permiteNotaCredito = user?.permiteNotaCredito === true;
 
   // Ref para rastrear si es la primera carga (para mantener filtros al volver de navegación)
   const isFirstLoad = useRef(true);
@@ -191,25 +185,6 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const docTypeId = sale.documentType as number;
-    if (!permiteNotaCredito && isBoletaDocType(docTypeId)) {
-      const idDoc = resolveIdDocumentoForSale(sale);
-      if (!idDoc) {
-        showAlert(
-          'Boleta no sincronizada',
-          'Esta boleta aún no está en el servidor. Solo puede eliminarse del historial local.',
-          [
-            { text: 'Cancelar', style: 'cancel' },
-            { text: 'Eliminar local', style: 'destructive', onPress: () => removeSale(sale.id) },
-          ]
-        );
-        return;
-      }
-      const emissionDate = sale.completedAt || sale.createdAt;
-      confirmDeleteBoleta(idDoc, { localSaleId: sale.id, emissionDate });
-      return;
-    }
-    
     setSelectedSaleToAnnul(sale);
     setAnnulOption('total'); // Por defecto 'total'
     if (ncCorreccionMonto) {
@@ -227,22 +202,38 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
       showAlert('No se puede anular', 'Las Notas de Crédito no se pueden anular.');
       return;
     }
-    
-    // Verificar que NO sea un Pago Recibido (docTypeId === 0 o undefined)
-    if (!docTypeId || docTypeId === 0) {
-      showAlert('No se puede anular', 'Los pagos recibidos no se pueden anular desde documentos tributarios.');
-      return;
-    }
 
-    const localSale = sales.find(s => 
+    const localSale = sales.find(s =>
       s.folio && String(s.folio) === String(doc.folio) && s.documentType === docTypeId
-    );
-
-    if (!permiteNotaCredito && isBoletaDocType(docTypeId)) {
-      confirmDeleteBoleta(doc.id_documento, {
-        localSaleId: localSale?.id,
-        emissionDate: doc.fecha_emision || doc.fecha_creacion,
-      });
+    ) ?? sales.find(s => s.dpayTransactionId && doc.dpay_id && s.dpayTransactionId === doc.dpay_id);
+    
+    // Pago recibido / comprobante electrónico (sin DTE)
+    if (!docTypeId || docTypeId === 0) {
+      showAlert(
+        'Eliminar pago recibido',
+        '¿Deseas eliminar este pago recibido del historial? Esta acción no se puede deshacer.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Eliminar',
+            style: 'destructive',
+            onPress: async () => {
+              const transactionId = doc.dpay_id ?? localSale?.dpayTransactionId;
+              if (transactionId) {
+                const res = await anularTransaccionTuu(transactionId, 'Eliminación desde D-PAY');
+                if (!res.success) {
+                  showAlert('Error', res.message || 'No se pudo anular el pago en el servidor.');
+                  return;
+                }
+              }
+              if (localSale?.id) {
+                removeSale(localSale.id);
+              }
+              await fetchDpayDocuments(dateRange.start, dateRange.end);
+            },
+          },
+        ]
+      );
       return;
     }
 
@@ -749,69 +740,6 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
       setLoadingDpay(false);
     }
   };
-
-  const resolveIdDocumentoForSale = (sale: Sale): number | undefined => {
-    if (sale.id_documento) return sale.id_documento;
-    if (!sale.folio) return undefined;
-    const docType = typeof sale.documentType === 'number' ? sale.documentType : undefined;
-    const match = dpayDocuments.find(
-      (d) => String(d.folio) === String(sale.folio) && getDocTypeIdFromDpayName(d.tipo_documento) === docType
-    );
-    return match?.id_documento;
-  };
-
-  const getCoffDeleteHint = (emissionDate?: string): string => {
-    if (!emissionDate) return '';
-    const emission = moment(emissionDate).startOf('day');
-    const today = moment().startOf('day');
-    if (!emission.isBefore(today)) return '';
-    const days = today.diff(emission, 'days');
-    if (days > 3) {
-      return '\n\nEsta boleta es de hace más de 3 días. DTEmite debe revisar el reproceso COFF manualmente.';
-    }
-    return '\n\nSe reprocesará el consumo de folios del día correspondiente.';
-  };
-
-  const confirmDeleteBoleta = (
-    idDocumento: number,
-    options?: { localSaleId?: string; emissionDate?: string }
-  ) => {
-    const coffHint = getCoffDeleteHint(options?.emissionDate);
-
-    showAlert(
-      'Eliminar boleta',
-      `¿Deseas eliminar esta boleta? Esta acción no se puede deshacer.${coffHint}`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            setIsAnulling(true);
-            try {
-              const result = await eliminarBoletaDpay(idDocumento);
-              if (result.success) {
-                if (options?.localSaleId) {
-                  removeSale(options.localSaleId);
-                }
-                await fetchDpayDocuments(dateRange.start, dateRange.end);
-                setSuccessModalData({
-                  visible: true,
-                  message: result.message || 'Boleta eliminada correctamente.',
-                });
-              } else {
-                showAlert('Error', result.message || 'No se pudo eliminar la boleta.');
-              }
-            } finally {
-              setIsAnulling(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-
 
   // Función para sincronizar todas las ventas pendientes
   const handleSyncAll = async () => {
@@ -1343,11 +1271,7 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
                   });
                 }}
                 onAnnul={
-                  !isNC && !isAnulado && (
-                    isPagoRecibido ||
-                    (!permiteNotaCredito && isBoletaDocType(item.documentType as number)) ||
-                    (permiteNotaCredito && emitirDocumento && !isPagoRecibido)
-                  )
+                  !isNC && !isAnulado
                     ? () => handleAnnulPress(item)
                     : undefined
                 }
@@ -1416,10 +1340,7 @@ export const MySalesScreen: React.FC<Props> = ({ navigation }) => {
                 annulmentBannerColor={annulmentBannerColor}
                 onPress={() => handleViewDpayDocument(dpayDoc)}
                 onAnnul={
-                  !isNC && !isReallyAnulado && !isPagoRecibido && (
-                    (!permiteNotaCredito && isBoletaDocType(docTypeId)) ||
-                    (permiteNotaCredito && emitirDocumento)
-                  )
+                  !isNC && !isReallyAnulado
                     ? () => handleAnnulDtemitePress(dpayDoc)
                     : undefined
                 }
