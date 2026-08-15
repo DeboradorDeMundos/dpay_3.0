@@ -1,0 +1,29 @@
+// Versiones FIJAS para React Native 0.76.10 - CRÍTICO para estabilidad
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "1.9.25"
+        AGPVersion = "8.6.1"
+        ReactNativePluginVersion = "0.76.9"
+    }
+    repositories {
+        google()
+        mavenCentral()
+        // Permitir repositorios inseguros para react-native-bluetooth-escpos-printer
+        maven {
+            url "https://jitpack.io"
+            allowInsecureProtocol = false
+        }
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:$AGPVersion")
+        classpath("com.facebook.react:react-native-gradle-plugin:$ReactNativePluginVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
