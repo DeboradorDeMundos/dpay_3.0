@@ -1,0 +1,8 @@
+# Cursor Agent Skills — locales por máquina, no se suben al repo
+.cursor/skills/
+.agents/
+skills-lock.json
+
+# Skills / agentes por proyecto (codigo)
+codigo/.agents/
+codigo/.claude/

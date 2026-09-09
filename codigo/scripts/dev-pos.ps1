@@ -6,7 +6,7 @@
 #   .\scripts\dev-pos.ps1 -DeviceId "OTRO_ID"
 
 param(
-    [string]$DeviceId = "6010B232561701920",
+    [string]$DeviceId = "",
     [switch]$SkipBuild,
     [switch]$ResetCache
 )
@@ -14,6 +14,7 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
+. (Join-Path $PSScriptRoot "adb-utils.ps1")
 
 function Test-MetroRunning {
     return [bool](netstat -ano 2>$null | Select-String ":8081\s+.*LISTENING")
@@ -29,23 +30,14 @@ function Wait-MetroReady {
     return $false
 }
 
-function Test-AdbDevice {
-    param([string]$Serial)
-    $line = adb devices 2>$null | Select-String "^\s*$Serial\s+device\s*$"
-    return [bool]$line
-}
-
 Write-Host ""
-Write-Host "========== D-PAY POS Dev ==========" -ForegroundColor Cyan
+Write-Host "========== D-PAY Dev ==========" -ForegroundColor Cyan
 Write-Host "Proyecto: $Root"
+Write-Host ""
+
+$DeviceId = Get-AdbDeviceId -PreferredId $DeviceId
 Write-Host "Device:   $DeviceId"
 Write-Host ""
-
-if (-not (Test-AdbDevice -Serial $DeviceId)) {
-    Write-Host "ERROR: POS no detectado ($DeviceId)." -ForegroundColor Red
-    Write-Host "Conecta el POS por USB y verifica con: adb devices"
-    exit 1
-}
 
 if (-not $SkipBuild) {
     Write-Host "Aplicando parche bluetooth printer..." -ForegroundColor Yellow
@@ -71,17 +63,13 @@ if (Test-MetroRunning) {
     Write-Host "Metro listo." -ForegroundColor Green
 }
 
-$ScrcpyDir = "C:\Users\mauro\AppData\Local\scrcpy"
-$ScrcpyExe = Join-Path $ScrcpyDir "scrcpy.exe"
+$ScrcpyExe = Get-ScrcpyExe
+$ScrcpyDir = Split-Path $ScrcpyExe -Parent
 
 Write-Host "Iniciando scrcpy..." -ForegroundColor Yellow
-if (-not (Test-Path $ScrcpyExe)) {
-    Write-Host "ERROR: scrcpy no encontrado en $ScrcpyExe" -ForegroundColor Red
-    exit 1
-}
 Start-Process -FilePath $ScrcpyExe -WorkingDirectory $ScrcpyDir -ArgumentList @(
     "-s", $DeviceId,
-    "--window-title", "D-PAY POS",
+    "--window-title", "D-PAY Dev",
     "--max-size", "1024",
     "--always-on-top"
 )

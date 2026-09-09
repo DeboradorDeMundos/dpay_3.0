@@ -1,22 +1,17 @@
-# Espejo del POS en PC (scrcpy). Ejecutar desde PowerShell o doble clic.
-$ScrcpyDir = "C:\Users\mauro\AppData\Local\scrcpy"
-$DeviceId = "6010B232561701920"
-$env:Path += ";C:\Users\mauro\AppData\Local\Android\Sdk\platform-tools"
+# Espejo del dispositivo Android en PC (scrcpy).
+# Uso: .\scripts\launch-scrcpy.ps1
+#      .\scripts\launch-scrcpy.ps1 -DeviceId "SERIAL"
 
-if (-not (Test-Path (Join-Path $ScrcpyDir "scrcpy.exe"))) {
-    Write-Host "ERROR: Instala scrcpy o ajusta la ruta en scripts/launch-scrcpy.ps1" -ForegroundColor Red
-    pause
-    exit 1
-}
+param(
+    [string]$DeviceId = ""
+)
 
-$dev = adb devices 2>$null | Select-String "^\s*$DeviceId\s+device"
-if (-not $dev) {
-    Write-Host "ERROR: POS no conectado ($DeviceId). Revisa USB y adb devices." -ForegroundColor Red
-    adb devices
-    pause
-    exit 1
-}
+. (Join-Path $PSScriptRoot "adb-utils.ps1")
+
+$DeviceId = Get-AdbDeviceId -PreferredId $DeviceId
+$ScrcpyExe = Get-ScrcpyExe
+$ScrcpyDir = Split-Path $ScrcpyExe -Parent
 
 Set-Location $ScrcpyDir
-Write-Host "Abriendo scrcpy -> $DeviceId (P8 Neo)..." -ForegroundColor Cyan
-& .\scrcpy.exe -s $DeviceId --window-title "D-PAY POS" --max-size 1024 --always-on-top
+Write-Host "Abriendo scrcpy -> $DeviceId ..." -ForegroundColor Cyan
+& $ScrcpyExe -s $DeviceId --window-title "D-PAY Dev" --max-size 1024 --always-on-top
