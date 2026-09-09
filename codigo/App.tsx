@@ -22,6 +22,7 @@ import { TuuSyncScheduler } from './src/services/tuuSyncService';
 import { PaymentHubAgent } from './src/services/paymentHubAgent';
 import { tuuPaymentService } from './src/services/tuuPayment';
 import { IS_TUU_DEV, API_BASE_URL, PAYMENT_HUB_API_BASE_URL } from './src/services/apiClient';
+import { APP_VERSION_CHECK_ENABLED } from './src/constants/appVersion';
 
 // Tarea en segundo plano para mantener la app viva y sincronizar transacciones Tuu
 const sleep = (time: any) => new Promise((resolve) => setTimeout(() => resolve(), time));
@@ -105,25 +106,26 @@ function App(): React.JSX.Element {
 
     syncPendingTuuOnStartup();
 
-    // Chequeo de versión al iniciar (fail-open)
-    const checkVersionOnStartup = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await checkForUpdate();
-      } catch (error) {
-        console.warn('[App] Error chequeando versión al inicio:', error);
-      }
-    };
-    checkVersionOnStartup();
+    let appStateSub: ReturnType<typeof AppState.addEventListener> | undefined;
+    if (APP_VERSION_CHECK_ENABLED) {
+      const checkVersionOnStartup = async () => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          await checkForUpdate();
+        } catch (error) {
+          console.warn('[App] Error chequeando versión al inicio:', error);
+        }
+      };
+      checkVersionOnStartup();
 
-    // Al volver a primer plano, reconsultar política
-    const onAppStateChange = (next: AppStateStatus) => {
-      if (appState.current.match(/inactive|background/) && next === 'active') {
-        checkForUpdate().catch(() => undefined);
-      }
-      appState.current = next;
-    };
-    const appStateSub = AppState.addEventListener('change', onAppStateChange);
+      const onAppStateChange = (next: AppStateStatus) => {
+        if (appState.current.match(/inactive|background/) && next === 'active') {
+          checkForUpdate().catch(() => undefined);
+        }
+        appState.current = next;
+      };
+      appStateSub = AppState.addEventListener('change', onAppStateChange);
+    }
 
     // Iniciar servicio en segundo plano
     const startBackgroundService = async () => {
@@ -141,7 +143,7 @@ function App(): React.JSX.Element {
     startBackgroundService();
 
     return () => {
-      appStateSub.remove();
+      appStateSub?.remove();
       if (reminderTimerRef.current) {
         clearInterval(reminderTimerRef.current);
         reminderTimerRef.current = null;
@@ -151,6 +153,9 @@ function App(): React.JSX.Element {
 
   // Reconsulta periódica según reminder_interval_hours de la API
   useEffect(() => {
+    if (!APP_VERSION_CHECK_ENABLED) {
+      return undefined;
+    }
     if (reminderTimerRef.current) {
       clearInterval(reminderTimerRef.current);
       reminderTimerRef.current = null;
@@ -178,7 +183,7 @@ function App(): React.JSX.Element {
         buttons={buttons}
         onClose={hideAlert}
       />
-      <AppUpdateModal />
+      {APP_VERSION_CHECK_ENABLED ? <AppUpdateModal /> : null}
     </SafeAreaProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { MMKV } from 'react-native-mmkv';
 import { Platform } from 'react-native';
-import { APP_VERSION_CODE } from '../constants/appVersion';
+import { APP_VERSION_CODE, APP_VERSION_CHECK_ENABLED } from '../constants/appVersion';
 import {
   fetchAppVersionPolicy,
   isAppOutdated,
@@ -63,6 +63,9 @@ export const useAppUpdateStore = create<AppUpdateState>((set, get) => ({
   },
 
   checkForUpdate: async (opts = {}) => {
+    if (!APP_VERSION_CHECK_ENABLED) {
+      return;
+    }
     if (Platform.OS !== 'android') {
       return;
     }

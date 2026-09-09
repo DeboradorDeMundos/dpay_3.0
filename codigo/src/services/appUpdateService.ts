@@ -1,5 +1,5 @@
 import { apiClient, PAYMENT_HUB_API_BASE_URL } from './apiClient';
-import { APP_VERSION_CODE } from '../constants/appVersion';
+import { APP_VERSION_CODE, APP_VERSION_CHECK_ENABLED } from '../constants/appVersion';
 
 export interface AppVersionPolicy {
   platform: string;
@@ -18,6 +18,9 @@ export interface AppVersionPolicy {
 export async function fetchAppVersionPolicy(
   platform: string = 'android',
 ): Promise<AppVersionPolicy | null> {
+  if (!APP_VERSION_CHECK_ENABLED) {
+    return null;
+  }
   try {
     const response = await apiClient(
       `/paymenthub/app/version?platform=${encodeURIComponent(platform)}`,

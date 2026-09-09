@@ -3,3 +3,6 @@ export const APP_VERSION = '2.7.0';
 
 /** Debe coincidir con android/app/build.gradle versionCode. */
 export const APP_VERSION_CODE = 18;
+
+/** Capstone/dev: false = no consultar política de versión ni bloquear por actualización. */
+export const APP_VERSION_CHECK_ENABLED = false;
