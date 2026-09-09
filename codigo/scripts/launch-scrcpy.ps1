@@ -1,22 +1,23 @@
-# Espejo del POS en PC (scrcpy). Ejecutar desde PowerShell o doble clic.
-$ScrcpyDir = "C:\Users\mauro\AppData\Local\scrcpy"
-$DeviceId = "6010B232561701920"
-$env:Path += ";C:\Users\mauro\AppData\Local\Android\Sdk\platform-tools"
+# Espejo del celular/POS en PC (scrcpy). Uso: npm run scrcpy
+. "$PSScriptRoot\env-android.ps1"
 
-if (-not (Test-Path (Join-Path $ScrcpyDir "scrcpy.exe"))) {
-    Write-Host "ERROR: Instala scrcpy o ajusta la ruta en scripts/launch-scrcpy.ps1" -ForegroundColor Red
-    pause
-    exit 1
-}
-
-$dev = adb devices 2>$null | Select-String "^\s*$DeviceId\s+device"
-if (-not $dev) {
-    Write-Host "ERROR: POS no conectado ($DeviceId). Revisa USB y adb devices." -ForegroundColor Red
+$DeviceId = $args[0]
+if (-not $DeviceId) { $DeviceId = Get-AdbDeviceId -First }
+if (-not $DeviceId) {
+    Write-Host "ERROR: No hay dispositivo adb. Conecta el celular y activa Depuracion USB." -ForegroundColor Red
     adb devices
-    pause
     exit 1
 }
 
-Set-Location $ScrcpyDir
-Write-Host "Abriendo scrcpy -> $DeviceId (P8 Neo)..." -ForegroundColor Cyan
-& .\scrcpy.exe -s $DeviceId --window-title "D-PAY POS" --max-size 1024 --always-on-top
+$scrcpy = $script:ScrcpyExe
+if (-not $scrcpy) {
+    $cmd = Get-Command scrcpy -ErrorAction SilentlyContinue
+    if ($cmd) { $scrcpy = $cmd.Source }
+}
+if (-not $scrcpy) {
+    Write-Host "ERROR: scrcpy no esta en PATH. Instala: winget install Genymobile.scrcpy" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Abriendo scrcpy -> $DeviceId ..." -ForegroundColor Cyan
+& $scrcpy -s $DeviceId --window-title "D-PAY 3.0" --max-size 1080

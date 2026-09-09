@@ -19,6 +19,7 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import type { Sale, SaleItem } from '../types/common';
 import { listarDocumentosDpay } from '../services/api';
 import type { DpayDocumentDetail } from '../services/api';
+import { API_BASE_URL } from '../services/apiClient';
 import md5 from 'md5';
 import moment from 'moment';
 import Pdf from 'react-native-pdf';
@@ -26,7 +27,24 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ViewInvoice'>;
 
-// Función para convertir nombre de documento DPay a ID numérico
+function buildPdfViewUrl(sistema: string, idDocumento: string | number): string {
+  return `${API_BASE_URL.replace(/\/$/, '')}/pdfview/O/${md5(sistema)}/${md5(String(idDocumento))}`;
+}
+
+async function readFileStartsWithPdf(filePath: string): Promise<boolean> {
+  try {
+    const head = await ReactNativeBlobUtil.fs.readFile(filePath, 'utf8');
+    return head.startsWith('%PDF');
+  } catch {
+    return false;
+  }
+}
+
+function pdfSourceFromPath(filePath: string | null) {
+  if (!filePath) return null;
+  const uri = filePath.startsWith('file://') ? filePath : `file://${filePath}`;
+  return { uri, cache: true };
+}
 const getDocTypeIdFromName = (typeName: string): number | undefined => {
   const typeMap: Record<string, number> = {
     'Boleta Electrónica': 39,
@@ -106,7 +124,7 @@ export const ViewInvoiceScreen: React.FC<Props> = ({ navigation, route }) => {
   // Usar el proxy /api/pdfview/ que genera el PDF via WebService y hace redirect 301 al PDF real.
   // Tanto el sistema como el id_documento deben pasarse como MD5 (así lo requiere el endpoint).
   const pdfProxyUrl = (pdfSistema && pdfIdDocumento)
-    ? `https://pro.dtemite.cl/api/pdfview/O/${md5(pdfSistema)}/${md5(String(pdfIdDocumento))}`
+    ? buildPdfViewUrl(pdfSistema, pdfIdDocumento)
     : null;
 
   // DEBUG: eliminar después de confirmar que funciona
@@ -839,7 +857,7 @@ export const ViewInvoiceScreen: React.FC<Props> = ({ navigation, route }) => {
         const result = await generateBoletaPdfLocal();
         if (result) {
           setPdfFilePath(result.filePath);
-          setPdfBase64(result.base64);
+          setPdfBase64(result.filePath ? null : result.base64);
           setShowPdfModal(true);
         } else {
           showAlert('Error', 'No se pudo generar el PDF del documento.');
@@ -860,7 +878,7 @@ export const ViewInvoiceScreen: React.FC<Props> = ({ navigation, route }) => {
           const match = documents.find(d => d.folio === sale.folio);
           if (match?.id_documento) {
             updateSale(sale.id, { id_documento: match.id_documento });
-            resolvedPdfUrl = `https://pro.dtemite.cl/api/pdfview/O/${md5(pdfSistema)}/${md5(String(match.id_documento))}`;
+            resolvedPdfUrl = buildPdfViewUrl(pdfSistema, match.id_documento);
           }
         } catch (lookupError) {
           console.error('[ViewInvoice] Error buscando id_documento por folio:', lookupError);
@@ -897,9 +915,21 @@ export const ViewInvoiceScreen: React.FC<Props> = ({ navigation, route }) => {
       if (statusCode === 200) {
         const filePath = response.path();
         console.log('[ViewInvoice] PDF descargado en:', filePath);
-        const base64Content = await ReactNativeBlobUtil.fs.readFile(filePath, 'base64');
+
+        const isPdf = await readFileStartsWithPdf(filePath);
+        if (!isPdf) {
+          const preview = await ReactNativeBlobUtil.fs.readFile(filePath, 'utf8');
+          console.error('[ViewInvoice] Respuesta no es PDF:', preview.substring(0, 300));
+          showAlert(
+            'Error',
+            'El servidor no devolvió un PDF válido. Si estás en QA, verifica que el documento exista en ese entorno.',
+          );
+          setDownloadingPdf(false);
+          return;
+        }
+
         setPdfFilePath(filePath);
-        setPdfBase64(base64Content);
+        setPdfBase64(null);
         setShowPdfModal(true);
       } else {
         showAlert('Error', `No se pudo descargar el PDF (código ${statusCode}).`);
@@ -1839,9 +1869,13 @@ export const ViewInvoiceScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
 
           {/* Visor de PDF */}
-          {pdfBase64 ? (
+          {pdfFilePath || pdfBase64 ? (
             <Pdf
-              source={{ uri: `data:application/pdf;base64,${pdfBase64}` }}
+              source={
+                pdfFilePath
+                  ? pdfSourceFromPath(pdfFilePath)!
+                  : { uri: `data:application/pdf;base64,${pdfBase64}` }
+              }
               style={{ flex: 1, backgroundColor: '#000000' }}
               onLoadComplete={(numberOfPages) => {
                 console.log(`[ViewInvoice] PDF cargado con ${numberOfPages} páginas`);

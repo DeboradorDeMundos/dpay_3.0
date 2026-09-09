@@ -15,7 +15,7 @@ Gestión de estado global usando **Zustand + MMKV**.
 Estado de autenticación del usuario.
 
 **Estado:**
-- `token`: Token de autenticación JWT
+- `token`: Token de autenticación bearer (opaco)
 - `user`: Información completa del usuario (LoginInformation)
 - `isAuthenticated`: Booleano de estado
 - `savedCredentials`: Credenciales guardadas para login rápido

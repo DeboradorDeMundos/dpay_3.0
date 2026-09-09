@@ -1,19 +1,20 @@
-# Script para ejecutar la app en Android
-# Configura variables de entorno y ejecuta React Native
+# Ejecutar D-PAY en Android (auto-detecta celular conectado)
+. "$PSScriptRoot\scripts\env-android.ps1"
 
-Write-Host "🚀 Configurando entorno Android..." -ForegroundColor Cyan
-
-# Variables de entorno
-$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21'
-$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
-$env:Path += ";$env:LOCALAPPDATA\Android\platform-tools"
-
-Write-Host "✅ JAVA_HOME: $env:JAVA_HOME" -ForegroundColor Green
-Write-Host "✅ ANDROID_HOME: $env:ANDROID_HOME" -ForegroundColor Green
-
-# Verificar dispositivo conectado
-Write-Host "`n📱 Dispositivos conectados:" -ForegroundColor Cyan
+Write-Host "Entorno Android" -ForegroundColor Cyan
+Write-Host "  JAVA_HOME:    $env:JAVA_HOME"
+Write-Host "  ANDROID_HOME: $env:ANDROID_HOME"
+Write-Host ""
+Write-Host "Dispositivos:" -ForegroundColor Cyan
 adb devices
+Write-Host ""
 
-Write-Host "`n🏃 Ejecutando React Native..." -ForegroundColor Cyan
-npm run android
+$device = Get-AdbDeviceId -First
+if ($device) {
+    Write-Host "Usando dispositivo: $device" -ForegroundColor Green
+    adb -s $device reverse tcp:8081 tcp:8081 | Out-Null
+    npx react-native run-android --active-arch-only --deviceId $device
+} else {
+    Write-Host "Ningun dispositivo. Conecta el celular con USB debugging." -ForegroundColor Yellow
+    npx react-native run-android
+}

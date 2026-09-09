@@ -1,4 +1,4 @@
-# D-PAY 3.0 — Sistema POS Móvil con Facturación Electrónica
+# D-PAY — POS móvil de DTemite
 
 [![React Native](https://img.shields.io/badge/React%20Native-0.75.5-61DAFB?style=flat-square&logo=react)](https://reactnative.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -8,9 +8,9 @@
 **Proyecto Capstone — Ingeniería en Informática**  
 Duoc UC, Sede San Bernardo · 2026
 
-Aplicación móvil de punto de venta (POS) desarrollada con **React Native + TypeScript**, orientada a la emisión de **Documentos Tributarios Electrónicos (DTE)** según normativa chilena del SII, con soporte de pagos con tarjeta y gestión de ventas offline/online.
+**D-PAY** es el punto de venta móvil de DTemite: vender, cobrar y emitir **DTE** al SII desde un Android (celular o terminal Kozen). Stack: **React Native + TypeScript**.
 
-Este repositorio es la versión académica del sistema productivo **D-PAY**, adaptada para demostración, pruebas controladas y evolución hacia un modelo **multi-dispositivo** y **multi-pasarela de pago**.
+La app se integra a la plataforma cloud de DTemite (API REST + Legacy PHP). Documentación del producto: [`../docs/00-ecosistema-dtemite.md`](../docs/00-ecosistema-dtemite.md).
 
 ---
 
@@ -49,60 +49,31 @@ Este repositorio es la versión académica del sistema productivo **D-PAY**, ada
 
 ## Visión del proyecto
 
-D-PAY 3.0 nace como fork académico de un POS en producción. El objetivo del Capstone es demostrar un flujo comercial completo en dispositivos Android:
+DTemite factura en la oficina (ERP web). **D-PAY** es el POS de bolsillo: el mismo comercio vende, cobra y emite DTE desde Android. El Capstone desarrolla ese producto completo:
 
-1. **Autenticación** de comercio y usuario
-2. **Venta** con catálogo, calculadora y métodos de pago
-3. **Emisión DTE** (boleta, factura, nota de crédito)
-4. **Historial** con filtros, sincronización y anulaciones
-5. **Impresión** térmica Bluetooth y visualización de documentos
-
-A diferencia del sistema productivo original, esta versión prioriza:
-
-- Un **único tenant/sistema de prueba** para demostraciones universitarias
-- **Anulación simplificada** (sin depender de flags restrictivos del backend)
-- Evolución hacia **celular genérico** con pasarelas web (Webpay, Flow, etc.)
-- Mantener compatibilidad con **terminales Kozen + TUU/Haulmer**
+1. **Autenticación** de comercio (tenant) y cajero
+2. **Venta** con catálogo, calculadora y scanner
+3. **Cobro** efectivo y tarjeta TUU (Kozen)
+4. **Emisión DTE** (boleta, factura, NC)
+5. **Historial**, sincronización y anulaciones
+6. **Impresión** térmica Bluetooth
 
 ---
 
 ## Modos de operación
 
-El proyecto contempla dos perfiles de hardware con estrategias de pago distintas:
+### Terminal POS Kozen (TUU / Haulmer)
 
-### 1. Terminal POS Kozen (TUU / Haulmer) — Implementado
+Kozen P8 Neo con **TUU Negocio**. Cobro con tarjeta vía Intent Android. Crédito/débito/cuotas.
 
-Dispositivos dedicados como **Kozen P8 Neo** con la app de pagos **TUU Negocio** (Haulmer) instalada.
+### Smartphone Android
 
-| Aspecto | Comportamiento |
+Mismos flujos de venta y DTE. El cobro del producto es **efectivo**. Tarjeta en celular (Webpay, etc.) queda como mejora futura, no como objetivo del Capstone.
+
+| Entorno | API |
 |---|---|
-| Cobro con tarjeta | Intent Android hacia TUU (`com.haulmer.paymentapp`) |
-| Crédito / débito | Nativo en terminal |
-| Cuotas | Configurables desde la app |
-| Impresión voucher | Controlada por D-PAY o TUU según configuración |
-| Entorno QA | Metro/debug → `proqa.dtemite.cl` |
-| APK release | Producción → `pro.dtemite.cl` |
-
-### 2. Celular genérico (multi-pasarela) — Roadmap Capstone
-
-En smartphones Android/iOS sin terminal TUU embebido, el cobro con tarjeta se resolverá mediante **pasarelas de pago web**:
-
-| Pasarela | Estado | Uso previsto |
-|---|---|---|
-| **TUU / Haulmer** | ✅ Implementado | Solo en POS Kozen |
-| **Transbank Webpay** | 🔜 Planificado | Pagos con tarjeta en mobile |
-| **Flow** | 🔜 Planificado | Pagos alternativos / transferencias |
-| **Otras pasarelas** | 🔜 Evaluación | Arquitectura extensible |
-
-**Diseño objetivo:** un adaptador de pagos (`PaymentGateway`) que seleccione el proveedor según el dispositivo detectado:
-
-```
-┌─────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
-│  SalePayment    │────▶│  PaymentGateway      │────▶│  TUU (POS)      │
-│  Screen         │     │  (detección device)  │     │  Webpay (mobile)│
-└─────────────────┘     └──────────────────────┘     │  Flow (mobile)  │
-                                                       └─────────────────┘
-```
+| Metro / debug | `proqa.dtemite.cl` |
+| APK release | `pro.dtemite.cl` |
 
 ---
 
@@ -110,9 +81,9 @@ En smartphones Android/iOS sin terminal TUU embebido, el cobro con tarjeta se re
 
 ### Autenticación y sesión
 - Login con RUT chileno, usuario y contraseña
-- Patrón PIN de 4 dígitos y biometría (huella)
+- PIN patrón 3×3 y biometría (huella; off en Kozen)
 - Descarga inicial de CAFs, catálogo y clientes
-- Token JWT persistente en MMKV
+- Token de sesión (bearer) persistente en MMKV
 
 ### Ventas
 - Calculadora táctil integrada
@@ -410,24 +381,20 @@ npm run lint           # ESLint
 
 ## Roadmap Capstone
 
-### Fase 1 — Base funcional ✅
-- [x] POS completo con DTE, historial e impresión
-- [x] Integración TUU en terminal Kozen
-- [x] Anulación simplificada para demo universitaria
-- [x] Repositorio público sanitizado
+### Fase 1 — Definir el producto
+- [x] Vision: D-PAY como POS completo de DTemite
+- [x] Backlog HU-01 a HU-14
+- [x] Arquitectura, RF/RNF, UML
 
-### Fase 2 — Mobile multi-pasarela 🔜
-- [ ] Detección de tipo de dispositivo (POS vs smartphone)
-- [ ] Abstracción `PaymentGateway` con selección dinámica
-- [ ] Integración Transbank Webpay (mobile)
-- [ ] Integración Flow u otra pasarela de respaldo
-- [ ] UI de selección de pasarela al pagar con tarjeta
+### Fase 2 — Estabilizar y evidenciar el POS
+- [ ] Flujo login → venta → cobro → DTE demostrable en QA
+- [ ] Historial, NC, impresión, Payment Hub
+- [ ] Matriz de pruebas + informe S10
+- [ ] APK Semana 15
 
-### Fase 3 — Documentación y defensa 🔜
-- [ ] Manual de usuario Capstone
-- [ ] Diagramas de arquitectura y secuencia
-- [ ] Video demo del flujo completo
-- [ ] Informe final de proyecto
+### Fase 3 — Defensa
+- [ ] Video del flujo de caja
+- [ ] Presentación y `3.4_APT122`
 
 ---
 

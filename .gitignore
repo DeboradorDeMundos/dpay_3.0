@@ -1,0 +1,28 @@
+# Raíz dpay_3.0 — complementa codigo/.gitignore
+
+.DS_Store
+Thumbs.db
+
+# Templates GitHub Copilot / java-upgrade (no aplica a RN)
+/.github/
+
+# Carpeta android/ en raíz = artefactos viejos (app real está en codigo/android/)
+/android/
+
+# Generador docx Capstone — no versionar node_modules del generador
+/fase1/grupales/_gen/node_modules/
+
+# Logs JVM / crash de Gradle
+hs_err_pid*.log
+replay_pid*.log
+
+# Secretos fuera de codigo/android/
+**/keystore.properties
+!codigo/android/keystore.properties.example
+
+# Bundle generado por error fuera de codigo/
+**/index.android.bundle
+!codigo/android/app/src/main/assets/
+
+# Maquetas de diseño (referencia, no van en la app)
+/codigo/assets/maqueta/

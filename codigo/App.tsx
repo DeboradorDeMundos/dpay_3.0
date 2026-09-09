@@ -6,15 +6,13 @@
  * @format
  */
 
-import React, { useEffect, useRef } from 'react';
-import { StatusBar, Platform, AppState, type AppStateStatus } from 'react-native';
+import React, { useEffect } from 'react';
+import { StatusBar, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useThemeStore } from './src/stores/themeStore';
 import { usePrinterStore } from './src/stores/printerStore';
-import { useAppUpdateStore } from './src/stores/appUpdateStore';
 import { CustomAlert } from './src/components/base/CustomAlert';
-import { AppUpdateModal } from './src/components/appUpdate/AppUpdateModal';
 import { useAlertStore } from './src/stores/alertStore';
 
 import BackgroundService from 'react-native-background-actions';
@@ -67,17 +65,11 @@ const backgroundOptions = {
 function App(): React.JSX.Element {
   const initializeTheme = useThemeStore((state) => state.initializeTheme);
   const initializePrinter = usePrinterStore((state) => state.initializePrinter);
-  const initializeAppUpdate = useAppUpdateStore((state) => state.initialize);
-  const checkForUpdate = useAppUpdateStore((state) => state.checkForUpdate);
-  const reminderIntervalHours = useAppUpdateStore((state) => state.reminderIntervalHours);
   const { visible, title, message, buttons, hideAlert } = useAlertStore();
-  const appState = useRef<AppStateStatus>(AppState.currentState);
-  const reminderTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     initializeTheme();
     initializePrinter();
-    initializeAppUpdate();
 
     tuuPaymentService.setDevMode(IS_TUU_DEV);
     console.log(`[App] API: ${API_BASE_URL} | Hub: ${PAYMENT_HUB_API_BASE_URL} | TUU: ${IS_TUU_DEV ? 'DEV (paymentapp.dev)' : 'PROD (paymentapp)'}`);
@@ -105,27 +97,6 @@ function App(): React.JSX.Element {
 
     syncPendingTuuOnStartup();
 
-    // Chequeo de versión al iniciar (fail-open)
-    const checkVersionOnStartup = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        await checkForUpdate();
-      } catch (error) {
-        console.warn('[App] Error chequeando versión al inicio:', error);
-      }
-    };
-    checkVersionOnStartup();
-
-    // Al volver a primer plano, reconsultar política
-    const onAppStateChange = (next: AppStateStatus) => {
-      if (appState.current.match(/inactive|background/) && next === 'active') {
-        checkForUpdate().catch(() => undefined);
-      }
-      appState.current = next;
-    };
-    const appStateSub = AppState.addEventListener('change', onAppStateChange);
-
-    // Iniciar servicio en segundo plano
     const startBackgroundService = async () => {
       try {
         if (!BackgroundService.isRunning()) {
@@ -140,33 +111,8 @@ function App(): React.JSX.Element {
 
     startBackgroundService();
 
-    return () => {
-      appStateSub.remove();
-      if (reminderTimerRef.current) {
-        clearInterval(reminderTimerRef.current);
-        reminderTimerRef.current = null;
-      }
-    };
+    return () => undefined;
   }, []);
-
-  // Reconsulta periódica según reminder_interval_hours de la API
-  useEffect(() => {
-    if (reminderTimerRef.current) {
-      clearInterval(reminderTimerRef.current);
-      reminderTimerRef.current = null;
-    }
-    const hours = Math.min(72, Math.max(1, reminderIntervalHours || 2));
-    const ms = hours * 60 * 60 * 1000;
-    reminderTimerRef.current = setInterval(() => {
-      checkForUpdate().catch(() => undefined);
-    }, ms);
-    return () => {
-      if (reminderTimerRef.current) {
-        clearInterval(reminderTimerRef.current);
-        reminderTimerRef.current = null;
-      }
-    };
-  }, [reminderIntervalHours, checkForUpdate]);
 
   return (
     <SafeAreaProvider>
@@ -178,7 +124,6 @@ function App(): React.JSX.Element {
         buttons={buttons}
         onClose={hideAlert}
       />
-      <AppUpdateModal />
     </SafeAreaProvider>
   );
 }
