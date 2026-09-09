@@ -69,12 +69,16 @@ def open_lists():
 
 
 def find_list(query: str) -> dict:
-    wanted = query.casefold()
     lists = open_lists()
-    exact = [item for item in lists if item["name"].casefold() == wanted]
+    wanted = query.strip()
+    by_id = [item for item in lists if item["id"] == wanted]
+    if by_id:
+        return by_id[0]
+    wanted_cf = wanted.casefold()
+    exact = [item for item in lists if item["name"].casefold() == wanted_cf]
     if exact:
         return exact[0]
-    partial = [item for item in lists if wanted in item["name"].casefold()]
+    partial = [item for item in lists if wanted_cf in item["name"].casefold()]
     if len(partial) == 1:
         return partial[0]
     if not partial:
@@ -137,10 +141,32 @@ def cmd_comment(card_query: str, text: str) -> None:
     print(card.get("shortUrl") or card.get("url"))
 
 
+def _safe_print(text: str) -> None:
+    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    print(text.encode(encoding, errors="replace").decode(encoding, errors="replace"))
+
+
+def cmd_create(list_query: str, name: str, desc: str = "") -> None:
+    target = find_list(list_query)
+    card = trello(
+        "POST",
+        "/cards",
+        {
+            "idList": target["id"],
+            "name": name[:16384],
+            "desc": desc[:16384],
+            "pos": "bottom",
+        },
+    )
+    _safe_print(f"OK  [{target['name']}] {card.get('name')}")
+    print(card.get("shortUrl") or card.get("url"))
+
+
 def usage() -> str:
     return """Uso:
   python scripts/trello.py lists
   python scripts/trello.py cards [lista]
+  python scripts/trello.py create <lista> <nombre> [descripcion]
   python scripts/trello.py move <texto-card> <lista>
   python scripts/trello.py comment <texto-card> <mensaje>
 
@@ -166,6 +192,8 @@ def main() -> int:
         cmd_move(args[1], " ".join(args[2:]))
     elif cmd == "comment" and len(args) >= 3:
         cmd_comment(args[1], " ".join(args[2:]))
+    elif cmd == "create" and len(args) >= 3:
+        cmd_create(args[1], args[2], " ".join(args[3:]))
     else:
         print(usage())
         return 1
