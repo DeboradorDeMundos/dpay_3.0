@@ -10,7 +10,9 @@ import { useThemeColors } from '../../hooks/useThemeColors';
 import { CashInput } from './CashInput';
 import { TipModal } from './TipModal';
 import AppModal from '../base/AppModal';
-import { tuuPaymentService, TuuPaymentRequest, parseTuuError, classifyTuuError } from '../../services/tuuPayment';
+import { parseTuuError, classifyTuuError } from '../../services/tuuPayment';
+import { PaymentGatewayFactory } from '../../services/paymentGateway';
+import type { PaymentCardRequest } from '../../types/paymentGateway';
 import { calculateTotalsByDocType, mapTuuMethodToMedioPago, calcularComisionDpay, registrarTransaccionTuu } from '../../services/api';
 import { mapDocTypeToTuu } from '../../constants/dte';
 import { APP_VERSION } from '../../constants/appVersion';
@@ -87,6 +89,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   // Settings store - extraer funciones individuales
   const getPaymentMethodsForDocType = useSettingsStore(state => state.getPaymentMethodsForDocType);
   const dpayComisiones = useSettingsStore(state => state.dpayComisiones);
+  const devicePaymentProfile = useSettingsStore(state => state.devicePaymentProfile);
+  const availableGatewayIds = useSettingsStore(state => state.availableGatewayIds);
   const enableTip = useSettingsStore(state => state.enableTip);
   
   // Auth store
@@ -98,10 +102,6 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   const [currentTipAmount, setCurrentTipAmount] = useState(0);
   const [showClientRequiredModal, setShowClientRequiredModal] = useState(false);
 
-  // Verificar instalación de Tuu al montar
-  useEffect(() => {
-    checkTuuInstallation();
-  }, []);
 
   // Auto-ejecutar pago SOLO si autoExecute es true (controlado por PaymentMethodScreen)
   useEffect(() => {
@@ -126,12 +126,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     }
   }, [autoExecute, autoPaymentTriggered, documentType, getPaymentMethodsForDocType]);
 
-  const checkTuuInstallation = async () => {
-    const isInstalled = await tuuPaymentService.isTuuAppInstalled();
-    if (!isInstalled) {
-      console.warn('[Tuu] App no instalada en el dispositivo');
-    }
-  };
+  const resolveCardGateway = async () =>
+    PaymentGatewayFactory.getDefaultCardGateway(devicePaymentProfile, availableGatewayIds);
 
   // Reset al entrar a la pantalla
   useFocusEffect(
@@ -171,13 +167,13 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     setIsProcessingTuu(true);
 
     try {
-      // Verificar que Tuu esté instalado
-      const isInstalled = await tuuPaymentService.isTuuAppInstalled();
-      if (!isInstalled) {
-        showAlert(
-          'App Tuu no encontrada',
-          'Por favor, instale la aplicación Tuu Negocio para procesar pagos con tarjeta.'
-        );
+      const gateway = await resolveCardGateway();
+      if (!gateway) {
+        const message =
+          devicePaymentProfile === 'GENERIC_MOBILE'
+            ? 'En celular genérico use efectivo. Webpay estará disponible en un próximo sprint.'
+            : 'No hay pasarela de tarjeta disponible. Instale Tuu Negocio en el terminal Kozen.';
+        showAlert('Cobro con tarjeta no disponible', message);
         return;
       }
 
@@ -192,30 +188,29 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       // Para boletas (39, 41) enviamos 48 a Tuu, pero D-PAY usa el código real
       const tuuDteType = mapDocTypeToTuu(documentType.id);
 
-      const tuuRequest: TuuPaymentRequest = {
+      const cardRequest: PaymentCardRequest = {
         amount: totalWithIVA,
-        tip: tipAmount > 0 ? tipAmount : -1,
-        cashback: -1, // No usar cashback por defecto (-1 = no utilizado) para evitar errores en DEV
-        method: method.tuuMethod as 1 | 2,
-        installmentsQuantity: method.tuuMethod === 1 ? 0 : -1, // Crédito: 0 = solicitar en app | Débito: -1 = no utilizado
-        printVoucherOnApp: false, // Nosotros imprimimos
-        dteType: tuuDteType, // Mapeado: boletas (39,41) → 48 para Tuu
-        extraData: {
-          taxIdnValidation: '', // Vacío para evitar validación de RUT (si se envía debe coincidir exactamente con Tuu)
-          exemptAmount: exento,
-          netAmount: neto,
-          sourceName: 'D-PAY',
-          sourceVersion: APP_VERSION,
-        },
+        tip: tipAmount > 0 ? tipAmount : undefined,
+        method: method.tuuMethod === 1 ? 'credit' : 'debit',
+        dteType: tuuDteType,
+        netAmount: neto,
+        exemptAmount: exento,
+        sourceName: 'D-PAY',
+        sourceVersion: APP_VERSION,
       };
 
-      console.log('[Tuu] Iniciando pago - D-PAY:', documentType.name, '(ID:', documentType.id, ') → Tuu dteType:', tuuDteType);
-      console.log('[Tuu] Payload completo:', JSON.stringify(tuuRequest, null, 2));
+      console.log(
+        `[PaymentGateway:${gateway.id}] Iniciando pago - D-PAY:`,
+        documentType.name,
+        '(ID:',
+        documentType.id,
+        ') → dteType:',
+        tuuDteType,
+      );
 
-      // Invocar Tuu
-      const result = await tuuPaymentService.startPayment(tuuRequest);
+      const result = await gateway.startCardPayment(cardRequest);
 
-      console.log('[Tuu] Pago exitoso:', result);
+      console.log(`[PaymentGateway:${gateway.id}] Pago exitoso:`, result);
 
       // Calcular comisión DPay según configuración de la empresa
       let comisionData: {
@@ -258,17 +253,17 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
           method: method.tuuMethod as 1 | 2,
           dteType: tuuDteType,
           tip: tipAmount > 0 ? tipAmount : -1,
-          cashback: tuuRequest.cashback,
-          installmentsQuantity: tuuRequest.installmentsQuantity,
+          cashback: -1,
+          installmentsQuantity: method.tuuMethod === 1 ? 0 : -1,
         },
         response: {
           sequenceNumber: result.sequenceNumber,
           transactionStatus: result.transactionStatus,
-          transactionTip: (result as any).transactionTip || 0,
-          transactionCashback: (result as any).transactionCashback || 0,
-          printerVoucherCommerce: result.printerVoucherCommerce,
-          authCode: result.authCode,           // Código de autorización del banco
-          last4: result.last4,                 // Últimos 4 dígitos de la tarjeta
+          transactionTip: result.transactionTip || 0,
+          transactionCashback: result.transactionCashback || 0,
+          printerVoucherCommerce: result.printerVoucherCommerce ?? false,
+          authCode: result.authCode,
+          last4: result.last4,
         },
         tipoTarjeta: method.tuuMethod === 1 ? 'CREDITO' : 'DEBITO',
         idMedioPago: mapTuuMethodToMedioPago(method.tuuMethod as number),
