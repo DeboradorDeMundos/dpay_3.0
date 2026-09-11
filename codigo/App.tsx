@@ -19,6 +19,7 @@ import BackgroundService from 'react-native-background-actions';
 import { TuuSyncScheduler } from './src/services/tuuSyncService';
 import { PaymentHubAgent } from './src/services/paymentHubAgent';
 import { tuuPaymentService } from './src/services/tuuPayment';
+import { useSettingsStore } from './src/stores/settingsStore';
 import { IS_TUU_DEV, API_BASE_URL, PAYMENT_HUB_API_BASE_URL } from './src/services/apiClient';
 
 // Tarea en segundo plano para mantener la app viva y sincronizar transacciones Tuu
@@ -73,6 +74,18 @@ function App(): React.JSX.Element {
 
     tuuPaymentService.setDevMode(IS_TUU_DEV);
     console.log(`[App] API: ${API_BASE_URL} | Hub: ${PAYMENT_HUB_API_BASE_URL} | TUU: ${IS_TUU_DEV ? 'DEV (paymentapp.dev)' : 'PROD (paymentapp)'}`);
+
+    useSettingsStore
+      .getState()
+      .refreshDevicePaymentProfile()
+      .then(profile => {
+        console.log(
+          `[App] Perfil dispositivo: ${profile.profile} | gateways: ${profile.availableGatewayIds.join(', ') || 'ninguno'}`,
+        );
+      })
+      .catch(error => {
+        console.error('[App] Error detectando perfil de dispositivo:', error);
+      });
 
     // Configurar StatusBar transparente para Android
     if (Platform.OS === 'android') {

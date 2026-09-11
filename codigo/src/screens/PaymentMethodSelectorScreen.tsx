@@ -5,7 +5,6 @@ import type { RootStackParamList } from '../navigation/types';
 import { BackButton } from '../components/base';
 import { useSettingsStore, DPAY_DEFAULT_PAYMENT_METHODS } from '../stores/settingsStore';
 import { useThemeColors } from '../hooks/useThemeColors';
-import { shouldEnableBiometrics } from '../utils/deviceInfo';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PaymentMethodSelector'>;
 
@@ -18,37 +17,36 @@ const AVAILABLE_PAYMENT_METHODS = [
 
 export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
   const themeColors = useThemeColors();
-  const { globalPaymentMethods, setGlobalPaymentMethods } = useSettingsStore();
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const {
+    globalPaymentMethods,
+    setGlobalPaymentMethods,
+    devicePaymentProfile,
+    refreshDevicePaymentProfile,
+  } = useSettingsStore();
+  const [cardPaymentsBlocked, setCardPaymentsBlocked] = useState(false);
 
-  // Detectar tipo de dispositivo al montar el componente
+  // HU-01: celular genérico = solo efectivo; Kozen/TUU = tarjetas permitidas
   useEffect(() => {
-    const checkDevice = async () => {
-      const hasBiometrics = await shouldEnableBiometrics();
-      setIsMobileDevice(hasBiometrics); // Si tiene biométricos = celular
-      
-      // Si es celular y tiene métodos de tarjeta seleccionados, limpiarlos
-      if (hasBiometrics && globalPaymentMethods) {
-        const cardMethods = globalPaymentMethods.filter(
-          method => method !== 'Efectivo'
-        );
-        
-        if (cardMethods.length > 0) {
-          // Remover todos los métodos de tarjeta, dejar solo Efectivo si estaba seleccionado
-          const onlyCash = globalPaymentMethods.filter(
-            method => method === 'Efectivo'
-          );
-          setGlobalPaymentMethods(onlyCash);
+    const syncProfile = async () => {
+      const profile =
+        devicePaymentProfile ?? (await refreshDevicePaymentProfile()).profile;
+      const isGenericMobile = profile === 'GENERIC_MOBILE';
+      setCardPaymentsBlocked(isGenericMobile);
+
+      if (isGenericMobile && globalPaymentMethods.length > 0) {
+        const onlyCash = globalPaymentMethods.filter(m => m === 'Efectivo');
+        if (onlyCash.length !== globalPaymentMethods.length) {
+          setGlobalPaymentMethods(onlyCash.length > 0 ? onlyCash : ['Efectivo']);
         }
       }
     };
-    checkDevice();
-  }, []);
+    syncProfile();
+  }, [devicePaymentProfile, globalPaymentMethods, refreshDevicePaymentProfile, setGlobalPaymentMethods]);
 
   const togglePaymentMethod = (methodId: string) => {
     // En celulares, solo permitir Efectivo
-    if (isMobileDevice && methodId !== 'Efectivo') {
-      return; // No hacer nada si es celular e intenta seleccionar tarjetas
+    if (cardPaymentsBlocked && methodId !== 'Efectivo') {
+      return;
     }
 
     const currentMethods = globalPaymentMethods || [];
@@ -75,7 +73,7 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
 
   const isMethodDisabled = (methodId: string) => {
     // En celulares, deshabilitar todo excepto Efectivo
-    return isMobileDevice && methodId !== 'Efectivo';
+    return cardPaymentsBlocked && methodId !== 'Efectivo';
   };
 
   const methodCount = globalPaymentMethods?.length || 0;
@@ -128,7 +126,7 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
         </View>
 
         {/* Aviso para celulares */}
-        {isMobileDevice && (
+        {cardPaymentsBlocked && (
           <View style={{ 
             backgroundColor: '#FFF3CD', 
             borderRadius: 12, 
