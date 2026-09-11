@@ -123,10 +123,10 @@ def cmd_cards(list_query: str | None) -> None:
     if list_query:
         target = find_list(list_query)
         cards = [card for card in cards if card.get("idList") == target["id"]]
-        print(f"Lista: {target['name']}\n")
+        _safe_print(f"Lista: {target['name']}\n")
     for card in cards:
         column = lists_by_id.get(card.get("idList"), "?")
-        print(f"[{column}] {card['name']}")
+        _safe_print(f"[{column}] {card['name']}")
         print(f"         {card.get('shortUrl')}")
 
 
