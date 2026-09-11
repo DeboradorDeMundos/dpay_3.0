@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { useSettingsStore } from '../../stores/settingsStore';
-import { PaymentGatewayFactory } from '../../services/paymentGateway';
+import { PaymentGatewayFactory } from '../../services/paymentGateway/PaymentGatewayFactory';
 import type { IPaymentGateway } from '../../types/paymentGateway';
 
 /**
@@ -18,14 +18,16 @@ export const PaymentGatewayBadge: React.FC = () => {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const list = await PaymentGatewayFactory.listAvailableForProfile(
-        devicePaymentProfile,
-        availableGatewayIds,
-      );
-      const defaultGw = await PaymentGatewayFactory.getDefaultCardGateway(
-        devicePaymentProfile,
-        availableGatewayIds,
-      );
+      const [list, defaultGw] = await Promise.all([
+        PaymentGatewayFactory.listAvailableForProfile(
+          devicePaymentProfile,
+          availableGatewayIds,
+        ),
+        PaymentGatewayFactory.getDefaultCardGateway(
+          devicePaymentProfile,
+          availableGatewayIds,
+        ),
+      ]);
       if (!cancelled) {
         setGateways(list);
         setActive(defaultGw);

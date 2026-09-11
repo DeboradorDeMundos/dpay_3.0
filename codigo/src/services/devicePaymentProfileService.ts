@@ -29,8 +29,8 @@ export async function detectDevicePaymentProfile(): Promise<DeviceProfileDetecti
   if (profile === 'TUU_KOZEN' && tuuAppInstalled) {
     availableGatewayIds = ['tuu'];
   } else if (profile === 'GENERIC_MOBILE') {
-    // COD-03: mock en dev desbloquea tarjeta sin Transbank; COD-04 webpay cuando backend esté listo
-    availableGatewayIds = __DEV__ ? ['mock', 'webpay'] : ['webpay'];
+    // COD-03: mock desbloquea QA en dev. Webpay se agregará cuando el backend esté operativo.
+    availableGatewayIds = __DEV__ ? ['mock'] : [];
   }
 
   const result: DeviceProfileDetectionResult = {
