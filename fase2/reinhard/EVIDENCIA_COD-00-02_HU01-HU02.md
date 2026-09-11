@@ -2,7 +2,8 @@
 
 **Responsable:** Reinhartd Munzenmayer  
 **Fecha:** 2026-09-09  
-**Rama de trabajo:** `main` (cambios locales sin push — crear `feature/COD-00-02-payment-gateway`)  
+**Rama de trabajo:** `feature/COD-00-02-payment-gateway` · commit `d29fd3e`  
+**PR:** pendiente — https://github.com/DeboradorDeMundos/dpay_3.0/compare/main...feature/COD-00-02-payment-gateway  
 **Build:** D-PAY v2.7.0 · `APP_UPDATE_CHECK_ENABLED = false`
 
 ---
