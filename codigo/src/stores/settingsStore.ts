@@ -3,8 +3,15 @@ import { MMKV } from 'react-native-mmkv';
 import { Settings, PrinterConfig, DocumentType } from '../types';
 import { withRequiredComprobante, COMPROBANTE_PAGO_DOC } from '../utils/documentTypeDefaults';
 import type { DpayComisiones } from '../services/api';
+import type {
+  DevicePaymentProfile,
+  DeviceProfileDetectionResult,
+  GatewayProviderId,
+} from '../types/paymentGateway';
+import { detectDevicePaymentProfile } from '../services/devicePaymentProfileService';
 
 const storage = new MMKV({ id: 'settings-storage' });
+const DEVICE_PROFILE_KEY = 'devicePaymentProfile';
 
 interface SettingsState {
   // Estado (de Settings)
@@ -44,7 +51,14 @@ interface SettingsState {
   paymentMethodsByDocType: Record<number, string[]>; // Deprecated - mantener por compatibilidad
   globalPaymentMethods: string[]; // Métodos de pago globales: ["Efectivo", "Tarjeta de crédito", "Tarjeta de débito"]
   dpayComisiones: DpayComisiones | null; // Comisiones DPay de la empresa
-  
+  /** HU-01: perfil de hardware para routing de pasarelas */
+  devicePaymentProfile: DevicePaymentProfile | null;
+  availableGatewayIds: GatewayProviderId[];
+  deviceProfileMeta: Pick<
+    DeviceProfileDetectionResult,
+    'brand' | 'model' | 'hardwareSerial' | 'tuuAppInstalled' | 'detectedAt'
+  > | null;
+
   // Acciones
   updateSettings: (newSettings: Partial<Settings>) => void;
   setPrinter: (printer: PrinterConfig | null | undefined) => void;
@@ -68,6 +82,7 @@ interface SettingsState {
   setPaymentMethodsForDocType: (docTypeId: number, methods: string[]) => void; // Deprecated
   getPaymentMethodsForDocType: (docTypeId: number) => string[]; // Ahora retorna métodos globales
   setDpayComisiones: (comisiones: DpayComisiones | null) => void;
+  refreshDevicePaymentProfile: () => Promise<DeviceProfileDetectionResult>;
   loadFromStorage: () => void;
   clear: () => void;
 }
@@ -139,11 +154,17 @@ export const useSettingsStore = create<SettingsState>((set, get) => {
     ? JSON.parse(loadedGlobalPaymentMethods)
     : defaultGlobalPaymentMethods;
 
+  const loadedDeviceProfile = storage.getString(DEVICE_PROFILE_KEY);
+  const parsedDeviceProfile = loadedDeviceProfile ? JSON.parse(loadedDeviceProfile) : null;
+
   return {
     ...initialSettings,
     paymentMethodsByDocType: initialPaymentMethods,
     dpayComisiones: null, // Se cargará cuando el usuario acceda a configuraciones
     globalPaymentMethods: initialGlobalPaymentMethods,
+    devicePaymentProfile: parsedDeviceProfile?.profile ?? null,
+    availableGatewayIds: parsedDeviceProfile?.availableGatewayIds ?? [],
+    deviceProfileMeta: parsedDeviceProfile?.meta ?? null,
   
     updateSettings: (newSettings) => {
       const current = get();
@@ -287,6 +308,40 @@ export const useSettingsStore = create<SettingsState>((set, get) => {
     setDpayComisiones: (comisiones: DpayComisiones | null) => {
       set({ dpayComisiones: comisiones });
     },
+
+    refreshDevicePaymentProfile: async () => {
+      const detection = await detectDevicePaymentProfile();
+      const payload = {
+        profile: detection.profile,
+        availableGatewayIds: detection.availableGatewayIds,
+        meta: {
+          brand: detection.brand,
+          model: detection.model,
+          hardwareSerial: detection.hardwareSerial,
+          tuuAppInstalled: detection.tuuAppInstalled,
+          detectedAt: detection.detectedAt,
+        },
+      };
+      storage.set(DEVICE_PROFILE_KEY, JSON.stringify(payload));
+      set({
+        devicePaymentProfile: detection.profile,
+        availableGatewayIds: detection.availableGatewayIds,
+        deviceProfileMeta: payload.meta,
+      });
+
+      // Restaurar tarjetas en Kozen si quedaron solo efectivo por detección antigua (biometría)
+      if (detection.profile === 'TUU_KOZEN') {
+        const methods = get().globalPaymentMethods;
+        const hasCard = methods.some(
+          m => m === 'Tarjeta de crédito' || m === 'Tarjeta de débito',
+        );
+        if (methods.length === 0 || !hasCard) {
+          get().setGlobalPaymentMethods(DPAY_DEFAULT_PAYMENT_METHODS);
+        }
+      }
+
+      return detection;
+    },
   
     loadFromStorage: () => {
       try {
@@ -310,6 +365,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => {
           const globalPaymentMethods = JSON.parse(globalPaymentMethodsStr);
           set({ globalPaymentMethods });
         }
+
+        const deviceProfileStr = storage.getString(DEVICE_PROFILE_KEY);
+        if (deviceProfileStr) {
+          const deviceProfile = JSON.parse(deviceProfileStr);
+          set({
+            devicePaymentProfile: deviceProfile.profile ?? null,
+            availableGatewayIds: deviceProfile.availableGatewayIds ?? [],
+            deviceProfileMeta: deviceProfile.meta ?? null,
+          });
+        }
       } catch (error) {
         console.error('Error loading settings:', error);
       }
@@ -319,7 +384,15 @@ export const useSettingsStore = create<SettingsState>((set, get) => {
       storage.delete('settings');
       storage.delete('globalPaymentMethods');
       storage.delete('paymentMethodsByDocType');
-      set({ ...defaultSettings, paymentMethodsByDocType: defaultPaymentMethods, globalPaymentMethods: defaultGlobalPaymentMethods });
+      storage.delete(DEVICE_PROFILE_KEY);
+      set({
+        ...defaultSettings,
+        paymentMethodsByDocType: defaultPaymentMethods,
+        globalPaymentMethods: defaultGlobalPaymentMethods,
+        devicePaymentProfile: null,
+        availableGatewayIds: [],
+        deviceProfileMeta: null,
+      });
     },
   };
 });

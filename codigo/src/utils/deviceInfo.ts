@@ -107,6 +107,8 @@ export const isPOSDevice = async (): Promise<boolean> => {
       'chainway',
       'zebra',
       'honeywell',
+      'kozen',
+      'xcheng',
     ];
 
     // Lista de modelos conocidos de dispositivos POS
@@ -117,6 +119,8 @@ export const isPOSDevice = async (): Promise<boolean> => {
       'v2',   // Sunmi V2
       'a920', // PAX A920
       's900', // PAX S900
+      'nla',  // Kozen P8 Neo (Huawei NLA-LX3)
+      'p8',   // Kozen P8
     ];
 
     const isPOSManufacturer = posManufacturers.some(
@@ -139,6 +143,31 @@ export const isPOSDevice = async (): Promise<boolean> => {
     return isPOS;
   } catch (error) {
     console.error('[DeviceInfo] Error detectando tipo de dispositivo:', error);
+    return false;
+  }
+};
+
+/** Kozen P8 Neo / terminales TUU con SDK PosDeviceInfo. */
+export const isKozenPosDevice = async (): Promise<boolean> => {
+  if (Platform.OS !== 'android') {
+    return false;
+  }
+  try {
+    const brand = (await DeviceInfo.getBrand()).toLowerCase();
+    const model = (await DeviceInfo.getModel()).toLowerCase();
+    const manufacturer = (await DeviceInfo.getManufacturer()).toLowerCase();
+    const kozenMatch = ['kozen', 'xcheng', 'nla', 'p8', 'hnnla'].some(
+      token =>
+        brand.includes(token) ||
+        model.includes(token) ||
+        manufacturer.includes(token),
+    );
+    if (kozenMatch) {
+      return true;
+    }
+    const serial = await getDetectedTerminalSerial();
+    return serial.length > 0 && (await isPOSDevice());
+  } catch {
     return false;
   }
 };
