@@ -5,6 +5,15 @@ Thumbs.db
 
 # Templates GitHub Copilot / java-upgrade (no aplica a RN)
 /.github/
+!/.github/workflows/
+!/.github/workflows/**
+!/.github/scripts/
+!/.github/scripts/**
+!/.github/TRELLO.md
+
+# Credenciales locales Trello (cada colaborador usa las suyas)
+.env.trello
+.env.trello.local
 
 # Carpeta android/ en raíz = artefactos viejos (app real está en codigo/android/)
 /android/

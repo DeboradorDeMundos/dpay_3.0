@@ -1,0 +1,63 @@
+name: Trello sync
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, converted_to_draft, closed]
+  issues:
+    types: [opened, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  trello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar secrets de Trello
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+        run: |
+          if [ -z "$TRELLO_API_KEY" ] || [ -z "$TRELLO_API_TOKEN" ]; then
+            echo "Faltan secrets TRELLO_API_KEY y/o TRELLO_API_TOKEN."
+            echo "Siga el paso a paso en .github/TRELLO.md"
+            exit 1
+          fi
+
+      - name: Probar conexión (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+          TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
+        run: python .github/scripts/trello_sync.py lists
+
+      - name: Sincronizar PR / issue
+        if: github.event_name != 'workflow_dispatch'
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+          TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
+          TRELLO_LIST_BACKLOG: ${{ secrets.TRELLO_LIST_BACKLOG }}
+          TRELLO_LIST_IN_PROGRESS: ${{ secrets.TRELLO_LIST_IN_PROGRESS }}
+          TRELLO_LIST_REVIEW: ${{ secrets.TRELLO_LIST_REVIEW }}
+          TRELLO_LIST_DONE: ${{ secrets.TRELLO_LIST_DONE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: python .github/scripts/trello_sync.py sync
