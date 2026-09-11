@@ -54,7 +54,7 @@ describe('detectDevicePaymentProfile', () => {
     const result = await detectDevicePaymentProfile();
 
     expect(result.profile).toBe('GENERIC_MOBILE');
-    expect(result.availableGatewayIds).toEqual([]);
+    expect(result.availableGatewayIds).toEqual(['mock', 'webpay']);
     expect(result.tuuAppInstalled).toBe(false);
     expect(result.hardwareSerial).toBe('');
   });

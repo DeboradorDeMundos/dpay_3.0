@@ -40,6 +40,8 @@ export interface IPaymentGateway {
   readonly displayName: string;
   isAvailable(): Promise<boolean>;
   startCardPayment(request: PaymentCardRequest): Promise<PaymentCardResult>;
+  /** Opcional — TUU/Webpay pueden implementar cancelación externa. */
+  cancelCardPayment?(): Promise<void>;
 }
 
 export interface DeviceProfileDetectionResult {
