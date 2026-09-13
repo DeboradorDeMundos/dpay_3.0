@@ -232,7 +232,7 @@ El ERP ya factura. El problema es **dónde** ocurre la venta. Un POS móvil es u
 - Ecosistema: [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md)
 - App Capstone: `dpay_3.0/codigo/`
 - Plataforma empresa: `nuevodtemite/`
-- Fase 1: `fase1/grupales/Product_Vision_DPAYv3.0.docx`
+- Fase 1: `fase1/grupales/Product_Vision_DPAY3.0.docx`
 - Análisis: `codigo/ANALISIS_DPAY.md`
 - Endpoints: `codigo/ENDPOINTS_DTEMITE.md`
 

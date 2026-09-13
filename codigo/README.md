@@ -10,7 +10,7 @@ Duoc UC, Sede San Bernardo · 2026
 
 **D-PAY** es el punto de venta móvil de DTemite: vender, cobrar y emitir **DTE** al SII desde un Android (celular o terminal Kozen). Stack: **React Native + TypeScript**.
 
-La app se integra a la plataforma cloud de DTemite (API REST + Legacy PHP). Documentación del producto: [`../docs/00-ecosistema-dtemite.md`](../docs/00-ecosistema-dtemite.md).
+La app se integra a la plataforma cloud de DTemite (API REST + Legacy PHP). Documentación del producto: [`docs/00-ecosistema-dtemite.md`](docs/00-ecosistema-dtemite.md).
 
 ---
 

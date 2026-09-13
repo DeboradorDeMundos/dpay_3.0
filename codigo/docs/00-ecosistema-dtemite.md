@@ -154,7 +154,7 @@ Schema: `nuevodtemite/sql/estructura-dpay.txt`, `paymenthub.sql`, `Estructura_BD
 | Cliente HTTP | `codigo/src/services/apiClient.ts` |
 | Transacción POS | `nuevodtemite/controllers/pos.php` |
 | Modelo `tbl_dpay` | `nuevodtemite/sql/estructura-dpay.txt` + [06-base-datos.md](./06-base-datos.md) |
-| Documentación Scrum | `dpay_3.0/docs/` |
+| Documentación Scrum | `dpay_3.0/codigo/docs/` |
 | Entregables Word Fase 1 | `fase1/grupales/` |
 
 ---

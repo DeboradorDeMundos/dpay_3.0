@@ -181,4 +181,4 @@ Pantallas del producto (baseline a demostrar):
 
 ---
 
-**Documento vivo.** Origen: `fase1/grupales/Product_Backlog_DPAYv3.0.docx`
+**Documento vivo.** Origen: `fase1/grupales/Product_Backlog_DPAY3.0.docx`

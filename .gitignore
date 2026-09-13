@@ -1,6 +1,12 @@
 # Raíz dpay_3.0 — solo README, codigo/, fase1|2|3/ y .github/workflows/
 # Detalle de ignores de la app: codigo/.gitignore
 
+# --- Basura del sistema operativo (macOS / Windows) ---
+.DS_Store
+**/.DS_Store
+Thumbs.db
+desktop.ini
+
 # --- Herramientas IA / IDE (local) ---
 .agents/
 .cursor/

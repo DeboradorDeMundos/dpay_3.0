@@ -79,7 +79,7 @@ En el CLI se puede buscar por un trozo del nombre: `progreso`, `qa`, `produccion
 
 | Vía | Para qué | Quién lo dispara |
 |---|---|---|
-| **CLI** `scripts/trello.py` | Listar, mover, comentar desde el PC / Cursor | Usted o el agente |
+| **CLI** `codigo/scripts/trello.py` | Listar, mover, comentar desde el PC / Cursor | Usted o el agente |
 | **Agente de Cursor** | “Pasa HU-04 a QA” mientras se implementa | El agente corre el CLI |
 | **GitHub Actions** | Issue/PR crea o mueve cards solo | Push / PR / issue |
 
@@ -349,11 +349,11 @@ Borre cualquier `TRELLO_*` que haya creado en Variables: queda visible.
 
 Hace falta que existan en el remoto:
 
-- `.github/workflows/trello-sync.yml`
-- `.github/scripts/trello_sync.py`
-- `scripts/trello.py`, `scripts/trello.cmd`, `scripts/trello-setup.cmd`, `scripts/trello-setup.ps1`
-- `.github/TRELLO.md`
-- `.env.trello.example`
+- `.github/workflows/trello-sync.yml` (GitHub exige esta ruta en la raíz)
+- `codigo/scripts/trello_sync.py`
+- `codigo/scripts/trello.py`, `codigo/scripts/trello.cmd`, `codigo/scripts/trello-setup.cmd`
+- `codigo/docs/TRELLO.md`
+- `codigo/.env.trello.example` (si existe)
 
 Luego Actions → Trello sync → Run workflow.
 
@@ -363,14 +363,14 @@ Luego Actions → Trello sync → Run workflow.
 
 | Archivo | Rol |
 |---|---|
-| `.github/TRELLO.md` | Este manual |
-| `.github/workflows/trello-sync.yml` | Action |
-| `.github/scripts/trello_sync.py` | Sync issue/PR → Trello |
-| `scripts/trello.py` | CLI diario |
-| `scripts/trello.cmd` | Lanzador Windows del CLI |
-| `scripts/trello-setup.ps1` / `.cmd` | Prueba key/token y muestra ids |
-| `.env.trello.example` | Plantilla |
-| `.env.trello` | Credenciales locales (**no se commitea**) |
+| `codigo/docs/TRELLO.md` | Este manual |
+| `.github/workflows/trello-sync.yml` | Action (solo en raíz por GitHub) |
+| `codigo/scripts/trello_sync.py` | Sync issue/PR → Trello |
+| `codigo/scripts/trello.py` | CLI diario |
+| `codigo/scripts/trello.cmd` | Lanzador Windows del CLI |
+| `codigo/scripts/trello-setup.cmd` | Prueba key/token y muestra ids |
+| `codigo/.env.trello.example` | Plantilla |
+| `codigo/.env.trello` | Credenciales locales (**no se commitea**) |
 
 ---
 

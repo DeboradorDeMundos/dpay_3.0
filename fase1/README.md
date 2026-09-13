@@ -17,10 +17,11 @@ El Capstone **crea y documenta D-PAY completo**, no un módulo de pasarelas.
 
 | Archivo | Qué es |
 |---|---|
-| `grupales/Product_Vision_DPAYv3.0.docx` | Vision del POS |
-| `grupales/Product_Backlog_DPAYv3.0.docx` | HU-01 a HU-14 |
-| `docs/00-ecosistema-dtemite.md` | ERP vs D-PAY |
-| `docs/01` … `docs/15` | Diseño y Scrum |
+| `grupales/Product_Vision_DPAY3.0.docx` | Visión del POS (oficial Fase 1) |
+| `grupales/Product_Backlog_DPAY3.0.docx` | HU-01 a HU-14 |
+| `grupales/presentacion_dpay (1).html` | Exposición grupal alineada |
+| `codigo/docs/00-ecosistema-dtemite.md` | ERP vs D-PAY |
+| `codigo/docs/01` … `codigo/docs/15` | Diseño y Scrum |
 
 ```powershell
 cd fase1/grupales/_gen
@@ -41,4 +42,4 @@ node generate-docx.js
 - [ ] Vision y Backlog hablan del POS completo
 - [ ] Arquitectura y BD documentadas
 - [ ] Exposición hecha
-- [ ] README + `docs/` en GitHub público
+- [ ] README + `codigo/docs/` en GitHub público

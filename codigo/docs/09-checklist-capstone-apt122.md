@@ -70,7 +70,7 @@
 | Modelo de datos | `docs/06` | `tbl_dpay` + tenant |
 | UML CU / secuencia / componentes / clases | `docs/15` | Flujo venta + DTE |
 | RNF | `docs/04` | 9 categorías |
-| Docker | `docker-compose.yml` | Entorno dev Node; deploy = APK |
+| Docker | `codigo/docker-compose.yml` | Entorno dev Node; deploy = APK |
 | Pruebas | `docs/11` | Matriz del POS |
 | Innovación (3 preguntas) | `docs/14` | Rubro nuevo, no pasarela |
 | README 7 puntos | `README.md` | Sí |

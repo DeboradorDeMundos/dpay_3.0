@@ -29,6 +29,6 @@
 ## Checklist
 
 - [ ] HU-01 a HU-14 con evidencia (TUU solo si hay hardware)
-- [ ] `docs/` y README coherentes con el producto completo
+- [ ] `codigo/docs/` y README coherentes con el producto completo
 - [ ] Repo sin secretos
 - [ ] 0 críticos en venta → cobro → DTE

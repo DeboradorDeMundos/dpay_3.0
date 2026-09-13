@@ -164,16 +164,16 @@ def cmd_create(list_query: str, name: str, desc: str = "") -> None:
 
 def usage() -> str:
     return """Uso:
-  python scripts/trello.py lists
-  python scripts/trello.py cards [lista]
-  python scripts/trello.py create <lista> <nombre> [descripcion]
-  python scripts/trello.py move <texto-card> <lista>
-  python scripts/trello.py comment <texto-card> <mensaje>
+  python codigo/scripts/trello.py lists
+  python codigo/scripts/trello.py cards [lista]
+  python codigo/scripts/trello.py create <lista> <nombre> [descripcion]
+  python codigo/scripts/trello.py move <texto-card> <lista>
+  python codigo/scripts/trello.py comment <texto-card> <mensaje>
 
 Ejemplos:
-  python scripts/trello.py move HU-01 progreso
-  python scripts/trello.py move HU-01 qa
-  python scripts/trello.py comment HU-01 "Pruebas OK en POS"
+  python codigo/scripts/trello.py move HU-01 progreso
+  python codigo/scripts/trello.py move HU-01 qa
+  python codigo/scripts/trello.py comment HU-01 "Pruebas OK en POS"
 """
 
 

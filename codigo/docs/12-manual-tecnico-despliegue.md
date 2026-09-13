@@ -107,10 +107,10 @@ Release usa API **producción**: `https://pro.dtemite.cl/api`
 
 ### 4.1 Levantar contenedor dev
 
-Desde la raíz del repo:
+Desde la carpeta de la app:
 
 ```powershell
-cd dpay_3.0
+cd codigo
 docker compose run --rm dev-tools
 ```
 
@@ -120,8 +120,8 @@ Ejecuta: `npm ci` + `npm run lint` en entorno Node 20 aislado.
 
 | Archivo | Propósito |
 |---|---|
-| `docker-compose.yml` | Servicio `dev-tools` |
-| `docker/Dockerfile.dev` | Imagen Node 20 slim |
+| `codigo/docker-compose.yml` | Servicio `dev-tools` |
+| `codigo/docker/Dockerfile.dev` | Imagen Node 20 slim |
 | `codigo/.env.example` | Plantilla variables (montada como referencia) |
 
 ### 4.3 Variables de entorno (`.env`)
