@@ -307,8 +307,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         montoNeto: neto,
         montoExento: exento,
         ...comisionData, // Incluye tipo_comision, comision_porcentaje, comision_monto_fijo, comision_monto
-        // El mock es evidencia local de QA y nunca debe contaminar tbl_dpay.
-        syncedToBackend: gateway.id === 'mock',
+        // Mock y Webpay Capstone: evidencia en proxy/local; no contaminar tbl_dpay TUU hasta medio_pago oficial.
+        syncedToBackend: gateway.id === 'mock' || gateway.id === 'webpay',
       };
 
       console.log('[Tuu] Datos de pago preparados para guardar localmente:', tuuPaymentData);

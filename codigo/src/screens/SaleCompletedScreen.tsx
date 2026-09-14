@@ -198,6 +198,7 @@ export const SaleCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
             if (
               tuuPaymentData &&
               tuuPaymentData.paymentProvider !== 'mock' &&
+              tuuPaymentData.paymentProvider !== 'webpay' &&
               documentType
             ) {
               console.log('[SaleCompleted] Registrando transacción TUU en backend con folio...', {
