@@ -344,8 +344,8 @@
   <section class="slide active cover">
     <div class="super">Duoc UC · PTY4614 Capstone · Sección 001 · Fase 1</div>
     <h1>D-PAY 3.0</h1>
-    <p class="tagline">Una nueva forma de pagar</p>
-    <p class="lede">Evolución de la arquitectura de pagos hacia un modelo multi-pasarela, desacoplado del hardware Kozen/TUU, en conjunto con Dtemite.</p>
+    <p class="tagline">POS móvil de DTemite</p>
+    <p class="lede">Un DTemite compacto para celular: vender, cobrar y emitir DTE desde el mostrador. El Capstone crea y documenta D-PAY completo, integrado a la plataforma cloud de la empresa.</p>
     <div class="meta">
       <div><b>Diego Madrid</b>Arquitectura y desarrollo</div>
       <div><b>Pablo Gutiérrez</b>Scrum Master</div>
@@ -388,23 +388,23 @@
     </div>
     <div class="body">
       <h2 class="eyebrow-num">01 — El problema</h2>
-      <h1>Hoy D-PAY solo cobra con un terminal Kozen</h1>
-      <p class="lede">El POS móvil ya está en producción y emite DTE. El cobro con tarjeta, en cambio, depende de un Intent nativo de TUU Negocio en el Kozen P8 Neo. Sin ese hardware, no hay pago con tarjeta.</p>
+      <h1>DTemite factura en oficina; falta el POS en el bolsillo</h1>
+      <p class="lede">El ERP web cubre la oficina. En el mostrador, feria o delivery el comercio necesita vender, cobrar y emitir DTE en un solo flujo — sin llevar un PC.</p>
       <div class="grid cols-3">
         <div class="card">
-          <span class="tag">DEPENDENCIA</span>
-          <h3>Un solo canal de cobro</h3>
-          <p>Sin terminal TUU/Kozen, D-PAY no procesa crédito ni débito. El comercio queda limitado a efectivo u otro medio fuera de la app.</p>
+          <span class="tag">PROBLEMA</span>
+          <h3>Dos herramientas desconectadas</h3>
+          <p>Sin POS móvil alineado al ERP, el cliente usa caja + facturador por separado. DTemite queda fuera del rubro POS.</p>
         </div>
         <div class="card">
           <span class="tag">CAMPO LABORAL</span>
-          <h3>Relevante para Informática</h3>
-          <p>Es un problema real de arquitectura, integración con un PSP y modelado de transacciones: el tipo de trabajo de un ingeniero informático en fintech o retail.</p>
+          <h3>Producto real de ingeniería</h3>
+          <p>App nativa, multi-tenant, API REST + legacy, pagos TUU, normativa SII y pruebas en Android: trabajo de fintech/retail.</p>
         </div>
         <div class="card">
-          <span class="tag">RESTRICCIÓN</span>
-          <h3>Sistema en producción</h3>
-          <p>No se reescribe D-PAY. El cambio debe ser incremental: una capa nueva, sin tocar DTE ni el flujo de venta más de lo necesario.</p>
+          <span class="tag">BASE EXISTENTE</span>
+          <h3>D-PAY ya en producción</h3>
+          <p>No partimos de cero: completamos y documentamos el POS sobre React Native, API DTemite y tbl_dpay.</p>
         </div>
       </div>
     </div>
@@ -418,21 +418,20 @@
     </div>
     <div class="body">
       <h2 class="eyebrow-num">02 — La propuesta</h2>
-      <h1>Una capa de pagos desacoplada del hardware</h1>
-      <p class="lede">Detectamos el dispositivo, elegimos el proveedor y cobramos a través de un contrato común. Sumar una pasarela no debe reescribir SalePaymentScreen.</p>
+      <h1>D-PAY: DTemite compacto para celular</h1>
+      <p class="lede">Login → venta → cobro (efectivo / TUU) → DTE → historial → impresión. Misma base de datos del ERP; UX táctil para el cajero.</p>
       <div class="arch">
-        <div class="arch-layer"><span class="lbl">App D-PAY · React Native</span><span class="detail">Flujo de venta e interfaz de cobro</span></div>
-        <div class="arch-arrow">↓</div>
-        <div class="arch-layer highlight"><span class="lbl">PaymentGateway · contrato común</span><span class="detail">Nuevo — patrón adaptador / strategy</span></div>
+        <div class="arch-layer"><span class="lbl">D-PAY · React Native</span><span class="detail">Venta, cobro, DTE, historial, Bluetooth</span></div>
+        <div class="arch-arrow">↓ HTTPS</div>
+        <div class="arch-layer highlight"><span class="lbl">API DTemite · multi-tenant</span><span class="detail">Login, catálogo, tbl_dpay, emisión SII</span></div>
         <div class="arch-arrow">↓</div>
         <div class="arch-layer">
-          <span class="lbl">Pasarelas</span>
+          <span class="lbl">Plataforma DTemite</span>
           <div class="gateways">
-            <span class="gw legacy">TUU · Kozen (heredado)</span>
-            <span class="gw active">Webpay · MVP sandbox</span>
-            <span class="gw">Flow · backlog</span>
-            <span class="gw">Mercado Pago · backlog</span>
-            <span class="gw">PayPal · backlog</span>
+            <span class="gw active">Efectivo + TUU (Kozen)</span>
+            <span class="gw legacy">ERP web · oficina</span>
+            <span class="gw">Payment Hub · cobros remotos</span>
+            <span class="gw">Webpay / Flow · backlog futuro</span>
           </div>
         </div>
       </div>
@@ -451,13 +450,13 @@
       <div class="grid cols-2">
         <div class="card">
           <span class="tag">OBJETIVO GENERAL</span>
-          <p style="color:var(--text); font-size:clamp(15px,1.25vw,18px); line-height:1.5;">Convertir D-PAY en un sistema de cobro multi-pasarela, usando Webpay sandbox como MVP y dejando el contrato listo para nuevas pasarelas.</p>
+          <p style="color:var(--text); font-size:clamp(15px,1.25vw,18px); line-height:1.5;">Diseñar y desarrollar D-PAY, el POS móvil de DTemite, para que un comercio autenticado venda, cobre y emita DTE desde Android, integrado a la plataforma cloud.</p>
         </div>
         <ul class="plain">
-          <li><span class="n">01</span>Detectar Kozen vs. smartphone genérico.</li>
-          <li><span class="n">02</span>Diseñar el contrato PaymentGateway.</li>
-          <li><span class="n">03</span>Integrar Webpay en ambiente de pruebas.</li>
-          <li><span class="n">04</span>Documentar Flow, Mercado Pago y PayPal en el backlog.</li>
+          <li><span class="n">01</span>Identidad y sesión (login, PIN, contrato dpay_pos).</li>
+          <li><span class="n">02</span>Venta y cobro (calculadora, catálogo, efectivo, TUU).</li>
+          <li><span class="n">03</span>Emisión DTE al SII (TED, PDF, tbl_dpay).</li>
+          <li><span class="n">04</span>Post-venta, Hub, documentación y pruebas Capstone.</li>
         </ul>
       </div>
     </div>
@@ -500,9 +499,9 @@
         <thead><tr><th>Actividad</th><th>Recursos</th><th>Duración</th><th>Resp.</th><th>Facilita / obstaculiza</th></tr></thead>
         <tbody>
           <tr><td>Vision y backlog</td><td class="muted">Repo, Dtemite, docente</td><td class="muted">S1–S4</td><td class="muted">Equipo</td><td class="muted">Fac.: POS real · PO José Robles</td></tr>
-          <tr><td>PaymentGateway + detección</td><td class="muted">Código D-PAY, Android</td><td class="muted">S5–S6</td><td class="muted">Diego / Pablo</td><td class="muted">Fac.: TUU conocido · Obst.: nativo Android</td></tr>
-          <tr><td>Webpay E2E + UI</td><td class="muted">Sandbox Transbank</td><td class="muted">S7–S8</td><td class="muted">Diego</td><td class="muted">Obst.: credenciales · Mitiga: mock</td></tr>
-          <tr><td>Pruebas HU-06 + regresión</td><td class="muted">Kozen, tarjetas test</td><td class="muted">S9–S10</td><td class="muted">Reinhard</td><td class="muted">Obst.: disponibilidad del hardware</td></tr>
+          <tr><td>Login + venta (HU-01–03)</td><td class="muted">API DTemite, Android</td><td class="muted">S5–S6</td><td class="muted">Diego / Pablo</td><td class="muted">Fac.: app base · Obst.: QA API</td></tr>
+          <tr><td>Cobro + DTE (HU-05–07)</td><td class="muted">TUU/Kozen, SII</td><td class="muted">S7–S8</td><td class="muted">Diego</td><td class="muted">Obst.: hardware · Mitiga: efectivo+DTE</td></tr>
+          <tr><td>Pruebas HU-14 + post-venta</td><td class="muted">Dispositivo, evidencias</td><td class="muted">S9–S10</td><td class="muted">Reinhard</td><td class="muted">Matriz TC + video demo</td></tr>
           <tr><td>Buffer, freeze, defensa</td><td class="muted">GitHub, APK, docs</td><td class="muted">S11–S18</td><td class="muted">Equipo</td><td class="muted">Fac.: buffer · Obst.: feriados</td></tr>
         </tbody>
       </table>
@@ -539,7 +538,7 @@
             <td colspan="12"></td>
           </tr>
           <tr>
-            <td class="act">Webpay + UI</td>
+            <td class="act">Cobro + DTE</td>
             <td colspan="6"></td>
             <td colspan="2"><span class="bar c"></span></td>
             <td colspan="10"></td>
@@ -563,7 +562,7 @@
           </tr>
         </tbody>
       </table>
-      <p class="note">M1 19-sep · Webpay 17-oct · MVP 28-nov · defensa 18-dic. Crítico: sandbox en S5. Si se atrasa, el mock sostiene HU-01 y HU-02.</p>
+      <p class="note">M1 19-sep · flujo venta→DTE 17-oct · MVP POS 28-nov · defensa 18-dic. Crítico: demo efectivo+DTE en S5. Sin Kozen: TUU se evidencia aparte.</p>
     </div>
   </section>
 
@@ -575,16 +574,16 @@
     </div>
     <div class="body">
       <h2 class="eyebrow-num">06 — Product Backlog</h2>
-      <h1>Primero el contrato, después Webpay</h1>
+      <h1>Backlog del producto POS (HU-01 a HU-14)</h1>
       <div class="grid cols-2">
-        <div class="hu"><span class="id">HU-01</span><p><b>Detección de dispositivo.</b> Kozen/TUU vs. celular genérico.</p></div>
-        <div class="hu"><span class="id">HU-02</span><p><b>Módulo PaymentGateway.</b> Contrato común, sin tocar la venta.</p></div>
-        <div class="hu"><span class="id">HU-03</span><p><b>Webpay sandbox.</b> Inicio, confirmación y retorno a la venta.</p></div>
-        <div class="hu"><span class="id">HU-04</span><p><b>UI de pasarela.</b> El comercio ve qué medio se está usando.</p></div>
-        <div class="hu"><span class="id">HU-05</span><p><b>Diseño técnico.</b> Arquitectura, UML y no funcionales.</p></div>
-        <div class="hu"><span class="id">HU-06</span><p><b>Pruebas.</b> Aprobado, rechazado y error de conexión.</p></div>
+        <div class="hu"><span class="id">HU-01</span><p><b>Login multi-tenant.</b> RUT, usuario, clave, token MMKV.</p></div>
+        <div class="hu"><span class="id">HU-03</span><p><b>Venta.</b> Calculadora, catálogo, scanner, offline.</p></div>
+        <div class="hu"><span class="id">HU-05</span><p><b>Cobro efectivo.</b> Registro en tbl_dpay.</p></div>
+        <div class="hu"><span class="id">HU-06</span><p><b>Cobro TUU.</b> Crédito/débito en Kozen.</p></div>
+        <div class="hu"><span class="id">HU-07</span><p><b>Emisión DTE.</b> SII, TED, PDF, vínculo transacción.</p></div>
+        <div class="hu"><span class="id">HU-14</span><p><b>Pruebas Capstone.</b> Flujo venta → cobro → DTE.</p></div>
       </div>
-      <p class="note">Los RF del Capstone son las HU. Fuera del MVP: HU-07 Mercado Pago y HU-08 PayPal, documentadas para no inflar el semestre.</p>
+      <p class="note">MVP = producto POS completo priorizado. Fuera del semestre: Webpay en celular, Flow, iOS (HU-15+).</p>
     </div>
   </section>
   <section class="slide">
@@ -597,8 +596,8 @@
       <h1>Construimos sobre lo que ya existe</h1>
       <div class="grid cols-3">
         <div class="card"><span class="tag">APP MÓVIL</span><h3>React Native 0.75 + TypeScript</h3><p>Zustand y MMKV para estado y persistencia. React Navigation en el flujo de venta.</p></div>
-        <div class="card"><span class="tag">NUEVO MÓDULO</span><h3>PaymentGateway</h3><p>Decide TUU o Webpay según el dispositivo. Un proveedor nuevo implementa el mismo contrato.</p></div>
-        <div class="card"><span class="tag">BACKEND</span><h3>API Dtemite + DTE</h3><p>Sin rediseñar emisión tributaria. Solo los ajustes estrictos que el nuevo medio de pago exija.</p></div>
+        <div class="card"><span class="tag">FLUJOS POS</span><h3>Venta → cobro → DTE</h3><p>Calculadora, catálogo, efectivo, TUU, emisión SII, historial e impresión Bluetooth.</p></div>
+        <div class="card"><span class="tag">BACKEND</span><h3>API DTemite + PostgreSQL</h3><p>Multi-tenant: login, catálogo, tbl_dpay, legacy DTE. No reescribimos el ERP web.</p></div>
       </div>
       <p class="note">Sin Docker. El Capstone se construye sobre el POS React Native existente. TUU en Kozen es legado: no se reimplementa.</p>
     </div>
@@ -617,7 +616,7 @@
         <thead><tr><th>ID</th><th>Requerimiento no funcional</th><th>Prioridad</th></tr></thead>
         <tbody>
           <tr><td>RNF-01.1</td><td class="muted">Login &lt; 3 s en red 4G</td><td>MUST · Rendimiento</td></tr>
-          <tr><td>RNF-02.1 / 02.4</td><td class="muted">JWT en MMKV · sin PAN/CVV en el dispositivo (PCI-DSS)</td><td>MUST · Seguridad</td></tr>
+          <tr><td>RNF-02.1 / 02.4</td><td class="muted">Token bearer en MMKV · sin PAN/CVV en el dispositivo (PCI-DSS)</td><td>MUST · Seguridad</td></tr>
           <tr><td>RNF-03.1</td><td class="muted">Modo offline para ventas en efectivo</td><td>SHOULD · Disponibilidad</td></tr>
           <tr><td>RNF-05.1 / 05.2</td><td class="muted">Android 7.0+ · Kozen P8 Neo (armeabi-v7a)</td><td>MUST · Compatibilidad</td></tr>
           <tr><td>RNF-08.1</td><td class="muted">Emisión DTE conforme a normativa SII</td><td>MUST · Normativa</td></tr>
@@ -638,16 +637,16 @@
       <div class="grid cols-2">
         <ul class="plain">
           <li><span class="n">→</span>Es evolución de un POS real, no un desarrollo desde cero.</li>
-          <li><span class="n">→</span>El MVP es una sola pasarela web: Webpay sandbox.</li>
+          <li><span class="n">→</span>El MVP es el flujo venta → cobro → DTE → historial.</li>
           <li><span class="n">→</span>Flujo Git con ramas y PR ya acordado por el equipo.</li>
         </ul>
         <ul class="plain">
           <li><span class="n">→</span>Empresa mandante activa, con contacto directo.</li>
-          <li><span class="n">→</span>Riesgo sandbox → mock gateway en sprints 1 y 2.</li>
-          <li><span class="n">→</span>Fuera de alcance: puesta en producción real y pasarelas extra.</li>
+          <li><span class="n">→</span>Sin Kozen → demo con efectivo + DTE siempre disponible.</li>
+          <li><span class="n">→</span>Fuera de alcance: reescribir ERP, Webpay en celular, iOS.</li>
         </ul>
       </div>
-      <p class="note">Materiales del semestre: repositorio, sandbox Transbank (en trámite), terminal Kozen vía Dtemite y horas de la asignatura en sprints de 2 semanas.</p>
+      <p class="note">Materiales: repositorio dpay_3.0, credenciales QA DTemite, terminal Kozen vía mandante, docs/ y sprints de 2 semanas.</p>
     </div>
   </section>
   <section class="slide">
@@ -659,9 +658,9 @@
       <h2 class="eyebrow-num">09 — Competencias</h2>
       <h1>Cómo las usamos, no solo cuáles son</h1>
       <div class="grid cols-3">
-        <div class="card"><span class="tag">2.1 / 2.2 GESTIÓN</span><h3>Planificar y controlar</h3><p>Vision, backlog, sprints y Gantt. A Dtemite le mostramos tres caminos: TUU en Kozen, Webpay en celular o pasarelas después del MVP.</p></div>
-        <div class="card"><span class="tag">4.1 / 4.2 SOFTWARE</span><h3>Construir e integrar</h3><p>Implementamos el contrato y Webpay sobre el POS existente. Git con feature/HU-XX y PR. No implantamos en producción.</p></div>
-        <div class="card"><span class="tag">3.1 · 1.1 DATOS Y QA</span><h3>Diseñar modelo y pruebas</h3><p>El pago web se persiste alineado a tbl_dpay. HU-06 diseña casos aprobado, rechazado, error y regresión TUU.</p></div>
+        <div class="card"><span class="tag">2.1 / 2.2 GESTIÓN</span><h3>Planificar y controlar</h3><p>Vision, backlog HU-01–14, sprints y Gantt. DTemite valida el producto POS completo, no un módulo de pasarelas.</p></div>
+        <div class="card"><span class="tag">4.1 / 4.2 SOFTWARE</span><h3>Construir e integrar</h3><p>Completamos flujos del POS sobre React Native + API DTemite. Git feature/HU-XX y PR. No reescribimos el ERP.</p></div>
+        <div class="card"><span class="tag">3.1 · 1.1 DATOS Y QA</span><h3>Diseñar modelo y pruebas</h3><p>tbl_dpay + MMKV. HU-14: matriz de pruebas del flujo venta → cobro → DTE con evidencias.</p></div>
       </div>
     </div>
   </section>
@@ -678,10 +677,10 @@
       <table class="plan">
         <thead><tr><th>Tipo</th><th>Evidencia</th><th>Qué justifica</th></tr></thead>
         <tbody>
-          <tr><td>Avance</td><td>Product Vision + Backlog HU-01…08</td><td class="muted">El problema está acotado y cabe en 18 semanas</td></tr>
+          <tr><td>Avance</td><td>Product Vision + Backlog HU-01…14</td><td class="muted">Producto POS completo acotado a 18 semanas</td></tr>
           <tr><td>Avance</td><td>RNF + informe 1.5 + Gantt</td><td class="muted">Plantilla, calidad y plan con riesgos</td></tr>
           <tr><td>Avance</td><td>GitHub: ramas y Pull Requests</td><td class="muted">Proceso de software sistematizado</td></tr>
-          <tr><td>Final</td><td>APK Webpay sandbox + pruebas HU-06</td><td class="muted">Objetivo general y competencia de QA</td></tr>
+          <tr><td>Final</td><td>APK D-PAY + pruebas HU-14 + video demo</td><td class="muted">Flujo venta → cobro → DTE demostrable</td></tr>
           <tr><td>Final</td><td>UML, informe final y video ≤ 10 min</td><td class="muted">Cierre Fase 3 y defensa oral</td></tr>
         </tbody>
       </table>
@@ -698,9 +697,9 @@
       <h2 class="eyebrow-num">10 — De aquí a la Fase 2</h2>
       <h1>Siguiente movimiento</h1>
       <ul class="plain" style="max-width:680px;">
-        <li><span class="n">01</span>Implementar detección de dispositivo y el contrato PaymentGateway.</li>
-        <li><span class="n">02</span>Integrar Webpay end-to-end en sandbox y validarlo en Review.</li>
-        <li><span class="n">03</span>Dejar Flow, Mercado Pago y PayPal documentados en el backlog, no improvisados.</li>
+        <li><span class="n">01</span>Estabilizar login, venta y cobro efectivo (Sprint 1–2).</li>
+        <li><span class="n">02</span>Cerrar DTE, historial e impresión con evidencias (Sprint 2–4).</li>
+        <li><span class="n">03</span>Payment Hub, pruebas HU-14 y documentación final para defensa.</li>
       </ul>
       <p class="lede" style="margin-top:28px;">Gracias. Preguntas — Diego Madrid, Pablo Gutiérrez y Reinhard Munzenmayer.</p>
     </div>

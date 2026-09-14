@@ -26,7 +26,7 @@ jobs:
         run: |
           if [ -z "$TRELLO_API_KEY" ] || [ -z "$TRELLO_API_TOKEN" ]; then
             echo "Faltan secrets TRELLO_API_KEY y/o TRELLO_API_TOKEN."
-            echo "Siga el paso a paso en .github/TRELLO.md"
+            echo "Siga el paso a paso en codigo/docs/TRELLO.md"
             exit 1
           fi
 
@@ -36,7 +36,7 @@ jobs:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
           TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
-        run: python .github/scripts/trello_sync.py lists
+        run: python codigo/scripts/trello_sync.py lists
 
       - name: Sincronizar PR / issue
         if: github.event_name != 'workflow_dispatch'
@@ -60,4 +60,4 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
-        run: python .github/scripts/trello_sync.py sync
+        run: python codigo/scripts/trello_sync.py sync

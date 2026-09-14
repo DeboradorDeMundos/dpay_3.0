@@ -16,13 +16,13 @@ Dejar **D-PAY defendible como POS**: login → venta → cobro → DTE → histo
 | Artefacto | Dónde |
 |---|---|
 | App | `codigo/` |
-| Sprint backlog | `docs/10-sprint-backlog.md` |
-| Pruebas | `docs/11-plan-pruebas-evidencias.md` |
+| Sprint backlog | `codigo/docs/10-sprint-backlog.md` |
+| Pruebas | `codigo/docs/11-plan-pruebas-evidencias.md` |
 | Evidencias | `fase2/evidencias/` |
 | Informe S10 | `fase2/informe-avance/` |
 | APK | `codigo/` (`npm run build:apk`) |
 
-Historias: HU-01 a HU-14 en [docs/02-backlog.md](../docs/02-backlog.md).
+Historias: HU-01 a HU-14 en [codigo/docs/02-backlog.md](../codigo/docs/02-backlog.md).
 
 ---
 
@@ -39,4 +39,4 @@ cd codigo
 npm run dev:mobile
 ```
 
-Manual: [docs/12-manual-tecnico-despliegue.md](../docs/12-manual-tecnico-despliegue.md)
+Manual: [codigo/docs/12-manual-tecnico-despliegue.md](../codigo/docs/12-manual-tecnico-despliegue.md)

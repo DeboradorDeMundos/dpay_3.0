@@ -14,7 +14,7 @@ Punto de venta para celular y terminal Android: vender, cobrar y emitir Document
 
 DTemite es un ERP web de facturación electrónica. D-PAY es su **nuevo rubro**: un DTemite compacto para el mostrador y la calle.
 
-Contexto: [`docs/00-ecosistema-dtemite.md`](docs/00-ecosistema-dtemite.md)
+Contexto: [`codigo/docs/00-ecosistema-dtemite.md`](codigo/docs/00-ecosistema-dtemite.md)
 
 ---
 
@@ -34,7 +34,7 @@ El ERP de DTemite factura desde un computador. El comercio que vende en local, f
 
 Una sola app: login de empresa, venta, cobro, DTE, historial, impresión y cobros remotos (Payment Hub). La venta móvil queda en la misma base del ERP (`tbl_dpay`).
 
-Documentación: [`docs/`](docs/README.md)
+Documentación: [`codigo/docs/`](codigo/docs/README.md)
 
 ---
 
@@ -87,10 +87,11 @@ npm run build:apk
 ### Entorno Docker (herramientas de desarrollo)
 
 ```powershell
-docker compose up dev-tools
+cd codigo
+docker compose run --rm dev-tools
 ```
 
-Ver [`docs/12-manual-tecnico-despliegue.md`](docs/12-manual-tecnico-despliegue.md) y [`docker-compose.yml`](docker-compose.yml).
+Ver [`codigo/docs/12-manual-tecnico-despliegue.md`](codigo/docs/12-manual-tecnico-despliegue.md) y [`codigo/docker-compose.yml`](codigo/docker-compose.yml).
 
 ### Variables de entorno
 
@@ -121,7 +122,7 @@ Copiar `codigo/.env.example` → `codigo/.env` (no subir a Git).
 | Fase 2 — Desarrollo | 5–15 | 50% | Informe avance S10, producto final S15 |
 | Fase 3 — Presentación | 16–18 | 30% | Defensa comisión calificadora S17 |
 
-Detalle: [`docs/07-metodologia.md`](docs/07-metodologia.md) · Checklist: [`docs/09-checklist-capstone-apt122.md`](docs/09-checklist-capstone-apt122.md)
+Detalle: [`codigo/docs/07-metodologia.md`](codigo/docs/07-metodologia.md) · Checklist: [`codigo/docs/09-checklist-capstone-apt122.md`](codigo/docs/09-checklist-capstone-apt122.md)
 
 ---
 
@@ -140,30 +141,31 @@ D-PAY (React Native)                    Plataforma DTemite
 └─────────────────────────┘
 ```
 
-Diagramas: [`docs/05-arquitectura.md`](docs/05-arquitectura.md) · [`docs/15-diagramas-uml.md`](docs/15-diagramas-uml.md)
+Diagramas: [`codigo/docs/05-arquitectura.md`](codigo/docs/05-arquitectura.md) · [`codigo/docs/15-diagramas-uml.md`](codigo/docs/15-diagramas-uml.md)
 
 ---
 
 ## Estructura del repositorio
 
 ```
-dpay_3.0/                  ← Repositorio oficial del Capstone
-├── README.md
-├── docker-compose.yml
-├── codigo/                ← App D-PAY (React Native)
-├── docs/                  ← Documentación del producto y Scrum
-├── fase1/                 ← Entregables Fase 1
+dpay_3.0/
+├── README.md              ← Este archivo (índice Capstone)
+├── codigo/                ← App D-PAY, docs técnicos, Docker, scripts
+├── fase1/                 ← Entregables Fase 1 (Duoc)
 ├── fase2/                 ← Evidencias Fase 2
 └── fase3/                 ← Cierre y defensa
 ```
 
-La plataforma ERP/API de la empresa vive en el repositorio `nuevodtemite` (externo). D-PAY la consume; no la reescribe.
+Todo lo operativo (app, documentación Scrum, Docker, scripts Trello, Postman) vive en **`codigo/`**.  
+La plataforma ERP/API de la empresa está en el repositorio `nuevodtemite` (externo).
+
+> **Nota:** `.github/workflows/` permanece en la raíz porque GitHub Actions lo exige; el manual Trello está en `codigo/docs/TRELLO.md`.
 
 ---
 
 ## Documentación Capstone
 
-Índice: **[docs/README.md](docs/README.md)**
+Índice: **[codigo/docs/README.md](codigo/docs/README.md)**
 
 ---
 

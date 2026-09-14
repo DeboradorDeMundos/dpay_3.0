@@ -1,37 +1,18 @@
-# Raíz dpay_3.0 — complementa codigo/.gitignore
+# Raíz dpay_3.0 — solo README, codigo/, fase1|2|3/ y .github/workflows/
+# Detalle de ignores de la app: codigo/.gitignore
 
+# --- Basura del sistema operativo (macOS / Windows) ---
 .DS_Store
+**/.DS_Store
 Thumbs.db
+desktop.ini
 
-# Templates GitHub Copilot / java-upgrade (no aplica a RN)
-/.github/
-!/.github/workflows/
-!/.github/workflows/**
-!/.github/scripts/
-!/.github/scripts/**
-!/.github/TRELLO.md
+# --- Herramientas IA / IDE (local) ---
+.agents/
+.cursor/
+.docs/
+.docker/
+skills-lock.json
 
-# Credenciales locales Trello (cada colaborador usa las suyas)
-.env.trello
-.env.trello.local
-
-# Carpeta android/ en raíz = artefactos viejos (app real está en codigo/android/)
-/android/
-
-# Generador docx Capstone — no versionar node_modules del generador
+# --- Dependencias generador Word (Fase 1) ---
 /fase1/grupales/_gen/node_modules/
-
-# Logs JVM / crash de Gradle
-hs_err_pid*.log
-replay_pid*.log
-
-# Secretos fuera de codigo/android/
-**/keystore.properties
-!codigo/android/keystore.properties.example
-
-# Bundle generado por error fuera de codigo/
-**/index.android.bundle
-!codigo/android/app/src/main/assets/
-
-# Maquetas de diseño (referencia, no van en la app)
-/codigo/assets/maqueta/
