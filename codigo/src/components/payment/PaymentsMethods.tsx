@@ -10,9 +10,16 @@ import { useThemeColors } from '../../hooks/useThemeColors';
 import { CashInput } from './CashInput';
 import { TipModal } from './TipModal';
 import AppModal from '../base/AppModal';
-import { parseTuuError, classifyTuuError } from '../../services/tuuPayment';
-import { PaymentGatewayFactory } from '../../services/paymentGateway';
-import type { PaymentCardRequest } from '../../types/paymentGateway';
+import { PaymentGatewayFactory } from '../../services/paymentGateway/PaymentGatewayFactory';
+import {
+  classifyCardPaymentError,
+  parseCardPaymentError,
+} from '../../services/paymentGateway/paymentGatewayErrors';
+import { PaymentGatewayBadge } from './PaymentGatewayBadge';
+import type {
+  GatewayProviderId,
+  PaymentCardRequest,
+} from '../../types/paymentGateway';
 import { calculateTotalsByDocType, mapTuuMethodToMedioPago, calcularComisionDpay, registrarTransaccionTuu } from '../../services/api';
 import { mapDocTypeToTuu } from '../../constants/dte';
 import { APP_VERSION } from '../../constants/appVersion';
@@ -98,6 +105,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
   // Estado para el modal de propina
   const [tipModalVisible, setTipModalVisible] = useState(false);
+  const [cardGatewayReady, setCardGatewayReady] = useState<boolean | null>(null);
   const [pendingTipAction, setPendingTipAction] = useState<{ method: typeof paymentsMethods[0] } | null>(null);
   const [currentTipAmount, setCurrentTipAmount] = useState(0);
   const [showClientRequiredModal, setShowClientRequiredModal] = useState(false);
@@ -128,6 +136,22 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
   const resolveCardGateway = async () =>
     PaymentGatewayFactory.getDefaultCardGateway(devicePaymentProfile, availableGatewayIds);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const gw = await PaymentGatewayFactory.getDefaultCardGateway(
+        devicePaymentProfile,
+        availableGatewayIds,
+      );
+      if (!cancelled) {
+        setCardGatewayReady(gw != null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [devicePaymentProfile, availableGatewayIds]);
 
   // Reset al entrar a la pantalla
   useFocusEffect(
@@ -165,6 +189,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     // Activar guards
     isProcessingTuuRef.current = true;
     setIsProcessingTuu(true);
+    let gatewayId: GatewayProviderId = 'tuu';
 
     try {
       const gateway = await resolveCardGateway();
@@ -210,6 +235,17 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
       const result = await gateway.startCardPayment(cardRequest);
 
+      if (!result.success || !result.transactionStatus) {
+        showAlert(
+          'Pago no completado',
+          gateway.id === 'mock'
+            ? 'La pasarela simulada rechazó el cobro (escenario declined).'
+            : 'El banco o la pasarela rechazó la transacción.',
+        );
+        return;
+      }
+      gatewayId = gateway.id;
+
       console.log(`[PaymentGateway:${gateway.id}] Pago exitoso:`, result);
 
       // Calcular comisión DPay según configuración de la empresa
@@ -248,6 +284,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       // Preparar datos de pago TUU para guardar localmente
       // Se enviarán al backend DESPUÉS de obtener el folio del DTE
       const tuuPaymentData: Sale['tuuPaymentData'] = {
+        paymentProvider: gateway.id,
         request: {
           amount: totalWithIVA,
           method: method.tuuMethod as 1 | 2,
@@ -270,7 +307,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         montoNeto: neto,
         montoExento: exento,
         ...comisionData, // Incluye tipo_comision, comision_porcentaje, comision_monto_fijo, comision_monto
-        syncedToBackend: false, // Se marcará true cuando se envíe al backend con el folio
+        // El mock es evidencia local de QA y nunca debe contaminar tbl_dpay.
+        syncedToBackend: gateway.id === 'mock',
       };
 
       console.log('[Tuu] Datos de pago preparados para guardar localmente:', tuuPaymentData);
@@ -291,8 +329,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       console.error('[Tuu] Error en pago:', error);
 
       // Clasificar el error para mejor registro
-      const errorDetails = classifyTuuError(error);
-      const { title, message, isCancellable } = parseTuuError(error);
+      const errorDetails = classifyCardPaymentError(error, gatewayId);
+      const { title, message, isCancellable } = parseCardPaymentError(error, gatewayId);
 
       console.log('[Tuu] Error clasificado:', {
         category: errorDetails.category,
@@ -431,6 +469,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       // Si es Efectivo/Contado, preparamos los datos para que se registre en tbl_dpay
       if (_paymentMethod === 'Efectivo') {
         tuuPaymentData = {
+          paymentProvider: 'cash',
           request: {
             amount: totalWithIVA,
             method: 10, // 10 = Efectivo (Interno)
@@ -572,6 +611,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   const buildCashPaymentData = (neto: number, exento: number, tip: number): Sale['tuuPaymentData'] => {
     const totalWithIVA = neto + exento + (neto > 0 ? Math.round(neto * 0.19) : 0);
     return {
+      paymentProvider: 'cash',
       request: {
         amount: totalWithIVA,
         method: 10,
@@ -610,12 +650,17 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         Métodos de pago
       </Text>
 
+      <PaymentGatewayBadge />
+
       <View style={{
         marginHorizontal: 20,
         gap: 10,
       }}>
         {paymentsMethods
           .filter(method => {
+            if (method.tuuMethod && cardGatewayReady === false) {
+              return false;
+            }
             // Filtrar métodos según configuración del documento
             if (!documentType) return true; // Sin documento, mostrar todos
 

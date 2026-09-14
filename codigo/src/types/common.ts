@@ -100,6 +100,8 @@ export interface Sale {
 
   // Datos completos del pago TUU (para sincronización posterior y visualización)
   tuuPaymentData?: {
+    /** Proveedor real; mantiene compatibilidad con el modelo legacy tuuPaymentData. */
+    paymentProvider?: 'tuu' | 'mock' | 'webpay' | 'cash';
     // Request enviado a TUU
     request: {
       amount: number;

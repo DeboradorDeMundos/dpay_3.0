@@ -195,7 +195,11 @@ export const SaleCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
 
             // Si hay datos de pago TUU, registrar la transacción completa en el backend
             // AHORA que tenemos el folio, podemos enviar todos los datos de una vez
-            if (tuuPaymentData && documentType) {
+            if (
+              tuuPaymentData &&
+              tuuPaymentData.paymentProvider !== 'mock' &&
+              documentType
+            ) {
               console.log('[SaleCompleted] Registrando transacción TUU en backend con folio...', {
                 sequenceNumber: tuuPaymentData.response.sequenceNumber,
                 tipoDte: documentType.id,

@@ -193,6 +193,11 @@ export const useMySalesStore = create<MySalesState>((set, get) => {
         return false;
       }
 
+      if (sale.tuuPaymentData.paymentProvider === 'mock') {
+        console.log('[MySalesStore] Pago mock de QA: no se sincroniza con backend:', saleId);
+        return true;
+      }
+
       if (sale.tuuPaymentData.syncedToBackend) {
         console.log('[MySalesStore] El pago TUU ya está sincronizado:', saleId);
         return true;

@@ -47,20 +47,6 @@ declare module '@env' {
   export const ENABLE_LOGS: string;
 }
 
-// Módulo nativo para procesamiento de imágenes
-declare module 'react-native' {
-  interface NativeModulesStatic {
-    ImageProcessor: {
-      processForPrinting(base64Image: string, maxWidth: number): Promise<string>;
-    };
-    ScanBeep: {
-      preload: () => Promise<string | boolean>;
-      play: () => Promise<boolean>;
-      test: () => Promise<boolean>;
-    };
-  }
-}
-
 // Declaraciones para librerías de facturación electrónica
 declare module 'jsrsasign' {
   export const KEYUTIL: any;

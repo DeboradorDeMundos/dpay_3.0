@@ -14,6 +14,14 @@ describe('PaymentGatewayFactory', () => {
     expect(gateway?.id).toBe('tuu');
   });
 
+  it('retorna mock en celular genérico con mock disponible (dev)', async () => {
+    const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', [
+      'mock',
+      'webpay',
+    ]);
+    expect(gateway?.id).toBe('mock');
+  });
+
   it('retorna null en celular genérico sin pasarelas', async () => {
     const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', []);
     expect(gateway).toBeNull();

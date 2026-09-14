@@ -21,27 +21,50 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
     globalPaymentMethods,
     setGlobalPaymentMethods,
     devicePaymentProfile,
+    availableGatewayIds,
     refreshDevicePaymentProfile,
   } = useSettingsStore();
   const [cardPaymentsBlocked, setCardPaymentsBlocked] = useState(false);
 
   // HU-01: celular genérico = solo efectivo; Kozen/TUU = tarjetas permitidas
   useEffect(() => {
+    let cancelled = false;
     const syncProfile = async () => {
       const profile =
         devicePaymentProfile ?? (await refreshDevicePaymentProfile()).profile;
-      const isGenericMobile = profile === 'GENERIC_MOBILE';
-      setCardPaymentsBlocked(isGenericMobile);
+      if (cancelled) return;
 
-      if (isGenericMobile && globalPaymentMethods.length > 0) {
+      const isGenericMobile = profile === 'GENERIC_MOBILE';
+      const hasCardGateway = availableGatewayIds.length > 0;
+      const shouldBlockCards = isGenericMobile && !hasCardGateway;
+      setCardPaymentsBlocked(shouldBlockCards);
+
+      if (shouldBlockCards && globalPaymentMethods.length > 0) {
         const onlyCash = globalPaymentMethods.filter(m => m === 'Efectivo');
         if (onlyCash.length !== globalPaymentMethods.length) {
           setGlobalPaymentMethods(onlyCash.length > 0 ? onlyCash : ['Efectivo']);
         }
+      } else if (hasCardGateway) {
+        const hasCard = globalPaymentMethods.some(
+          method =>
+            method === 'Tarjeta de crédito' || method === 'Tarjeta de débito',
+        );
+        if (!hasCard) {
+          setGlobalPaymentMethods(DPAY_DEFAULT_PAYMENT_METHODS);
+        }
       }
     };
     syncProfile();
-  }, [devicePaymentProfile, globalPaymentMethods, refreshDevicePaymentProfile, setGlobalPaymentMethods]);
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    availableGatewayIds,
+    devicePaymentProfile,
+    globalPaymentMethods,
+    refreshDevicePaymentProfile,
+    setGlobalPaymentMethods,
+  ]);
 
   const togglePaymentMethod = (methodId: string) => {
     // En celulares, solo permitir Efectivo

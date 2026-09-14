@@ -13,13 +13,17 @@ from pathlib import Path
 
 API = "https://api.trello.com/1"
 ROOT = Path(__file__).resolve().parents[1]
-ENV_FILE = ROOT / ".env.trello"
+ENV_CANDIDATES = (
+    ROOT / ".env.trello",
+    ROOT.parent / ".env.trello",
+)
 
 
 def load_env() -> None:
-    if not ENV_FILE.exists():
+    env_file = next((path for path in ENV_CANDIDATES if path.exists()), None)
+    if env_file is None:
         return
-    for raw in ENV_FILE.read_text(encoding="utf-8").splitlines():
+    for raw in env_file.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -119,10 +123,10 @@ def cmd_cards(list_query: str | None) -> None:
     if list_query:
         target = find_list(list_query)
         cards = [card for card in cards if card.get("idList") == target["id"]]
-        print(f"Lista: {target['name']}\n")
+        _safe_print(f"Lista: {target['name']}\n")
     for card in cards:
         column = lists_by_id.get(card.get("idList"), "?")
-        print(f"[{column}] {card['name']}")
+        _safe_print(f"[{column}] {card['name']}")
         print(f"         {card.get('shortUrl')}")
 
 
@@ -130,7 +134,7 @@ def cmd_move(card_query: str, list_query: str) -> None:
     card = find_card(card_query)
     target = find_list(list_query)
     trello("PUT", f"/cards/{card['id']}", {"idList": target["id"], "closed": "false"})
-    print(f"OK  '{card['name']}' -> {target['name']}")
+    _safe_print(f"OK  '{card['name']}' -> {target['name']}")
     print(card.get("shortUrl") or card.get("url"))
 
 
