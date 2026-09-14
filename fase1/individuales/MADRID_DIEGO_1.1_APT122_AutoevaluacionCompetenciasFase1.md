@@ -1,0 +1,44 @@
+### Pauta de Autoevaluación de Competencias
+
+(complemento de la Pauta de Reflexión Definición Proyecto APT)
+
+Objetivo:
+
+El objetivo de esta pauta de autoevaluación es que identifiques tus niveles de logro en las competencias de tu plan de estudio para que, a partir de tus fortalezas y oportunidades de mejora, puedas definir mejor tu proyecto APT. Esta pauta de autoevaluación es un complemento de las reflexiones iniciales de APT que también te ayudarán a definir tu Proyecto APT.
+
+Instrucciones:
+
+* Completa la tabla con las competencias de tu perfil de egreso (las puedes revisar con tu docente)
+* Piensa en tu proceso de aprendizaje durante el tiempo que has estudiando en Duoc UC y evalúa el nivel de logro que alcanzaste en cada competencia de tu plan de estudio.
+* Marca con una cruz el nivel de logro alcanzado para cada aprendizaje de las unidades de competencia según las siguientes categorías:
+
+|  |  |
+| --- | --- |
+| **Categoría** | **Descripción** |
+| Excelente Dominio (ED) | Tengo un excelente dominio en esta competencia y no necesito reforzarla. |
+| Alto Dominio (AD) | Tengo un muy buen dominio de esta competencia, solo necesito reforzar pocos aspectos que no tengo completamente desarrollados. |
+| Dominio Aceptable (DA) | Tengo un dominio básico de la competencia, que me permite lograr los aspectos centrales de ésta, pero aún tengo muchos que necesito reforzar. |
+| Dominio insuficiente (DP) | Tengo un dominio muy básico de la competencia, solo manejo alguno aspectos de manera aislada. |
+| Dominio no logrado (DNL) | Tengo un dominio no logrado de la competencia, no manejo casi ningún aspecto de manera clara. |
+
+* En la columna de comentarios escribe por qué marcaste cada nivel.
+
+|  |  |
+| --- | --- |
+| Escuela | |
+| Nombre completo | Diego Madrid |
+| Plan de Estudio | Ingeniería informática |
+| Año de ingreso | 2022 |
+
+|  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Competencias Perfil de egreso** | **Nivel de logro** | | | | | **Comentarios** |
+| **Excelente Dominio** | **Alto Dominio** | **Dominio Aceptable** | **Dominio Insuficiente** | **Dominio no logrado** |
+| **ARQUITECTURA DE SOFTWARE** |  | x |  |  |  | He aplicado criterios de arquitectura en la integración entre app móvil, backend y servicios de pago, aunque aún debo profundizar en diseño escalable y documentación formal. |
+| **ANÁLISIS Y PLANIFICACIÓN DE REQUERIMIENTOS INFORMÁTICOS** |  | x |  |  |  | En D-PAY he traducido necesidades comerciales reales en flujos técnicos concretos: venta, cobro, emisión DTE y sincronización. |
+| **INTELIGENCIA DE NEGOCIOS** |  |  | x |  |  | Comprendo la utilidad de los datos para la toma de decisiones, pero no es el foco principal de mi desempeño actual. |
+| **PROGRAMACIÓN DE SOFTWARE** |  | x |  |  |  | Desarrollo con React Native, TypeScript, consumo de APIs y lógica de negocio en el POS; es una de mis competencias más aplicadas. |
+| **GESTIÓN DE PROYECTOS INFORMÁTICOS** |  | x |  |  |  | Participo en la coordinación del Capstone, definición de entregables, integración entre módulos y avance por fases. |
+| **INTERNACIONAL EN INGLÉS INTERMEDIO ALTO** |  |  | x |  |  | Puedo leer documentación técnica en inglés, pero necesito reforzar expresión oral y fluidez conversacional. |
+| **ANÁLISIS Y DESARROLLO DE MODELOS DE DATOS** |  |  | x |  |  | Manejo modelos de datos a través de APIs y sincronización, aunque no es mi área de mayor especialización. |
+| **CALIDAD DE SOFTWARE** |  |  | x |  |  | Realizo pruebas funcionales en dispositivo, pero necesito fortalecer pruebas automatizadas y metodologías formales de QA. |
