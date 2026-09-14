@@ -14,12 +14,36 @@ describe('PaymentGatewayFactory', () => {
     expect(gateway?.id).toBe('tuu');
   });
 
-  it('retorna mock en celular genérico con mock disponible (dev)', async () => {
+  it('prioriza webpay sobre mock en celular genérico cuando ambos están permitidos', async () => {
+    const webpay = PaymentGatewayFactory.getGateway('webpay');
+    const mock = PaymentGatewayFactory.getGateway('mock');
+    const webpaySpy = jest.spyOn(webpay!, 'isAvailable').mockResolvedValue(true);
+    const mockSpy = jest.spyOn(mock!, 'isAvailable').mockResolvedValue(true);
+
+    const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', [
+      'mock',
+      'webpay',
+    ]);
+    expect(gateway?.id).toBe('webpay');
+
+    webpaySpy.mockRestore();
+    mockSpy.mockRestore();
+  });
+
+  it('usa mock si webpay no está disponible', async () => {
+    const webpay = PaymentGatewayFactory.getGateway('webpay');
+    const mock = PaymentGatewayFactory.getGateway('mock');
+    const webpaySpy = jest.spyOn(webpay!, 'isAvailable').mockResolvedValue(false);
+    const mockSpy = jest.spyOn(mock!, 'isAvailable').mockResolvedValue(true);
+
     const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', [
       'mock',
       'webpay',
     ]);
     expect(gateway?.id).toBe('mock');
+
+    webpaySpy.mockRestore();
+    mockSpy.mockRestore();
   });
 
   it('retorna null en celular genérico sin pasarelas', async () => {

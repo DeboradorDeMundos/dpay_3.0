@@ -1,0 +1,16 @@
+{
+  "name": "dpay-webpay-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Proxy Webpay Capstone D-PAY 3.0 — SQLite + create/commit/status (COD-04)",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

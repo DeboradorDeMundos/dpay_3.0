@@ -193,8 +193,14 @@ export const useMySalesStore = create<MySalesState>((set, get) => {
         return false;
       }
 
-      if (sale.tuuPaymentData.paymentProvider === 'mock') {
-        console.log('[MySalesStore] Pago mock de QA: no se sincroniza con backend:', saleId);
+      if (
+        sale.tuuPaymentData.paymentProvider === 'mock' ||
+        sale.tuuPaymentData.paymentProvider === 'webpay'
+      ) {
+        console.log(
+          '[MySalesStore] Pago Capstone (mock/webpay): no se sincroniza con tbl_dpay TUU:',
+          saleId,
+        );
         return true;
       }
 

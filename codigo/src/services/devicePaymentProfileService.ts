@@ -29,8 +29,8 @@ export async function detectDevicePaymentProfile(): Promise<DeviceProfileDetecti
   if (profile === 'TUU_KOZEN' && tuuAppInstalled) {
     availableGatewayIds = ['tuu'];
   } else if (profile === 'GENERIC_MOBILE') {
-    // COD-03: mock desbloquea QA en dev. Webpay se agregará cuando el backend esté operativo.
-    availableGatewayIds = __DEV__ ? ['mock'] : [];
+    // COD-04: Webpay (proxy Capstone) tiene prioridad; COD-03 mock queda como fallback __DEV__.
+    availableGatewayIds = __DEV__ ? ['webpay', 'mock'] : ['webpay'];
   }
 
   const result: DeviceProfileDetectionResult = {
