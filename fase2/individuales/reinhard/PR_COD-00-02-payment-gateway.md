@@ -13,7 +13,7 @@ feat(payments): COD-00/01/02 — baseline, detección dispositivo y PaymentGatew
 
 Implementa la base multi-gateway del sprint de pagos Capstone:
 
-- **COD-00:** inventario baseline de la capa de pagos (`fase2/COD-00-inventario-baseline.md`)
+- **COD-00:** inventario baseline de la capa de pagos (`fase2/proyecto/COD-00-inventario-baseline.md`)
 - **COD-01 / HU-01:** detección `TUU_KOZEN` vs `GENERIC_MOBILE`, persistencia MMKV, init al arrancar
 - **COD-02 / HU-02:** contrato `IPaymentGateway`, adapter `TuuPaymentGateway`, `PaymentGatewayFactory`, refactor de `PaymentsMethods`
 
@@ -53,7 +53,7 @@ npm test -- --testPathPattern="devicePaymentProfile|PaymentGatewayFactory"
 
 ## Evidencia QA
 
-- `fase2/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md`
+- `fase2/individuales/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md`
 - QA manual Honor/Kozen: pendiente con build debug instalado
 
 ## Trazabilidad Trello
