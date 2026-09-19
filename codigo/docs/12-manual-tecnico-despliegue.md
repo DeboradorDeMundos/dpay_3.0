@@ -200,7 +200,7 @@ Documentación: `codigo/ENDPOINTS_DTEMITE.md`
 
 ## 9. Checklist pre-entrega Semana 15
 
-- [ ] APK firmada en `fase2/entrega-final/`
+- [ ] APK firmada en `fase2/grupales/`
 - [ ] Tag Git `v3.0.0-capstone`
 - [ ] README raíz actualizado
 - [ ] `.env.example` sin secretos reales

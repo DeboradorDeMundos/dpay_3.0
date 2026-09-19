@@ -65,7 +65,7 @@ Trabajo por sprint. Se actualiza en cada Planning.
 | S3-01 | HU-07 DTE (factura, TED, vínculo) | 5 | Diego | En progreso |
 | S3-02 | HU-08 Historial | 5 | Diego | En progreso |
 | S3-03 | HU-09 NC / anulación | 5 | Diego | En progreso |
-| S3-04 | Informe avance `fase2/informe-avance/` | 5 | Equipo | Por hacer |
+| S3-04 | Informe avance `fase2/grupales/` | 5 | Equipo | Por hacer |
 | S3-05 | Review + retro | 1 | Pablo | Por hacer |
 
 ---
