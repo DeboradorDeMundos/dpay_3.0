@@ -85,7 +85,7 @@ describe('mapTuuToTblDpay', () => {
 | Catálogo 500 prod. | < 5 s | Reloj + red |
 | Emisión DTE | < 15 s | Confirmar → folio |
 
-Resultados: `fase2/informe-avance/metricas-rendimiento.md`.
+Resultados: `fase2/grupales/` (repo) o `C:\CAPSTONE_documentos\Fase2\` (informe Word S10).
 
 ---
 
@@ -94,8 +94,8 @@ Resultados: `fase2/informe-avance/metricas-rendimiento.md`.
 | Hito | Semana | Evidencia | Carpeta |
 |---|---|---|---|
 | Fase 1 | 4 | Capturas UI del POS, docs | `fase1/` |
-| Informe avance | 10 | PRs, capturas TC-01..05, logs | `fase2/informe-avance/` |
-| Producto final | 15 | APK, matriz TC, video flujo completo | `fase2/entrega-final/` |
+| Informe avance | 10 | PRs, capturas TC-01..05, logs | `fase2/grupales/` + `CAPSTONE_documentos/Fase2/` |
+| Producto final | 15 | APK, matriz TC, video flujo completo | `fase2/grupales/` |
 | Defensa | 17 | Demo en vivo | `fase3/` |
 
 Nombres: `TC-03_efectivo_boleta_2026-10-15.png`. Video ≤ 10 min: login → venta → cobro → DTE → historial.

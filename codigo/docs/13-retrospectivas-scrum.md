@@ -69,7 +69,7 @@ _(Plantilla idéntica — completar post Sprint 2 Review)_
 
 - [ ] Acta retrospectiva firmada por los 3 integrantes
 - [ ] Acciones de mejora aplicadas visibles en Sprint 4
-- [ ] Publicado en `fase2/informe-avance/retrospectivas/`
+- [ ] Publicado en `fase2/grupales/retrospectivas/`
 
 ---
 

@@ -11,19 +11,23 @@ Dejar **D-PAY defendible como POS**: login → venta → cobro → DTE → histo
 
 ---
 
-## Estructura
+## Estructura (repo público)
+
+Alineada a entregables APT Fase 2 — **proyecto · grupales · individuales**:
 
 ```
 fase2/
-├── proyecto/           Baseline COD, docs transversales del POS
-├── grupales/           Entregables de equipo (informes, presentaciones)
-├── individuales/       APT122 por integrante (ej. reinhard/)
-├── evidencias/         Capturas y logs de prueba (repo público: placeholders)
-├── informe-avance/     Informe semana 10
-└── entrega-final/      APK firmada, matriz TC, video S15
+├── proyecto/       Docs transversales del POS (baseline COD, arquitectura)
+├── grupales/       Informes y entregables de equipo (S10, S15, presentaciones)
+├── individuales/   APT122 por integrante (ej. reinhard/)
+└── evidencias/     Placeholders de capturas/logs referenciados en el repo
 ```
 
-Copias locales de respaldo (Word, capturas Honor): `C:\CAPSTONE_documentos\Fase2\` — no van al repo público.
+**Informes Word / planillas Duoc (2.x APT122):** `C:\CAPSTONE_documentos\Fase2\` — no van al repo público.
+
+**Capturas QA Honor:** `C:\Users\NEKODev\Documents\CAPSTONE\Evidencias_dpay\` — local, no GitHub.
+
+---
 
 ## Entregables
 
@@ -32,10 +36,11 @@ Copias locales de respaldo (Word, capturas Honor): `C:\CAPSTONE_documentos\Fase2
 | App | `codigo/` |
 | Sprint backlog | `codigo/docs/10-sprint-backlog.md` |
 | Pruebas | `codigo/docs/11-plan-pruebas-evidencias.md` |
+| Baseline COD-00 | `fase2/proyecto/COD-00-inventario-baseline.md` |
 | Evidencias markdown | `fase2/individuales/reinhard/` |
-| Evidencias capturas | `fase2/evidencias/` (+ local `Evidencias_dpay/`) |
-| Informe S10 | `fase2/informe-avance/` |
-| APK | `codigo/` (`npm run build:apk`) → `fase2/entrega-final/` |
+| Evidencias capturas (repo) | `fase2/evidencias/` |
+| Informe avance S10 (Word) | `C:\CAPSTONE_documentos\Fase2\` → copia resumen en `fase2/grupales/` |
+| Producto final S15 (APK, video) | `fase2/grupales/` + respaldo local |
 
 Historias: HU-01 a HU-14 en [codigo/docs/02-backlog.md](../codigo/docs/02-backlog.md).
 
@@ -44,7 +49,6 @@ Historias: HU-01 a HU-14 en [codigo/docs/02-backlog.md](../codigo/docs/02-backlo
 ## Fuera de esta fase (código)
 
 - Reescribir el ERP `nuevodtemite`
-- Webpay / Flow / Mercado Pago (backlog futuro)
 - iOS
 
 ---
