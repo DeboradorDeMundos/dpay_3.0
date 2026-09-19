@@ -110,7 +110,7 @@ def find_card(query: str) -> dict:
 
 def cmd_lists() -> None:
     for item in open_lists():
-        print(f"{item['id']}  {item['name']}")
+        _safe_print(f"{item['id']}  {item['name']}")
 
 
 def cmd_cards(list_query: str | None) -> None:

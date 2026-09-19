@@ -18,18 +18,38 @@ export async function detectDevicePaymentProfile(): Promise<DeviceProfileDetecti
   const isKozen = await isKozenPosDevice();
   const tuuAppInstalled = await tuuPaymentService.isTuuAppInstalled();
 
-  const isTuuKozen =
+  // Celular consumidor (Honor NLA-LX3, etc.) → siempre Webpay/mock; nunca TUU nativo.
+  if (isConsumerMobileBrand(brand)) {
+    const result: DeviceProfileDetectionResult = {
+      profile: 'GENERIC_MOBILE',
+      availableGatewayIds: __DEV__ ? ['webpay', 'mock'] : ['webpay'],
+      tuuAppInstalled,
+      hardwareSerial,
+      brand,
+      model,
+      detectedAt: new Date().toISOString(),
+    };
+    if (__DEV__) {
+      console.log('[DeviceProfile] consumer mobile → Capstone gateways', result);
+    }
+    return result;
+  }
+
+  let isTuuKozen =
     isKozen ||
     (hasPosSerial && tuuAppInstalled) ||
     (hasPosSerial && matchesKozenModel(model, brand));
 
-  const profile: DevicePaymentProfile = isTuuKozen ? 'TUU_KOZEN' : 'GENERIC_MOBILE';
+  let profile: DevicePaymentProfile = isTuuKozen ? 'TUU_KOZEN' : 'GENERIC_MOBILE';
+
+  if (profile === 'TUU_KOZEN' && !tuuAppInstalled) {
+    profile = 'GENERIC_MOBILE';
+  }
 
   let availableGatewayIds: GatewayProviderId[] = [];
   if (profile === 'TUU_KOZEN' && tuuAppInstalled) {
     availableGatewayIds = ['tuu'];
   } else if (profile === 'GENERIC_MOBILE') {
-    // COD-04: Webpay (proxy Capstone) tiene prioridad; COD-03 mock queda como fallback __DEV__.
     availableGatewayIds = __DEV__ ? ['webpay', 'mock'] : ['webpay'];
   }
 
@@ -57,4 +77,22 @@ function matchesKozenModel(model: string, brand: string): boolean {
   return kozenTokens.some(
     token => modelLower.includes(token) || brandLower.includes(token),
   );
+}
+
+/** Marcas de celular consumidor — no confundir con terminal Kozen por modelo NLA/P8. */
+function isConsumerMobileBrand(brand: string): boolean {
+  const brandLower = brand.toLowerCase();
+  const consumerTokens = [
+    'honor',
+    'samsung',
+    'xiaomi',
+    'redmi',
+    'oppo',
+    'vivo',
+    'realme',
+    'motorola',
+    'google',
+    'oneplus',
+  ];
+  return consumerTokens.some(token => brandLower.includes(token));
 }

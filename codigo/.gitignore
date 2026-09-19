@@ -44,6 +44,7 @@ android/keystore.properties
 .env
 .env.*
 !.env.example
+!.env.trello.example
 .env.trello
 .env.trello.local
 

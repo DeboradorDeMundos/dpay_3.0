@@ -14,5 +14,11 @@ desktop.ini
 .docker/
 skills-lock.json
 
+# --- Trello CLI (credenciales locales, no commitear) ---
+.env.trello
+.env.trello.local
+codigo/.env.trello
+codigo/.env.trello.local
+
 # --- Dependencias generador Word (Fase 1) ---
 /fase1/grupales/_gen/node_modules/
