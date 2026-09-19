@@ -11,6 +11,20 @@ Dejar **D-PAY defendible como POS**: login → venta → cobro → DTE → histo
 
 ---
 
+## Estructura
+
+```
+fase2/
+├── proyecto/           Baseline COD, docs transversales del POS
+├── grupales/           Entregables de equipo (informes, presentaciones)
+├── individuales/       APT122 por integrante (ej. reinhard/)
+├── evidencias/         Capturas y logs de prueba (repo público: placeholders)
+├── informe-avance/     Informe semana 10
+└── entrega-final/      APK firmada, matriz TC, video S15
+```
+
+Copias locales de respaldo (Word, capturas Honor): `C:\CAPSTONE_documentos\Fase2\` — no van al repo público.
+
 ## Entregables
 
 | Artefacto | Dónde |
@@ -18,9 +32,10 @@ Dejar **D-PAY defendible como POS**: login → venta → cobro → DTE → histo
 | App | `codigo/` |
 | Sprint backlog | `codigo/docs/10-sprint-backlog.md` |
 | Pruebas | `codigo/docs/11-plan-pruebas-evidencias.md` |
-| Evidencias | `fase2/evidencias/` |
+| Evidencias markdown | `fase2/individuales/reinhard/` |
+| Evidencias capturas | `fase2/evidencias/` (+ local `Evidencias_dpay/`) |
 | Informe S10 | `fase2/informe-avance/` |
-| APK | `codigo/` (`npm run build:apk`) |
+| APK | `codigo/` (`npm run build:apk`) → `fase2/entrega-final/` |
 
 Historias: HU-01 a HU-14 en [codigo/docs/02-backlog.md](../codigo/docs/02-backlog.md).
 

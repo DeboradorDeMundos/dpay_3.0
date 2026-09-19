@@ -47,4 +47,4 @@ Se requiere cobro con tarjeta en celular genérico (`GENERIC_MOBILE`) y un dise�
 
 - Código: `webpay-proxy/`
 - App: `codigo/src/services/paymentGateway/WebpayPaymentGateway.ts`
-- Evidencia: `fase2/reinhard/EVIDENCIA_COD-04_WEBPAY_SQLITE.md`
+- Evidencia: `fase2/individuales/reinhard/EVIDENCIA_COD-04_WEBPAY_SQLITE.md`

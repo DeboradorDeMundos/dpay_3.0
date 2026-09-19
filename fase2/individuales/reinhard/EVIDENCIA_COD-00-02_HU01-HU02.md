@@ -128,7 +128,7 @@ adb logcat -s ReactNativeJS:* | Select-String "DeviceProfile|PaymentGateway|Perf
 
 | COD | Artefacto |
 |---|---|
-| COD-00 | `fase2/COD-00-inventario-baseline.md` |
+| COD-00 | `fase2/proyecto/COD-00-inventario-baseline.md` |
 | COD-01 | `devicePaymentProfileService.ts`, `settingsStore` (+ campos), `deviceInfo.isKozenPosDevice` |
 | COD-02 | `types/paymentGateway.ts`, `paymentGateway/*`, refactor `PaymentsMethods.tsx` |
 | QA | `__tests__/PaymentGatewayFactory.test.ts`, `__tests__/devicePaymentProfile.test.ts` |
@@ -153,12 +153,12 @@ adb logcat -s ReactNativeJS:* | Select-String "DeviceProfile|PaymentGateway|Perf
 2. Abrir tarjeta **COD-00** → **Mover** a **QA** (Reinhartd validando).
 3. En **Comentarios**, pegar:
    ```
-   Evidencia COD-00: inventario baseline en repo fase2/COD-00-inventario-baseline.md
+   Evidencia COD-00: inventario baseline en repo fase2/proyecto/COD-00-inventario-baseline.md
    Commit/PR: [pendiente feature/COD-00-02-payment-gateway]
    Tests: PaymentGatewayFactory + devicePaymentProfile OK
    ```
 4. Repetir para **COD-01** y **COD-02** con link a este archivo:  
-   `fase2/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md`
+   `fase2/individuales/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md`
 5. **Adjuntar** capturas desde `fase2/evidencias/` (crear carpeta si no existe).
 6. Asignarte (**REINHARDT**) en COD-01/02 si no está.
 7. Cuando TC-DEV-01…05 pasen en Honor X5c → mover COD-01 y COD-02 a **Producción**.
@@ -187,7 +187,7 @@ Manual (Honor):
 - TC-DEV-03 efectivo: [OK/FAIL]
 - TC-DEV-04 tarjeta → modal no disponible: [OK/FAIL]
 
-Docs: fase2/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md
+Docs: fase2/individuales/reinhard/EVIDENCIA_COD-00-02_HU01-HU02.md
 PR: pendiente
 ```
 

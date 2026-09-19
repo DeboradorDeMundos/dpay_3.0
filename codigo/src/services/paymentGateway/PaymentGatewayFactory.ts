@@ -32,11 +32,26 @@ export class PaymentGatewayFactory {
     return gateways;
   }
 
+  /** TUU solo en terminal Kozen con app instalada. */
+  static async getAvailableGatewaysForProfile(
+    profile: DevicePaymentProfile | null,
+    allowedIds: GatewayProviderId[],
+  ): Promise<IPaymentGateway[]> {
+    const ids =
+      profile === 'TUU_KOZEN'
+        ? allowedIds
+        : allowedIds.filter(id => id !== 'tuu');
+    return PaymentGatewayFactory.getAvailableGateways(ids);
+  }
+
   static async getDefaultCardGateway(
     profile: DevicePaymentProfile | null,
     availableGatewayIds: GatewayProviderId[],
   ): Promise<IPaymentGateway | null> {
-    const available = await PaymentGatewayFactory.getAvailableGateways(availableGatewayIds);
+    const available = await PaymentGatewayFactory.getAvailableGatewaysForProfile(
+      profile,
+      availableGatewayIds,
+    );
     if (available.length === 0) {
       return null;
     }
@@ -64,6 +79,9 @@ export class PaymentGatewayFactory {
     profile: DevicePaymentProfile | null,
     availableGatewayIds: GatewayProviderId[],
   ): Promise<IPaymentGateway[]> {
-    return PaymentGatewayFactory.getAvailableGateways(availableGatewayIds);
+    return PaymentGatewayFactory.getAvailableGatewaysForProfile(
+      profile,
+      availableGatewayIds,
+    );
   }
 }

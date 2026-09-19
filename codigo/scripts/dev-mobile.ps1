@@ -69,7 +69,7 @@ if (-not $scrcpy) {
 if ($scrcpy) {
     Write-Host "Iniciando scrcpy..." -ForegroundColor Yellow
     Start-Process -FilePath $scrcpy -ArgumentList @(
-        "-s", $DeviceId, "--window-title", "D-PAY 3.0", "--max-size", "1080"
+        "-s", $DeviceId, "--window-title=D-PAY-3.0", "--max-size=1080"
     )
 } else {
     Write-Host "scrcpy no encontrado (opcional). winget install Genymobile.scrcpy" -ForegroundColor Yellow

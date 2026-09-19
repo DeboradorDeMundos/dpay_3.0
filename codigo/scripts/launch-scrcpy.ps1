@@ -20,4 +20,4 @@ if (-not $scrcpy) {
 }
 
 Write-Host "Abriendo scrcpy -> $DeviceId ..." -ForegroundColor Cyan
-& $scrcpy -s $DeviceId --window-title "D-PAY 3.0" --max-size 1080
+& $scrcpy -s $DeviceId --window-title=D-PAY-3.0 --max-size=1080

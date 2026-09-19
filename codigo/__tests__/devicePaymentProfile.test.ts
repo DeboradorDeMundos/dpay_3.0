@@ -58,4 +58,18 @@ describe('detectDevicePaymentProfile', () => {
     expect(result.tuuAppInstalled).toBe(false);
     expect(result.hardwareSerial).toBe('');
   });
+
+  it('Honor NLA-LX3 con serial POS pero sin TUU → GENERIC_MOBILE (Webpay)', async () => {
+    mockGetBrand.mockResolvedValue('HONOR');
+    mockGetModel.mockResolvedValue('NLA-LX3');
+    mockGetSerial.mockResolvedValue('AFMGBB6413102097');
+    mockIsKozen.mockResolvedValue(true);
+    mockTuuInstalled.mockResolvedValue(false);
+
+    const result = await detectDevicePaymentProfile();
+
+    expect(result.profile).toBe('GENERIC_MOBILE');
+    expect(result.availableGatewayIds).toEqual(['webpay', 'mock']);
+    expect(result.tuuAppInstalled).toBe(false);
+  });
 });
