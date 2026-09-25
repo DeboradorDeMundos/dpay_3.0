@@ -1,4 +1,6 @@
-# Metro + scrcpy + build/install en celular Android conectado por USB.
+# Instala o actualiza la app en el celular por USB.
+# El cable es para dejar el APK al día, no para la prueba con datos móviles.
+# Prueba compartida sin celular: npm run dev:emulator
 # Uso: .\scripts\dev-mobile.ps1
 #      .\scripts\dev-mobile.ps1 -SkipBuild
 #      .\scripts\dev-mobile.ps1 -DeviceId "SERIAL"
@@ -75,8 +77,9 @@ if ($scrcpy) {
     Write-Host "scrcpy no encontrado (opcional). winget install Genymobile.scrcpy" -ForegroundColor Yellow
 }
 
-Write-Host "adb reverse 8081..." -ForegroundColor Yellow
+Write-Host "adb reverse 8081 y 8787..." -ForegroundColor Yellow
 adb -s $DeviceId reverse tcp:8081 tcp:8081 | Out-Null
+adb -s $DeviceId reverse tcp:8787 tcp:8787 | Out-Null
 
 if ($SkipBuild) {
     adb -s $DeviceId shell monkey -p com.dtemitepos -c android.intent.category.LAUNCHER 1 | Out-Null

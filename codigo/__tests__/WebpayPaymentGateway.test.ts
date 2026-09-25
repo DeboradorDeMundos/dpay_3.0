@@ -1,9 +1,10 @@
 import { webpayPaymentGateway } from '../src/services/paymentGateway/WebpayPaymentGateway';
 
 jest.mock('../src/services/paymentGateway/webpayProxyConfig', () => ({
-  WEBPAY_PROXY_BASE_URL: 'http://proxy.test',
+  WEBPAY_PROXY_PUBLIC_URL: '',
   WEBPAY_RETURN_DEEP_LINK: 'dtemitepos://payments/webpay/return',
-  isWebpayProxyConfigured: () => true,
+  getWebpayProxyBaseUrl: async () => 'http://proxy.test',
+  isWebpayProxyConfigured: async () => true,
 }));
 
 describe('WebpayPaymentGateway', () => {

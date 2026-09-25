@@ -5,7 +5,7 @@ import type {
   PaymentCardResult,
 } from '../../types/paymentGateway';
 import {
-  WEBPAY_PROXY_BASE_URL,
+  getWebpayProxyBaseUrl,
   isWebpayProxyConfigured,
 } from './webpayProxyConfig';
 
@@ -23,7 +23,8 @@ const POLL_MS = 1200;
 const POLL_TIMEOUT_MS = 180_000;
 
 async function proxyFetch(path: string, init?: RequestInit): Promise<Response> {
-  const url = `${WEBPAY_PROXY_BASE_URL}${path}`;
+  const base = await getWebpayProxyBaseUrl();
+  const url = `${base}${path}`;
   const response = await fetch(url, {
     ...init,
     headers: {
@@ -55,7 +56,7 @@ export class WebpayPaymentGateway implements IPaymentGateway {
    * En release: requiere WEBPAY_PROXY_BASE_URL configurado + health OK.
    */
   async isAvailable(): Promise<boolean> {
-    if (!isWebpayProxyConfigured()) {
+    if (!(await isWebpayProxyConfigured())) {
       return false;
     }
     try {
@@ -69,8 +70,8 @@ export class WebpayPaymentGateway implements IPaymentGateway {
   }
 
   async startCardPayment(request: PaymentCardRequest): Promise<PaymentCardResult> {
-    if (!isWebpayProxyConfigured()) {
-      throw new Error('Webpay proxy no configurado (WEBPAY_PROXY_BASE_URL)');
+    if (!(await isWebpayProxyConfigured())) {
+      throw new Error('Webpay proxy no configurado');
     }
 
     const createRes = await proxyFetch('/payments/webpay/create', {

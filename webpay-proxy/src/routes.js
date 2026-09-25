@@ -9,9 +9,12 @@ import {
 } from './db.js';
 import * as sim from './providers/sim.js';
 import * as chimuelo from './providers/chimuelo.js';
+import * as webpayplus from './providers/webpayplus.js';
 
 function providerApi() {
-  return config.provider === 'chimuelo' ? chimuelo : sim;
+  if (config.provider === 'chimuelo') return chimuelo;
+  if (config.provider === 'webpayplus') return webpayplus;
+  return sim;
 }
 
 function json(res, status, body) {
@@ -203,6 +206,53 @@ async function handleCommit(req, res, paymentId) {
   return json(res, 200, toPublicPayment(updated));
 }
 
+async function readRaw(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', c => chunks.push(c));
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    req.on('error', reject);
+  });
+}
+
+async function handleTbkReturn(req, res, paymentId, url) {
+  const payment = getPayment(paymentId);
+  if (!payment) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Pago no encontrado');
+    return;
+  }
+
+  const params = new URLSearchParams(url.search);
+  if (req.method === 'POST') {
+    const form = new URLSearchParams(await readRaw(req));
+    for (const [key, value] of form) params.set(key, value);
+  }
+
+  if (payment.status === 'redirected' || payment.status === 'pending') {
+    const decision = webpayplus.classifyReturn(params);
+    if (decision.action === 'commit') {
+      const committed = await webpayplus.commitTransaction(payment);
+      updatePayment(paymentId, {
+        ...committed,
+        committed_at: new Date().toISOString(),
+      });
+    } else {
+      updatePayment(paymentId, {
+        status: 'cancelled',
+        auth_code: null,
+        response_code: decision.reason,
+        response_json: JSON.stringify({ provider: 'webpayplus', status: decision.reason }),
+        committed_at: new Date().toISOString(),
+      });
+    }
+  }
+
+  const final = getPayment(paymentId);
+  res.writeHead(302, { Location: deepLink(paymentId, final?.status || 'cancelled') });
+  res.end();
+}
+
 async function handleStatus(_req, res, paymentId) {
   const payment = getPayment(paymentId);
   if (!payment) {
@@ -295,6 +345,39 @@ export async function handleRequest(req, res) {
     }
 
     // Retorno HTTP Chimuelo → deep link app
+    const goMatch = pathname.match(/^\/payments\/webpay\/([^/]+)\/go$/);
+    if (req.method === 'GET' && goMatch) {
+      const payment = getPayment(goMatch[1]);
+      if (!payment) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Pago no encontrado');
+        return;
+      }
+      let meta = {};
+      try {
+        meta = JSON.parse(payment.response_json || '{}');
+      } catch {
+        meta = {};
+      }
+      if (!payment.token || !meta.tbk_url) {
+        res.writeHead(409, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Este pago no tiene un formulario Webpay Plus.');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(webpayplus.goFormHtml({
+        tbkUrl: meta.tbk_url,
+        token: payment.token,
+        amount: payment.amount,
+      }));
+      return;
+    }
+
+    const tbkReturn = pathname.match(/^\/payments\/webpay\/tbk-return\/([^/]+)$/);
+    if ((req.method === 'GET' || req.method === 'POST') && tbkReturn) {
+      return await handleTbkReturn(req, res, tbkReturn[1], url);
+    }
+
     const returnHttp = pathname.match(/^\/payments\/webpay\/return-http\/([^/]+)$/);
     if (req.method === 'GET' && returnHttp) {
       const paymentId = returnHttp[1];
