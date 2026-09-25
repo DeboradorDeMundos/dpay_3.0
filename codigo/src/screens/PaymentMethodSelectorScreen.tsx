@@ -30,12 +30,11 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
   useEffect(() => {
     let cancelled = false;
     const syncProfile = async () => {
-      const profile =
-        devicePaymentProfile ?? (await refreshDevicePaymentProfile()).profile;
+      const detection = await refreshDevicePaymentProfile();
       if (cancelled) return;
 
-      const isGenericMobile = profile === 'GENERIC_MOBILE';
-      const hasCardGateway = availableGatewayIds.length > 0;
+      const isGenericMobile = detection.profile === 'GENERIC_MOBILE';
+      const hasCardGateway = detection.availableGatewayIds.length > 0;
       const shouldBlockCards = isGenericMobile && !hasCardGateway;
       setCardPaymentsBlocked(shouldBlockCards);
 

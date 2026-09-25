@@ -57,7 +57,7 @@ try {
     python scripts\trello.py lists
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     Write-Host ""
-    Write-Host "OK — Trello configurado. Prueba: python scripts\trello.py cards qa" -ForegroundColor Green
+    Write-Host "OK - Trello configurado. Prueba: python scripts/trello.py cards qa" -ForegroundColor Green
 }
 finally {
     Pop-Location

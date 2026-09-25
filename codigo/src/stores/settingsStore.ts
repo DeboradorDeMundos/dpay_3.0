@@ -329,8 +329,11 @@ export const useSettingsStore = create<SettingsState>((set, get) => {
         deviceProfileMeta: payload.meta,
       });
 
-      // Restaurar tarjetas en Kozen si quedaron solo efectivo por detección antigua (biometría)
-      if (detection.profile === 'TUU_KOZEN') {
+      // Si una detección vieja dejó solo efectivo, volver a ofrecer crédito y débito.
+      const hasCardGateway = detection.availableGatewayIds.some(
+        id => id === 'tuu' || id === 'webpay' || id === 'mock',
+      );
+      if (detection.profile === 'TUU_KOZEN' || hasCardGateway) {
         const methods = get().globalPaymentMethods;
         const hasCard = methods.some(
           m => m === 'Tarjeta de crédito' || m === 'Tarjeta de débito',

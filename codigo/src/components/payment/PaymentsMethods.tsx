@@ -98,6 +98,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   const dpayComisiones = useSettingsStore(state => state.dpayComisiones);
   const devicePaymentProfile = useSettingsStore(state => state.devicePaymentProfile);
   const availableGatewayIds = useSettingsStore(state => state.availableGatewayIds);
+  const refreshDevicePaymentProfile = useSettingsStore(state => state.refreshDevicePaymentProfile);
   const enableTip = useSettingsStore(state => state.enableTip);
   
   // Auth store
@@ -158,7 +159,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     React.useCallback(() => {
       setPaymentMethod('');
       setPaymentMethodSale('');
-    }, [setPaymentMethodSale])
+      refreshDevicePaymentProfile().catch(() => undefined);
+    }, [refreshDevicePaymentProfile, setPaymentMethodSale])
   );
 
   // Calcula total de la venta actual
