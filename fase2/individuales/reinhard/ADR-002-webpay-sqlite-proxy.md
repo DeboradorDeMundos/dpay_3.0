@@ -43,6 +43,10 @@ Se requiere cobro con tarjeta en celular genérico (`GENERIC_MOBILE`) y un dise�
 | C) Proxy Capstone + SQLite | **Elegida** |
 | D) Solo Mock | Insuficiente: PO exige Webpay en Capstone |
 
+## Actualización 2026-09-26
+
+La decisión se mantiene. Se sumó el provider `webpayplus` (REST de integración, códigos públicos), la columna `buy_order`, el selector cuando hay dos o más pasarelas (COD-05) y el registro local de fallos sin enviarlos a `tbl_dpay` (COD-06). El Honor por USB usa `127.0.0.1` con `adb reverse`, no una IP LAN fija en el código. Detalle en [DOC-04](DOC-04-diseno-payment-gateway.md).
+
 ## Links
 
 - Código: `webpay-proxy/`

@@ -16,6 +16,7 @@ import {
   parseCardPaymentError,
 } from '../../services/paymentGateway/paymentGatewayErrors';
 import { PaymentGatewayBadge } from './PaymentGatewayBadge';
+import { recordCardPaymentAttempt } from '../../services/paymentGateway/cardPaymentAttemptStore';
 import type {
   GatewayProviderId,
   PaymentCardRequest,
@@ -110,6 +111,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   const [pendingTipAction, setPendingTipAction] = useState<{ method: typeof paymentsMethods[0] } | null>(null);
   const [currentTipAmount, setCurrentTipAmount] = useState(0);
   const [showClientRequiredModal, setShowClientRequiredModal] = useState(false);
+  const [selectedGatewayId, setSelectedGatewayId] = useState<GatewayProviderId | null>(null);
 
 
   // Auto-ejecutar pago SOLO si autoExecute es true (controlado por PaymentMethodScreen)
@@ -135,19 +137,28 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     }
   }, [autoExecute, autoPaymentTriggered, documentType, getPaymentMethodsForDocType]);
 
-  const resolveCardGateway = async () =>
-    PaymentGatewayFactory.getDefaultCardGateway(devicePaymentProfile, availableGatewayIds);
-
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const gw = await PaymentGatewayFactory.getDefaultCardGateway(
-        devicePaymentProfile,
-        availableGatewayIds,
+      const [list, fallback] = await Promise.all([
+        PaymentGatewayFactory.listAvailableForProfile(
+          devicePaymentProfile,
+          availableGatewayIds,
+        ),
+        PaymentGatewayFactory.getDefaultCardGateway(
+          devicePaymentProfile,
+          availableGatewayIds,
+        ),
+      ]);
+      if (cancelled) return;
+      setCardGatewayReady(list.length > 0);
+      setSelectedGatewayId(previous =>
+        PaymentGatewayFactory.keepUserSelection(
+          list.map(gateway => gateway.id),
+          previous,
+          fallback?.id ?? null,
+        ),
       );
-      if (!cancelled) {
-        setCardGatewayReady(gw != null);
-      }
     })();
     return () => {
       cancelled = true;
@@ -194,11 +205,16 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     let gatewayId: GatewayProviderId = 'tuu';
 
     try {
-      const gateway = await resolveCardGateway();
-      if (!gateway) {
+      const gateway = selectedGatewayId
+        ? PaymentGatewayFactory.getGateway(selectedGatewayId)
+        : await PaymentGatewayFactory.getDefaultCardGateway(
+            devicePaymentProfile,
+            availableGatewayIds,
+          );
+      if (!gateway || !(await gateway.isAvailable())) {
         const message =
           devicePaymentProfile === 'GENERIC_MOBILE'
-            ? 'En celular genérico use efectivo. Webpay estará disponible en un próximo sprint.'
+            ? 'No hay pasarela de tarjeta disponible. Use efectivo o revise que el proxy Webpay esté encendido.'
             : 'No hay pasarela de tarjeta disponible. Instale Tuu Negocio en el terminal Kozen.';
         showAlert('Cobro con tarjeta no disponible', message);
         return;
@@ -235,9 +251,19 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         tuuDteType,
       );
 
+      gatewayId = gateway.id;
+
       const result = await gateway.startCardPayment(cardRequest);
 
       if (!result.success || !result.transactionStatus) {
+        recordCardPaymentAttempt({
+          provider: result.provider || gateway.id,
+          status: result.gatewayStatus || 'declined',
+          paymentId: result.sequenceNumber,
+          token: result.gatewayToken,
+          buyOrder: result.buyOrder,
+          amount: totalWithIVA,
+        });
         showAlert(
           'Pago no completado',
           gateway.id === 'mock'
@@ -246,7 +272,6 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         );
         return;
       }
-      gatewayId = gateway.id;
 
       console.log(`[PaymentGateway:${gateway.id}] Pago exitoso:`, result);
 
@@ -287,6 +312,9 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       // Se enviarán al backend DESPUÉS de obtener el folio del DTE
       const tuuPaymentData: Sale['tuuPaymentData'] = {
         paymentProvider: gateway.id,
+        gatewayToken: result.gatewayToken,
+        buyOrder: result.buyOrder,
+        gatewayStatus: result.gatewayStatus,
         request: {
           amount: totalWithIVA,
           method: method.tuuMethod as 1 | 2,
@@ -372,7 +400,17 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         }
         
         const dispositivo = await getTerminalSerial();
-        await registrarTransaccionTuu({
+        if (gatewayId === 'webpay' || gatewayId === 'mock') {
+          const attempt = error?.gatewayAttempt;
+          recordCardPaymentAttempt({
+            provider: attempt?.provider || gatewayId,
+            status: attempt?.gatewayStatus || attempt?.status || 'error',
+            paymentId: attempt?.paymentId,
+            token: attempt?.gatewayToken || attempt?.token,
+            buyOrder: attempt?.buyOrder,
+            amount: attempt?.amount ?? total,
+          });
+        } else await registrarTransaccionTuu({
           monto: total,
           transaction_status: false, // Fallida
           response_code: (errorDetails.code || '').substring(0, 20),
@@ -652,7 +690,10 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         Métodos de pago
       </Text>
 
-      <PaymentGatewayBadge />
+      <PaymentGatewayBadge
+        selectedId={selectedGatewayId}
+        onSelect={setSelectedGatewayId}
+      />
 
       <View style={{
         marginHorizontal: 20,

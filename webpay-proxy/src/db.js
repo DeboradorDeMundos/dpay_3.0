@@ -30,6 +30,7 @@ export function getDb() {
       idempotency_key TEXT UNIQUE,
       request_json TEXT,
       response_json TEXT,
+      buy_order TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       committed_at TEXT
@@ -37,6 +38,10 @@ export function getDb() {
     CREATE INDEX IF NOT EXISTS idx_payments_sale ON payment_transactions(sale_id);
     CREATE INDEX IF NOT EXISTS idx_payments_status ON payment_transactions(status);
   `);
+  const columns = db.prepare('PRAGMA table_info(payment_transactions)').all();
+  if (!columns.some(column => column.name === 'buy_order')) {
+    db.exec('ALTER TABLE payment_transactions ADD COLUMN buy_order TEXT');
+  }
   return db;
 }
 
@@ -46,15 +51,15 @@ export function createPayment(row) {
     .prepare(
       `INSERT INTO payment_transactions (
         id, sale_id, amount, currency, status, provider, method, tip,
-        token, redirect_url, return_url, idempotency_key, request_json,
+        token, redirect_url, return_url, idempotency_key, request_json, buy_order,
         created_at, updated_at
       ) VALUES (
         @id, @sale_id, @amount, @currency, @status, @provider, @method, @tip,
-        @token, @redirect_url, @return_url, @idempotency_key, @request_json,
+        @token, @redirect_url, @return_url, @idempotency_key, @request_json, @buy_order,
         @created_at, @updated_at
       )`,
     )
-    .run(row);
+    .run({ ...row, buy_order: row.buy_order ?? null });
   return getPayment(row.id);
 }
 
@@ -90,6 +95,7 @@ export function updatePayment(id, patch) {
         last4 = @last4,
         response_code = @response_code,
         response_json = @response_json,
+        buy_order = @buy_order,
         committed_at = @committed_at,
         updated_at = @updated_at
       WHERE id = @id`,
@@ -103,6 +109,7 @@ export function updatePayment(id, patch) {
       last4: next.last4 ?? null,
       response_code: next.response_code ?? null,
       response_json: next.response_json ?? null,
+      buy_order: next.buy_order ?? null,
       committed_at: next.committed_at ?? null,
       updated_at: next.updated_at,
     });
@@ -123,6 +130,7 @@ export function toPublicPayment(row) {
     tip: row.tip ?? 0,
     redirect_url: row.redirect_url,
     token: row.token,
+    buy_order: row.buy_order,
     auth_code: row.auth_code,
     last4: row.last4,
     response_code: row.response_code,

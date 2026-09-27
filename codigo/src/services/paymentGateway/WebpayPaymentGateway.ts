@@ -17,7 +17,28 @@ type ProxyPayment = {
   auth_code?: string | null;
   last4?: string | null;
   token?: string | null;
+  buy_order?: string | null;
+  provider?: string | null;
 };
+
+function gatewaySnapshot(payment: ProxyPayment) {
+  return {
+    provider: 'webpay',
+    gatewayToken: payment.token || undefined,
+    buyOrder: payment.buy_order || undefined,
+    gatewayStatus: payment.status,
+  };
+}
+
+function paymentError(message: string, payment: ProxyPayment) {
+  return Object.assign(new Error(message), {
+    gatewayAttempt: {
+      ...gatewaySnapshot(payment),
+      paymentId: payment.payment_id,
+      amount: payment.amount,
+    },
+  });
+}
 
 const POLL_MS = 1200;
 const POLL_TIMEOUT_MS = 180_000;
@@ -113,7 +134,7 @@ export class WebpayPaymentGateway implements IPaymentGateway {
     }
 
     if (finalPayment.status === 'cancelled') {
-      throw new Error('WEBPAY_CANCELLED: pago cancelado por el usuario');
+      throw paymentError('WEBPAY_CANCELLED: pago cancelado por el usuario', finalPayment);
     }
 
     if (finalPayment.status === 'declined') {
@@ -126,16 +147,23 @@ export class WebpayPaymentGateway implements IPaymentGateway {
         transactionTip: request.tip ?? 0,
         transactionCashback: 0,
         printerVoucherCommerce: false,
+        ...gatewaySnapshot(finalPayment),
         rawTuuRequest: {
           provider: 'webpay',
           amount: request.amount,
           payment_id: finalPayment.payment_id,
+          token: finalPayment.token,
+          buy_order: finalPayment.buy_order,
+          status: finalPayment.status,
         },
       };
     }
 
     if (finalPayment.status !== 'approved') {
-      throw new Error(`WEBPAY_TIMEOUT: estado final inesperado (${finalPayment.status})`);
+      throw paymentError(
+        `WEBPAY_TIMEOUT: estado final inesperado (${finalPayment.status})`,
+        finalPayment,
+      );
     }
 
     return {
@@ -147,11 +175,14 @@ export class WebpayPaymentGateway implements IPaymentGateway {
       transactionTip: request.tip ?? 0,
       transactionCashback: 0,
       printerVoucherCommerce: false,
+      ...gatewaySnapshot(finalPayment),
       rawTuuRequest: {
         provider: 'webpay',
         amount: request.amount,
         payment_id: finalPayment.payment_id,
         token: finalPayment.token,
+        buy_order: finalPayment.buy_order,
+        status: finalPayment.status,
       },
     };
   }
@@ -175,7 +206,11 @@ export class WebpayPaymentGateway implements IPaymentGateway {
       }
       await sleep(POLL_MS);
     }
-    throw new Error('WEBPAY_TIMEOUT: tiempo de espera agotado');
+    throw paymentError('WEBPAY_TIMEOUT: tiempo de espera agotado', {
+      payment_id: paymentId,
+      status: 'timeout',
+      amount: 0,
+    });
   }
 
   async cancelCardPayment(): Promise<void> {

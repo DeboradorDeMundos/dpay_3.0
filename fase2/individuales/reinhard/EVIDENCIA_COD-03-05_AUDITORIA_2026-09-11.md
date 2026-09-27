@@ -148,7 +148,7 @@ controlada. No se generó evidencia de APK válida.
 - [x] Badge de pasarela y auto-selección con una opción.
 - [x] Flujo efectivo no modificado.
 - [x] Oculta tarjetas cuando no existe pasarela.
-- [ ] Selector interactivo cuando existan dos o más pasarelas.
+- [x] Selector interactivo cuando existan dos o más pasarelas. Código 2026-09-26 (`PaymentGatewayBadge`); falta captura en dispositivo.
 - [ ] Validación visual claro/oscuro y accesibilidad en dispositivo.
 
 ---
@@ -173,6 +173,6 @@ personales reales.
 **COD-03:** apto para QA manual.  
 **COD-02:** código listo; regresión Kozen pendiente.  
 **COD-04:** bloqueado, solo stub; no declarar terminado.  
-**COD-05:** parcial; falta selección multi-gateway y prueba visual.  
+**COD-05 (corte 2026-09-11):** parcial. **Actualización 2026-09-26:** el selector multi-pasarela está en código y tiene prueba de `keepUserSelection`. Sigue pendiente la captura en dispositivo. Ver [DOC-04](DOC-04-diseno-payment-gateway.md).  
 **Merge de rama:** condicionado a corregir/aceptar `DEF-BUILD-01`, ejecutar QA
 manual y revisar el commit `dcfb2f8`.

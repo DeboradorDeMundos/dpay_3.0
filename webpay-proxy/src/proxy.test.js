@@ -58,6 +58,10 @@ test('create + simulate approved + status', async () => {
     assert.equal(created.status, 'approved');
     assert.ok(created.payment_id);
     assert.ok(created.auth_code);
+    assert.equal(created.provider, 'sim');
+    assert.ok(created.token);
+    assert.match(created.buy_order, /^DP[A-Za-z0-9]+$/);
+    assert.ok(created.buy_order.length <= 26);
 
     const reuseRes = await fetch(`${base}/payments/webpay/create`, {
       method: 'POST',

@@ -1,5 +1,12 @@
 import { PaymentGatewayFactory } from '../src/services/paymentGateway/PaymentGatewayFactory';
 
+jest.mock('../src/services/paymentGateway/webpayProxyConfig', () => ({
+  WEBPAY_PROXY_PUBLIC_URL: '',
+  WEBPAY_RETURN_DEEP_LINK: 'dtemitepos://payments/webpay/return',
+  getWebpayProxyBaseUrl: async () => 'http://127.0.0.1:8787',
+  isWebpayProxyConfigured: async () => true,
+}));
+
 jest.mock('../src/services/tuuPayment', () => ({
   tuuPaymentService: {
     isTuuAppInstalled: jest.fn().mockResolvedValue(true),
@@ -49,6 +56,18 @@ describe('PaymentGatewayFactory', () => {
   it('retorna null en celular genérico sin pasarelas', async () => {
     const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', []);
     expect(gateway).toBeNull();
+  });
+
+  it('conserva la pasarela elegida si sigue disponible', () => {
+    expect(
+      PaymentGatewayFactory.keepUserSelection(['webpay', 'mock'], 'mock', 'webpay'),
+    ).toBe('mock');
+  });
+
+  it('vuelve a la preselección si la elegida ya no está', () => {
+    expect(
+      PaymentGatewayFactory.keepUserSelection(['webpay'], 'mock', 'webpay'),
+    ).toBe('webpay');
   });
 
   it('expone registry por id', () => {
