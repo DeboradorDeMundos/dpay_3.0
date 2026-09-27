@@ -161,6 +161,7 @@ async function handleCreate(req, res) {
     status: 'redirected',
     token: upstream.token,
     redirect_url: upstream.redirect_url,
+    buy_order: upstream.meta?.buy_order || webpayplus.buyOrderFromPaymentId(paymentId),
     response_json: JSON.stringify(upstream.meta || {}),
   });
 

@@ -1,36 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { PaymentGatewayFactory } from '../../services/paymentGateway/PaymentGatewayFactory';
-import type { IPaymentGateway } from '../../types/paymentGateway';
+import type { GatewayProviderId, IPaymentGateway } from '../../types/paymentGateway';
+
+type Props = {
+  selectedId: GatewayProviderId | null;
+  onSelect: (id: GatewayProviderId) => void;
+};
 
 /**
- * HU-04: muestra pasarela activa y auto-selección cuando hay una sola opción.
+ * HU-04: una sola pasarela se muestra como badge.
+ * Con dos o más, el cajero elige cuál usar en el cobro.
  */
-export const PaymentGatewayBadge: React.FC = () => {
+export const PaymentGatewayBadge: React.FC<Props> = ({ selectedId, onSelect }) => {
   const themeColors = useThemeColors();
   const devicePaymentProfile = useSettingsStore(s => s.devicePaymentProfile);
   const availableGatewayIds = useSettingsStore(s => s.availableGatewayIds);
   const [gateways, setGateways] = useState<IPaymentGateway[]>([]);
-  const [active, setActive] = useState<IPaymentGateway | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [list, defaultGw] = await Promise.all([
-        PaymentGatewayFactory.listAvailableForProfile(
-          devicePaymentProfile,
-          availableGatewayIds,
-        ),
-        PaymentGatewayFactory.getDefaultCardGateway(
-          devicePaymentProfile,
-          availableGatewayIds,
-        ),
-      ]);
+      const list = await PaymentGatewayFactory.listAvailableForProfile(
+        devicePaymentProfile,
+        availableGatewayIds,
+      );
       if (!cancelled) {
         setGateways(list);
-        setActive(defaultGw);
       }
     })();
     return () => {
@@ -42,23 +40,64 @@ export const PaymentGatewayBadge: React.FC = () => {
     return null;
   }
 
-  const label =
-    gateways.length === 1
-      ? `Pasarela: ${active?.displayName ?? gateways[0].displayName}`
-      : active
-        ? `Pasarela: ${active.displayName}`
-        : 'Sin pasarela de tarjeta';
+  const devSuffix = devicePaymentProfile === 'GENERIC_MOBILE' && __DEV__ ? ' · dev' : '';
+  const active = gateways.find(g => g.id === selectedId) ?? gateways[0];
+
+  if (gateways.length === 1) {
+    return (
+      <View style={{ marginHorizontal: 20, marginBottom: 8 }}>
+        <Text
+          style={{
+            fontSize: 12,
+            color: themeColors.isDark ? themeColors.textSecondary : '#666666',
+          }}>
+          {`Pasarela: ${active.displayName}${devSuffix}`}
+        </Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={{ marginHorizontal: 20, marginBottom: 8 }}>
+    <View
+      accessibilityRole="radiogroup"
+      accessibilityLabel="Pasarela de tarjeta"
+      style={{ marginHorizontal: 20, marginBottom: 8, gap: 8 }}>
       <Text
         style={{
           fontSize: 12,
-          color: themeColors.isDark ? '#cccccc' : '#666666',
+          color: themeColors.isDark ? themeColors.textSecondary : '#666666',
         }}>
-        {label}
-        {devicePaymentProfile === 'GENERIC_MOBILE' && __DEV__ ? ' · dev' : ''}
+        {`Elegir pasarela${devSuffix}`}
       </Text>
+      {gateways.map(gateway => {
+        const selected = gateway.id === selectedId;
+        return (
+          <Pressable
+            key={gateway.id}
+            accessibilityRole="radio"
+            accessibilityLabel={gateway.displayName}
+            accessibilityState={{ selected, checked: selected }}
+            onPress={() => onSelect(gateway.id)}
+            style={{
+              minHeight: 44,
+              borderRadius: 12,
+              borderWidth: 2,
+              borderColor: themeColors.secondary,
+              backgroundColor: selected ? themeColors.secondary : themeColors.background,
+              paddingHorizontal: 14,
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: '600',
+                color: selected ? '#FFFFFF' : themeColors.text,
+              }}>
+              {gateway.displayName}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 };

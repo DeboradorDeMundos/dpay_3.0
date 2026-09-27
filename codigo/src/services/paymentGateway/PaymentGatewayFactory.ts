@@ -74,6 +74,24 @@ export class PaymentGatewayFactory {
     return available[0];
   }
 
+  /**
+   * Conserva la pasarela que eligió el cajero si sigue disponible.
+   * Si no, usa la preselección (una sola opción o prioridad Webpay/TUU).
+   */
+  static keepUserSelection(
+    availableIds: GatewayProviderId[],
+    previous: GatewayProviderId | null,
+    fallback: GatewayProviderId | null,
+  ): GatewayProviderId | null {
+    if (previous && availableIds.includes(previous)) {
+      return previous;
+    }
+    if (fallback && availableIds.includes(fallback)) {
+      return fallback;
+    }
+    return availableIds[0] ?? null;
+  }
+
   /** HU-04: pasarelas disponibles para UI (nombre + id). */
   static async listAvailableForProfile(
     profile: DevicePaymentProfile | null,

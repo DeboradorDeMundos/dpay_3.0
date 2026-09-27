@@ -39,6 +39,8 @@ describe('WebpayPaymentGateway', () => {
               auth_code: 'WP123',
               last4: '4242',
               token: 'tok',
+              buy_order: 'DPpay123',
+              provider: 'webpay',
             }),
         };
       }
@@ -56,5 +58,9 @@ describe('WebpayPaymentGateway', () => {
     expect(result.success).toBe(true);
     expect(result.sequenceNumber).toBe(paymentId);
     expect(result.authCode).toBe('WP123');
+    expect(result.provider).toBe('webpay');
+    expect(result.gatewayToken).toBe('tok');
+    expect(result.buyOrder).toBe('DPpay123');
+    expect(result.gatewayStatus).toBe('approved');
   });
 });

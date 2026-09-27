@@ -58,9 +58,9 @@ npm start
 cd webpay-proxy
 npm test
 
-# App — emulador
-# WEBPAY_PROXY_BASE_URL = http://10.0.2.2:8787 (default __DEV__)
-# Honor físico: cambiar a http://<IP-PC>:8787 en webpayProxyConfig.ts
+# App — emulador: http://10.0.2.2:8787
+# Honor por USB: http://127.0.0.1:8787 con adb reverse tcp:8787 (dev-mobile.ps1)
+# Datos móviles: WEBPAY_PROXY_PUBLIC_URL
 ```
 
 ### Casos QA Honor
@@ -76,10 +76,11 @@ npm test
 
 ## Pendiente post-merge
 
-- [ ] IP LAN en Honor + capturas `fase2/evidencias/DPAY/HU-04/`
+- [x] Persistencia `provider`, `token`, `buy_order`, `status` (COD-06, 2026-09-26). Ver [DOC-04](DOC-04-diseno-payment-gateway.md).
+- [ ] Capturas de la app para TC-WP-04 y TC-WP-05 (la API del sandbox ya pasó; log en `Evidencias_dpay`)
 - [ ] Definir `id_mediopago` Webpay y sync a `POST /pos/transaccion`
 - [ ] Activar `PROVIDER=chimuelo` en QA con token Diego
-- [ ] Selector UI multi-gateway (COD-05) cuando Webpay + Mock coexisten
+- [x] Selector UI multi-gateway en código (COD-05). Falta captura en dispositivo.
 
 ## Seguridad
 

@@ -32,6 +32,11 @@ export interface PaymentCardResult {
   /** Respuesta cruda TUU para persistencia en `Sale.tuuPaymentData`. */
   rawTuuResponse?: TuuPaymentResponse;
   rawTuuRequest?: Record<string, unknown>;
+  /** COD-06: datos de pasarela para persistir en la venta o en el registro de fallos. */
+  provider?: string;
+  gatewayToken?: string;
+  buyOrder?: string;
+  gatewayStatus?: string;
 }
 
 /** Contrato común de pasarela (adapter/strategy). */

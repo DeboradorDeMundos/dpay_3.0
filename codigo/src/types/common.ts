@@ -102,6 +102,10 @@ export interface Sale {
   tuuPaymentData?: {
     /** Proveedor real; mantiene compatibilidad con el modelo legacy tuuPaymentData. */
     paymentProvider?: 'tuu' | 'mock' | 'webpay' | 'cash';
+    /** COD-06: token de la pasarela. No es PAN ni CVV. */
+    gatewayToken?: string;
+    buyOrder?: string;
+    gatewayStatus?: string;
     // Request enviado a TUU
     request: {
       amount: number;
