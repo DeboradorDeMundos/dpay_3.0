@@ -133,7 +133,7 @@ export function goFormHtml({ tbkUrl, token, amount }) {
   <title>Webpay Plus</title>
 </head>
 <body>
-  <p>Redirigiendo a Webpay Plus ($${shown} CLP). Los datos de la tarjeta se ingresan en Transbank.</p>
+  <p>Webpay Plus ($${shown} CLP). Ingresa una tarjeta de prueba de Transbank Developers (VISA 4051…6623 CVV 123).</p>
   <form id="tbk" method="POST" action="${escapeHtml(safeUrl)}">
     <input type="hidden" name="token_ws" value="${escapeHtml(safeToken)}" />
     <button type="submit">Continuar a Webpay</button>

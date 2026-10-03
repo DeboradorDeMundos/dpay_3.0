@@ -3,11 +3,13 @@ import type {
   IPaymentGateway,
   PaymentCardRequest,
   PaymentCardResult,
+  WebpayQrCheckoutPayload,
 } from '../../types/paymentGateway';
 import {
   getWebpayProxyBaseUrl,
   isWebpayProxyConfigured,
 } from './webpayProxyConfig';
+import { WEBPAY_CHECKOUT_TIMEOUT_MS } from './webpayCheckoutConstants';
 
 type ProxyPayment = {
   payment_id: string;
@@ -19,6 +21,8 @@ type ProxyPayment = {
   token?: string | null;
   buy_order?: string | null;
   provider?: string | null;
+  qr_page_url?: string | null;
+  qr_checkout_url?: string | null;
 };
 
 function gatewaySnapshot(payment: ProxyPayment) {
@@ -41,7 +45,6 @@ function paymentError(message: string, payment: ProxyPayment) {
 }
 
 const POLL_MS = 1200;
-const POLL_TIMEOUT_MS = 180_000;
 
 async function proxyFetch(path: string, init?: RequestInit): Promise<Response> {
   const base = await getWebpayProxyBaseUrl();
@@ -62,6 +65,36 @@ function sleep(ms: number) {
 
 function isFinalStatus(status: string) {
   return status === 'approved' || status === 'declined' || status === 'cancelled';
+}
+
+async function cancelPaymentOnProxy(paymentId: string): Promise<void> {
+  try {
+    await proxyFetch(`/payments/webpay/${paymentId}/cancel`, { method: 'POST', body: '{}' });
+  } catch {
+    // El poll puede igualmente ver cancelled si el proxy respondió.
+  }
+}
+
+function abortReason(signal: AbortSignal | undefined): string {
+  if (!signal?.aborted) return '';
+  const reason = signal.reason;
+  if (reason === 'timeout' || reason === 'WEBPAY_TIMEOUT') return 'timeout';
+  return 'cancel';
+}
+
+async function fetchQrCheckoutPayload(paymentId: string): Promise<WebpayQrCheckoutPayload> {
+  const res = await proxyFetch(`/payments/webpay/${paymentId}/qr.json`);
+  const text = await res.text();
+  let payload: WebpayQrCheckoutPayload;
+  try {
+    payload = JSON.parse(text);
+  } catch {
+    throw new Error(`Webpay qr.json inválido: ${text.slice(0, 180)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`Webpay qr.json HTTP ${res.status}`);
+  }
+  return payload;
 }
 
 /**
@@ -123,14 +156,23 @@ export class WebpayPaymentGateway implements IPaymentGateway {
     // Si el proxy ya dejó el pago en estado final (simulate), no abrir browser
     let finalPayment: ProxyPayment = created;
     if (!isFinalStatus(created.status)) {
-      if (created.redirect_url) {
-        const canOpen = await Linking.canOpenURL(created.redirect_url);
-        if (!canOpen) {
-          throw new Error(`No se puede abrir checkout Webpay: ${created.redirect_url}`);
+      if (request.presentWebpayQrCheckout) {
+        const qrPayload = await fetchQrCheckoutPayload(created.payment_id);
+        request.presentWebpayQrCheckout(qrPayload);
+      } else {
+        const checkoutUrl =
+          created.provider === 'webpayplus' && created.qr_page_url
+            ? created.qr_page_url
+            : created.redirect_url;
+        if (checkoutUrl) {
+          const canOpen = await Linking.canOpenURL(checkoutUrl);
+          if (!canOpen) {
+            throw new Error(`No se puede abrir checkout Webpay: ${checkoutUrl}`);
+          }
+          await Linking.openURL(checkoutUrl);
         }
-        await Linking.openURL(created.redirect_url);
       }
-      finalPayment = await this.waitForFinalStatus(created.payment_id);
+      finalPayment = await this.waitForFinalStatus(created.payment_id, request.signal);
     }
 
     if (finalPayment.status === 'cancelled') {
@@ -187,9 +229,28 @@ export class WebpayPaymentGateway implements IPaymentGateway {
     };
   }
 
-  private async waitForFinalStatus(paymentId: string): Promise<ProxyPayment> {
+  private async waitForFinalStatus(
+    paymentId: string,
+    signal?: AbortSignal,
+  ): Promise<ProxyPayment> {
     const started = Date.now();
-    while (Date.now() - started < POLL_TIMEOUT_MS) {
+    while (Date.now() - started < WEBPAY_CHECKOUT_TIMEOUT_MS) {
+      if (signal?.aborted) {
+        await cancelPaymentOnProxy(paymentId);
+        const reason = abortReason(signal);
+        if (reason === 'timeout') {
+          throw paymentError(
+            'WEBPAY_TIMEOUT: no se completó el pago en 5 minutos. Puede generar un nuevo QR.',
+            { payment_id: paymentId, status: 'timeout', amount: 0 },
+          );
+        }
+        throw paymentError('WEBPAY_CANCELLED: pago cancelado por el usuario', {
+          payment_id: paymentId,
+          status: 'cancelled',
+          amount: 0,
+        });
+      }
+
       const res = await proxyFetch(`/payments/webpay/${paymentId}/status`);
       const text = await res.text();
       let payment: ProxyPayment;
@@ -206,15 +267,16 @@ export class WebpayPaymentGateway implements IPaymentGateway {
       }
       await sleep(POLL_MS);
     }
-    throw paymentError('WEBPAY_TIMEOUT: tiempo de espera agotado', {
-      payment_id: paymentId,
-      status: 'timeout',
-      amount: 0,
-    });
+
+    await cancelPaymentOnProxy(paymentId);
+    throw paymentError(
+      'WEBPAY_TIMEOUT: no se completó el pago en 5 minutos. Puede generar un nuevo QR.',
+      { payment_id: paymentId, status: 'timeout', amount: 0 },
+    );
   }
 
   async cancelCardPayment(): Promise<void> {
-    // El usuario cancela en el checkout sandbox / Transbank; el poll recibe cancelled.
+    // La UI aborta `request.signal`; el proxy marca la transacción cancelled.
   }
 }
 
