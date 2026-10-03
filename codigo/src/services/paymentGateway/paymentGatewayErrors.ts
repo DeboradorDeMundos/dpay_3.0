@@ -1,5 +1,6 @@
 import { classifyTuuError, parseTuuError } from '../tuuPayment';
 import type { GatewayProviderId } from '../../types/paymentGateway';
+import { webpayCheckoutTimeoutUserMessage } from './webpayCheckoutConstants';
 
 export function classifyCardPaymentError(error: unknown, gatewayId: GatewayProviderId) {
   if (gatewayId === 'tuu') {
@@ -13,8 +14,7 @@ export function classifyCardPaymentError(error: unknown, gatewayId: GatewayProvi
         category: 'ERROR_RED' as const,
         code: 'WEBPAY_TIMEOUT',
         title: 'Tiempo agotado',
-        message:
-          'Pasaron 5 minutos sin completar el pago. Vuelva a cobrar con tarjeta para generar un nuevo QR.',
+        message: webpayCheckoutTimeoutUserMessage(),
         isRetryable: true,
       };
     }

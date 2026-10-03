@@ -9,7 +9,10 @@ import {
   getWebpayProxyBaseUrl,
   isWebpayProxyConfigured,
 } from './webpayProxyConfig';
-import { WEBPAY_CHECKOUT_TIMEOUT_MS } from './webpayCheckoutConstants';
+import {
+  WEBPAY_CHECKOUT_TIMEOUT_MS,
+  webpayCheckoutTimeoutErrorDetail,
+} from './webpayCheckoutConstants';
 
 type ProxyPayment = {
   payment_id: string;
@@ -240,7 +243,7 @@ export class WebpayPaymentGateway implements IPaymentGateway {
         const reason = abortReason(signal);
         if (reason === 'timeout') {
           throw paymentError(
-            'WEBPAY_TIMEOUT: no se completó el pago en 5 minutos. Puede generar un nuevo QR.',
+            `WEBPAY_TIMEOUT: ${webpayCheckoutTimeoutErrorDetail()}`,
             { payment_id: paymentId, status: 'timeout', amount: 0 },
           );
         }
@@ -270,7 +273,7 @@ export class WebpayPaymentGateway implements IPaymentGateway {
 
     await cancelPaymentOnProxy(paymentId);
     throw paymentError(
-      'WEBPAY_TIMEOUT: no se completó el pago en 5 minutos. Puede generar un nuevo QR.',
+      `WEBPAY_TIMEOUT: ${webpayCheckoutTimeoutErrorDetail()}`,
       { payment_id: paymentId, status: 'timeout', amount: 0 },
     );
   }

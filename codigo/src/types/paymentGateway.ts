@@ -33,7 +33,7 @@ export interface PaymentCardRequest {
   sourceVersion?: string;
   /** Webpay: muestra QR en la app; si no se define, abre qr_page_url en el navegador. */
   presentWebpayQrCheckout?: (payload: WebpayQrCheckoutPayload) => void;
-  /** Webpay: cancelar espera (botón cancelar o timeout 5 min en UI). */
+  /** Webpay: cancelar espera (botón cancelar o timeout checkout en UI). */
   signal?: AbortSignal;
 }
 
