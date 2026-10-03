@@ -9,6 +9,7 @@ import { formatCurrency } from '../../utils/format';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { CashInput } from './CashInput';
 import { TipModal } from './TipModal';
+import { WebpayQrModal } from './WebpayQrModal';
 import AppModal from '../base/AppModal';
 import { PaymentGatewayFactory } from '../../services/paymentGateway/PaymentGatewayFactory';
 import {
@@ -17,9 +18,11 @@ import {
 } from '../../services/paymentGateway/paymentGatewayErrors';
 import { PaymentGatewayBadge } from './PaymentGatewayBadge';
 import { recordCardPaymentAttempt } from '../../services/paymentGateway/cardPaymentAttemptStore';
+import { WEBPAY_CHECKOUT_TIMEOUT_MS } from '../../services/paymentGateway/webpayCheckoutConstants';
 import type {
   GatewayProviderId,
   PaymentCardRequest,
+  WebpayQrCheckoutPayload,
 } from '../../types/paymentGateway';
 import { calculateTotalsByDocType, mapTuuMethodToMedioPago, calcularComisionDpay, registrarTransaccionTuu } from '../../services/api';
 import { mapDocTypeToTuu } from '../../constants/dte';
@@ -84,6 +87,8 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   
   // Ref para guard síncrono - evita llamadas duplicadas al SDK de TUU
   const isProcessingTuuRef = useRef(false);
+  const webpayAbortRef = useRef<AbortController | null>(null);
+  const webpayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { showAlert } = useAlertStore();
 
   // Selectores optimizados - solo extraer lo necesario
@@ -112,6 +117,27 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   const [currentTipAmount, setCurrentTipAmount] = useState(0);
   const [showClientRequiredModal, setShowClientRequiredModal] = useState(false);
   const [selectedGatewayId, setSelectedGatewayId] = useState<GatewayProviderId | null>(null);
+  const [webpayQrVisible, setWebpayQrVisible] = useState(false);
+  const [webpayQrPayload, setWebpayQrPayload] = useState<WebpayQrCheckoutPayload | null>(null);
+  const [webpayQrStartedAt, setWebpayQrStartedAt] = useState<number | null>(null);
+
+  const clearWebpayCheckoutTimers = useCallback(() => {
+    if (webpayTimeoutRef.current) {
+      clearTimeout(webpayTimeoutRef.current);
+      webpayTimeoutRef.current = null;
+    }
+  }, []);
+
+  const cancelWebpayCheckout = useCallback(
+    (reason: 'cancel' | 'timeout') => {
+      clearWebpayCheckoutTimers();
+      const ctrl = webpayAbortRef.current;
+      if (ctrl && !ctrl.signal.aborted) {
+        ctrl.abort(reason === 'timeout' ? 'timeout' : 'cancel');
+      }
+    },
+    [clearWebpayCheckoutTimers],
+  );
 
 
   // Auto-ejecutar pago SOLO si autoExecute es true (controlado por PaymentMethodScreen)
@@ -231,6 +257,11 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
       // Para boletas (39, 41) enviamos 48 a Tuu, pero D-PAY usa el código real
       const tuuDteType = mapDocTypeToTuu(documentType.id);
 
+      if (gateway.id === 'webpay') {
+        webpayAbortRef.current = new AbortController();
+        clearWebpayCheckoutTimers();
+      }
+
       const cardRequest: PaymentCardRequest = {
         amount: totalWithIVA,
         tip: tipAmount > 0 ? tipAmount : undefined,
@@ -240,6 +271,20 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         exemptAmount: exento,
         sourceName: 'D-PAY',
         sourceVersion: APP_VERSION,
+        ...(gateway.id === 'webpay' && webpayAbortRef.current
+          ? {
+              signal: webpayAbortRef.current.signal,
+              presentWebpayQrCheckout: (payload: WebpayQrCheckoutPayload) => {
+                const started = Date.now();
+                setWebpayQrStartedAt(started);
+                setWebpayQrPayload(payload);
+                setWebpayQrVisible(true);
+                webpayTimeoutRef.current = setTimeout(() => {
+                  cancelWebpayCheckout('timeout');
+                }, WEBPAY_CHECKOUT_TIMEOUT_MS);
+              },
+            }
+          : {}),
       };
 
       console.log(
@@ -264,12 +309,17 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
           buyOrder: result.buyOrder,
           amount: totalWithIVA,
         });
-        showAlert(
-          'Pago no completado',
+        const declinedMessage =
           gateway.id === 'mock'
             ? 'La pasarela simulada rechazó el cobro (escenario declined).'
-            : 'El banco o la pasarela rechazó la transacción.',
-        );
+            : gateway.id === 'webpay'
+              ? 'Transbank rechazó el pago. Puede generar un nuevo QR o elegir otro medio de pago.'
+              : 'El banco o la pasarela rechazó la transacción.';
+        if (gateway.id === 'webpay') {
+          setPaymentMethod('');
+          onAutoPaymentFailed?.();
+        }
+        showAlert('Pago no completado', declinedMessage);
         return;
       }
 
@@ -470,6 +520,11 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
       showAlert(title, message);
     } finally {
+      clearWebpayCheckoutTimers();
+      webpayAbortRef.current = null;
+      setWebpayQrVisible(false);
+      setWebpayQrPayload(null);
+      setWebpayQrStartedAt(null);
       isProcessingTuuRef.current = false;
       setIsProcessingTuu(false);
     }
@@ -828,6 +883,14 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
         onCancel={handleTipCancel}
         onNoTip={handleTipNoTip}
         onAcceptTip={handleTipAccept}
+      />
+
+      <WebpayQrModal
+        visible={webpayQrVisible}
+        payload={webpayQrPayload}
+        waiting={isProcessingTuu}
+        startedAt={webpayQrStartedAt}
+        onCancelCheckout={() => cancelWebpayCheckout('cancel')}
       />
     </View>
   );

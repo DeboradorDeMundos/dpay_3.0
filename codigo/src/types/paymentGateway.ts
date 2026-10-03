@@ -8,6 +8,19 @@ export type GatewayProviderId = 'tuu' | 'webpay' | 'mock';
 
 export type CardPaymentMethod = 'credit' | 'debit';
 
+/** Payload GET /payments/webpay/:id/qr.json (checkout QR Capstone). */
+export interface WebpayQrCheckoutPayload {
+  payment_id: string;
+  provider: string;
+  amount: number;
+  buy_order?: string;
+  checkout_url: string;
+  qr_page_url: string;
+  qr_data_url: string;
+  test_cards: Array<{ label: string; pan: string; cvv: string; exp: string }>;
+  instructions: string;
+}
+
 /** Payload agnóstico de cobro con tarjeta hacia cualquier gateway. */
 export interface PaymentCardRequest {
   amount: number;
@@ -18,6 +31,10 @@ export interface PaymentCardRequest {
   exemptAmount: number;
   sourceName?: string;
   sourceVersion?: string;
+  /** Webpay: muestra QR en la app; si no se define, abre qr_page_url en el navegador. */
+  presentWebpayQrCheckout?: (payload: WebpayQrCheckoutPayload) => void;
+  /** Webpay: cancelar espera (botón cancelar o timeout 5 min en UI). */
+  signal?: AbortSignal;
 }
 
 export interface PaymentCardResult {

@@ -10,6 +10,7 @@ import {
 import * as sim from './providers/sim.js';
 import * as chimuelo from './providers/chimuelo.js';
 import * as webpayplus from './providers/webpayplus.js';
+import { buildQrCheckoutPayload, qrCheckoutHtml } from './qrCheckoutPage.js';
 
 function providerApi() {
   if (config.provider === 'chimuelo') return chimuelo;
@@ -264,6 +265,47 @@ async function handleStatus(_req, res, paymentId) {
   return json(res, 200, toPublicPayment(payment));
 }
 
+async function handleCancel(_req, res, paymentId) {
+  requireProxyAuth(_req);
+  const payment = getPayment(paymentId);
+  if (!payment) {
+    return json(res, 404, {
+      error: { code: 'PAYMENT_NOT_FOUND', message: 'Transacción no encontrada' },
+    });
+  }
+
+  if (
+    payment.status === 'approved' ||
+    payment.status === 'declined' ||
+    payment.status === 'cancelled'
+  ) {
+    return json(res, 200, { ...toPublicPayment(payment), reuse: true });
+  }
+
+  let patch;
+  if (config.provider === 'sim') {
+    patch = await sim.commitTransaction(payment, { status: 'cancelled' });
+  } else {
+    patch = {
+      status: 'cancelled',
+      auth_code: null,
+      last4: null,
+      response_code: 'POS_CANCELLED',
+      response_json: JSON.stringify({
+        provider: payment.provider || config.provider,
+        status: 'cancelled',
+        reason: 'pos_cancel_or_timeout',
+      }),
+    };
+  }
+
+  const updated = updatePayment(paymentId, {
+    ...patch,
+    committed_at: new Date().toISOString(),
+  });
+  return json(res, 200, toPublicPayment(updated));
+}
+
 async function handleSandboxDecide(req, res, paymentId) {
   const payment = getPayment(paymentId);
   if (!payment) {
@@ -327,6 +369,11 @@ export async function handleRequest(req, res) {
       return await handleStatus(req, res, statusMatch[1]);
     }
 
+    const cancelMatch = pathname.match(/^\/payments\/webpay\/([^/]+)\/cancel$/);
+    if (req.method === 'POST' && cancelMatch) {
+      return await handleCancel(req, res, cancelMatch[1]);
+    }
+
     const checkoutMatch = pathname.match(/^\/sandbox\/checkout\/([^/]+)$/);
     if (req.method === 'GET' && checkoutMatch) {
       const payment = getPayment(checkoutMatch[1]);
@@ -346,6 +393,31 @@ export async function handleRequest(req, res) {
     }
 
     // Retorno HTTP Chimuelo → deep link app
+    const qrJsonMatch = pathname.match(/^\/payments\/webpay\/([^/]+)\/qr\.json$/);
+    if (req.method === 'GET' && qrJsonMatch) {
+      const payment = getPayment(qrJsonMatch[1]);
+      if (!payment) {
+        return json(res, 404, {
+          error: { code: 'PAYMENT_NOT_FOUND', message: 'Transacción no encontrada' },
+        });
+      }
+      const payload = await buildQrCheckoutPayload(payment, config.publicBaseUrl);
+      return json(res, 200, payload);
+    }
+
+    const qrMatch = pathname.match(/^\/payments\/webpay\/([^/]+)\/qr$/);
+    if (req.method === 'GET' && qrMatch) {
+      const payment = getPayment(qrMatch[1]);
+      if (!payment) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Pago no encontrado');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(await qrCheckoutHtml(payment, config.publicBaseUrl));
+      return;
+    }
+
     const goMatch = pathname.match(/^\/payments\/webpay\/([^/]+)\/go$/);
     if (req.method === 'GET' && goMatch) {
       const payment = getPayment(goMatch[1]);

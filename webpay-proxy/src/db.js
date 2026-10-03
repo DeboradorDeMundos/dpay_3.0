@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { config } from './config.js';
+import { checkoutTargetUrl } from './qrCheckoutPage.js';
 
 let db;
 
@@ -129,6 +130,8 @@ export function toPublicPayment(row) {
     method: row.method,
     tip: row.tip ?? 0,
     redirect_url: row.redirect_url,
+    qr_page_url: `${config.publicBaseUrl}/payments/webpay/${row.id}/qr`,
+    qr_checkout_url: checkoutTargetUrl(row, config.publicBaseUrl),
     token: row.token,
     buy_order: row.buy_order,
     auth_code: row.auth_code,
