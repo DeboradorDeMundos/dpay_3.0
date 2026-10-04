@@ -48,6 +48,9 @@ android/keystore.properties
 .env.trello
 .env.trello.local
 
+# URLs locales del proxy Webpay (LAN / túnel WWAN)
+src/services/paymentGateway/webpayProxyConfig.overrides.ts
+
 # Artefactos de build (pueden contener URLs/config de producción)
 android/app/src/main/assets/index.android.bundle
 

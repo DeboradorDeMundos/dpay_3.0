@@ -49,17 +49,37 @@ function paymentError(message: string, payment: ProxyPayment) {
 
 const POLL_MS = 1200;
 
+const PROXY_FETCH_TIMEOUT_MS = 8000;
+
 async function proxyFetch(path: string, init?: RequestInit): Promise<Response> {
   const base = await getWebpayProxyBaseUrl();
+  if (!base) {
+    throw new Error('Webpay proxy no configurado');
+  }
   const url = `${base}${path}`;
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers || {}),
-    },
-  });
-  return response;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), PROXY_FETCH_TIMEOUT_MS);
+  if (init?.signal) {
+    if (init.signal.aborted) {
+      ctrl.abort(init.signal.reason);
+    } else {
+      init.signal.addEventListener('abort', () => ctrl.abort(init.signal?.reason), {
+        once: true,
+      });
+    }
+  }
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: ctrl.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init?.headers || {}),
+      },
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function sleep(ms: number) {

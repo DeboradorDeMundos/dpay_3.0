@@ -46,9 +46,40 @@ El `create` devuelve `qr_page_url` y `qr_checkout_url`.
 
 ## App móvil
 
-Al cobrar con pasarela **Webpay**, la app muestra un **modal con QR** (`GET …/qr.json`) mientras hace polling de `/status` (máx. **5 min**). Botón **Cancelar cobro** o tiempo agotado → `POST …/cancel` en el proxy y vuelta a la pantalla de cobro (nuevo QR al reintentar). Rechazo Transbank: alerta y mismo retorno al cobro.
+Al cobrar con pasarela **Webpay**, la app muestra un **modal con QR** (`GET …/qr.json`) mientras hace polling de `/status` (máx. **120 s**). Botón **Cancelar cobro** o tiempo agotado → `POST …/cancel` en el proxy y vuelta a la pantalla de cobro (nuevo QR al reintentar). Rechazo Transbank: alerta y mismo retorno al cobro.
+
+En el formulario Transbank: fecha de vencimiento **cualquier mes/año futuro** (ej. 12/29), no una fecha fija de la tarjeta.
+
+## Red: WLAN, LAN y WWAN (4G/5G)
+
+La app detecta el tipo de red (`@react-native-community/netinfo`) y elige la URL del proxy:
+
+| Red | App (`webpayProxyConfig.overrides.ts`) | Proxy (`.env` `PUBLIC_BASE_URL`) |
+|-----|----------------------------------------|----------------------------------|
+| **WLAN** (Wi‑Fi) | `WEBPAY_PROXY_DEV_LAN_URL=http://IP-PC:8787` | Misma IP LAN (QR escaneable en la red) |
+| **LAN** (ethernet) | Igual que WLAN | Igual |
+| **WWAN** (4G/5G) | `WEBPAY_PROXY_PUBLIC_URL=https://túnel...` | Mismo HTTPS (ngrok / Cloudflare Tunnel) |
+
+Copiar `webpayProxyConfig.overrides.example.ts` → `webpayProxyConfig.overrides.ts` (gitignored).
+
+Sin cable USB: desactivar solo datos si pruebas Wi‑Fi; el log `[WebpayProxy] red=…` confirma el perfil.
+
+**Metro sin USB:** menú dev del APK → *Debug server host* = `IP-PC:8081`.
+
+## Hotspot WWAN del Honor (compartir Internet)
+
+No es “dos celulares en 4G”. El Honor crea una **WLAN** (p. ej. `192.168.43.x`). El PC y el celular del cliente deben unirse a ese Wi‑Fi.
+
+1. `ipconfig` en el PC **después** de unirse al hotspot (la IP **no** es la del router de casa).
+2. `PUBLIC_BASE_URL` y `WEBPAY_PROXY_DEV_LAN_URL` = `http://<esa-IP>:8787`.
+3. Reiniciar proxy y generar **QR nuevo**.
+4. Si el Honor (dueño del hotspot) no alcanza al PC, dejar USB + `adb reverse` para la app; el cliente sigue usando el hotspot.
+
+WWAN + WWAN (cada uno con su operador, sin hotspot ni túnel) **no** abre el QR.
+
+Análisis y fallas de sesión: `Evidencias_dpay/00-indice/ANALISIS-QR-RED-WWAN-HOTSPOT-2026-10-03.md`.
 
 ## Pendiente
 
-- `PUBLIC_BASE_URL` HTTPS público para cierre en datos móviles (sin LAN).
-- Evidencias fotográficas TC-WP-03/04/05 con formulario Transbank real.
+- Evidencias E2E WWAN con túnel HTTPS, o prueba hotspot con IPs actualizadas.
+- Evidencias fotográficas TC-WP-03/04 con formulario Transbank real (fecha futura + RUT banco).
