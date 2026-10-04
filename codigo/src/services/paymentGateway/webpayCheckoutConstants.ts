@@ -1,5 +1,5 @@
 /** Tiempo máximo esperando escaneo QR / cierre en Transbank (Capstone). */
-export const WEBPAY_CHECKOUT_TIMEOUT_SEC = 120;
+export const WEBPAY_CHECKOUT_TIMEOUT_SEC = 5 * 60;
 export const WEBPAY_CHECKOUT_TIMEOUT_MS = WEBPAY_CHECKOUT_TIMEOUT_SEC * 1000;
 
 function checkoutTimeoutDurationPhrase(seconds: number): string {

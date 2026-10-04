@@ -46,9 +46,11 @@ El `create` devuelve `qr_page_url` y `qr_checkout_url`.
 
 ## App móvil
 
-Al cobrar con pasarela **Webpay**, la app muestra un **modal con QR** (`GET …/qr.json`) mientras hace polling de `/status` (máx. **120 s**). Botón **Cancelar cobro** o tiempo agotado → `POST …/cancel` en el proxy y vuelta a la pantalla de cobro (nuevo QR al reintentar). Rechazo Transbank: alerta y mismo retorno al cobro.
+Al cobrar con pasarela **Webpay**, la app muestra un **modal con QR** (`GET …/qr.json`) mientras hace polling de `/status` (máx. **120 s** / 2 min; commit `2706c96`). Una captura 03-10 AM aún muestra el texto *5 minutos* (build previo). Botón **Cancelar cobro** o tiempo agotado → `POST …/cancel` en el proxy y vuelta a la pantalla de cobro (nuevo QR al reintentar). Rechazo Transbank: alerta y mismo retorno al cobro.
 
-En el formulario Transbank: fecha de vencimiento **cualquier mes/año futuro** (ej. 12/29), no una fecha fija de la tarjeta.
+En el formulario Transbank: fecha de vencimiento **cualquier mes/año futuro** (ej. **12/29**), no una fecha fija de la tarjeta. Evidencia 03-10 noche: VISA `4051…6623` + 12/29 + RUT banco `11.111.111-1` → *Estamos procesando tu pago* (`Evidencias_dpay/00-indice/CLASIFICACION-CAPTURAS-2026-10-03-noche.md`).
+
+Tras escanear el QR, Chrome puede mostrar *The information you're about to submit is not secure* porque `PUBLIC_BASE_URL` es **HTTP** LAN (`192.168.1.4:8787`). En QA pulsar **Send anyway**. En WWAN/túnel usar HTTPS.
 
 ## Red: WLAN, LAN y WWAN (4G/5G)
 
@@ -82,4 +84,4 @@ Análisis y fallas de sesión: `Evidencias_dpay/00-indice/ANALISIS-QR-RED-WWAN-H
 ## Pendiente
 
 - Evidencias E2E WWAN con túnel HTTPS, o prueba hotspot con IPs actualizadas.
-- Evidencias fotográficas TC-WP-03/04 con formulario Transbank real (fecha futura + RUT banco).
+- Evidencia fotográfica del **cierre** en D-PAY (comprobante aprobado) y TC-WP-04 (MC rechazada). Formulario + banco $4.165 ya archivados 03-10 noche.
