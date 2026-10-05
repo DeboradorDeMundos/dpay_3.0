@@ -10,7 +10,7 @@ import {
 import * as sim from './providers/sim.js';
 import * as chimuelo from './providers/chimuelo.js';
 import * as webpayplus from './providers/webpayplus.js';
-import { buildQrCheckoutPayload, qrCheckoutHtml } from './qrCheckoutPage.js';
+import { buildQrCheckoutPayload, qrCheckoutHtml, selectQrBaseUrl } from './qrCheckoutPage.js';
 
 function providerApi() {
   if (config.provider === 'chimuelo') return chimuelo;
@@ -262,7 +262,7 @@ async function handleStatus(_req, res, paymentId) {
       error: { code: 'PAYMENT_NOT_FOUND', message: 'Transacción no encontrada' },
     });
   }
-  return json(res, 200, toPublicPayment(payment));
+  return json(res, 200, toPublicPayment(payment, { includeToken: false }));
 }
 
 async function handleCancel(_req, res, paymentId) {
@@ -401,7 +401,8 @@ export async function handleRequest(req, res) {
           error: { code: 'PAYMENT_NOT_FOUND', message: 'Transacción no encontrada' },
         });
       }
-      const payload = await buildQrCheckoutPayload(payment, config.publicBaseUrl);
+      const qrBase = selectQrBaseUrl(url.searchParams.get('qr_base'), config.publicBaseUrl);
+      const payload = await buildQrCheckoutPayload(payment, qrBase);
       return json(res, 200, payload);
     }
 
@@ -413,8 +414,9 @@ export async function handleRequest(req, res) {
         res.end('Pago no encontrado');
         return;
       }
+      const qrBase = selectQrBaseUrl(url.searchParams.get('qr_base'), config.publicBaseUrl);
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(await qrCheckoutHtml(payment, config.publicBaseUrl));
+      res.end(await qrCheckoutHtml(payment, qrBase));
       return;
     }
 

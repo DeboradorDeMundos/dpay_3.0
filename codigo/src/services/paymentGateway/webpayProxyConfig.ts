@@ -26,6 +26,7 @@ export type WebpayProxyUrlOverrides = {
 type WebpayProxyFileOverrides = {
   WEBPAY_PROXY_PUBLIC_URL?: string;
   WEBPAY_PROXY_DEV_LAN_URL?: string;
+  WEBPAY_PROXY_API_TOKEN?: string;
 };
 
 function loadWebpayProxyOverrides(): WebpayProxyFileOverrides {
@@ -44,6 +45,10 @@ export const WEBPAY_PROXY_PUBLIC_URL =
 
 export const WEBPAY_PROXY_DEV_LAN_URL =
   webpayProxyOverrides.WEBPAY_PROXY_DEV_LAN_URL?.trim() ?? '';
+
+/** Mismo valor que PROXY_API_TOKEN del proxy. Vacío en LAN de QA; obligatorio con túnel público. */
+export const WEBPAY_PROXY_API_TOKEN =
+  webpayProxyOverrides.WEBPAY_PROXY_API_TOKEN?.trim() ?? '';
 
 export const WEBPAY_PROXY_PORT = 8787;
 
@@ -65,6 +70,110 @@ function configuredUrls(extra?: WebpayProxyUrlOverrides): {
     pub: trimBaseUrl(extra?.publicUrl ?? WEBPAY_PROXY_PUBLIC_URL),
     lan: trimBaseUrl(extra?.lanUrl ?? WEBPAY_PROXY_DEV_LAN_URL),
   };
+}
+
+/** Hermes del APK de depuración no trae el constructor URL. */
+function parseHttpUrl(url: string): { protocol: string; hostname: string } | null {
+  const match = /^([a-z][a-z0-9+.-]*):\/\/([^/?#]*)/i.exec(url.trim());
+  if (!match) return null;
+  const protocol = `${match[1].toLowerCase()}:`;
+  let authority = match[2];
+  const at = authority.lastIndexOf('@');
+  if (at >= 0) authority = authority.slice(at + 1);
+  let hostname = authority;
+  if (hostname.startsWith('[')) {
+    const end = hostname.indexOf(']');
+    if (end < 1) return null;
+    hostname = hostname.slice(1, end);
+  } else {
+    const colon = hostname.indexOf(':');
+    if (colon >= 0) hostname = hostname.slice(0, colon);
+  }
+  if (!hostname) return null;
+  return { protocol, hostname: hostname.toLowerCase() };
+}
+
+function proxyHostname(url: string): string | null {
+  return parseHttpUrl(url)?.hostname ?? null;
+}
+
+/** localhost, USB/adb (127.0.0.1) y alias del emulador. No es escaneable desde otro celular. */
+export function isLoopbackProxyHostname(host: string): boolean {
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '10.0.2.2';
+}
+
+/** RFC1918 (192.168/10/172.16-31), sin loopback ni 10.0.2.2. */
+export function isPrivateLanProxyHostname(host: string): boolean {
+  if (isLoopbackProxyHostname(host)) return false;
+  if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+  if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/.exec(host);
+  if (!match) return false;
+  const second = Number(match[1]);
+  return second >= 16 && second <= 31;
+}
+
+/** Túnel público. Rechaza HTTP y cualquier IP privada o loopback. */
+export function isPublicHttpsProxyUrl(url: string): boolean {
+  const parsed = parseHttpUrl(url);
+  if (!parsed || parsed.protocol !== 'https:') return false;
+  return !isLoopbackProxyHostname(parsed.hostname) && !isPrivateLanProxyHostname(parsed.hostname);
+}
+
+function scannableLanUrl(lan: string): string {
+  const host = lan ? proxyHostname(lan) : null;
+  return host && isPrivateLanProxyHostname(host) ? lan : '';
+}
+
+/**
+ * URL que se codifica en el QR (la abre el celular que escanea).
+ * No es la URL con la que el POS llama al proxy (health/create/poll).
+ * - wwan: solo HTTPS público (túnel). Nunca 192.168/10/172 ni localhost.
+ * - wlan: IP de la Wi-Fi (misma WLAN).
+ * - lan / emulator: URL LAN; si no hay IP, loopback o 10.0.2.2 de desarrollo.
+ * - offline: vacío (solo efectivo).
+ */
+export function resolveWebpayQrBaseUrl(
+  access: WebpayAccessNetwork,
+  extra?: WebpayProxyUrlOverrides,
+): string {
+  const { pub, lan } = configuredUrls(extra);
+  const lanQr = scannableLanUrl(lan);
+
+  if (access === 'wwan') {
+    return isPublicHttpsProxyUrl(pub) ? pub : '';
+  }
+  if (access === 'wlan') {
+    return lanQr;
+  }
+  if (access === 'lan' || access === 'emulator') {
+    if (lanQr) return lanQr;
+    if (access === 'emulator' && __DEV__) return EMULATOR_URL;
+    if (access === 'lan' && __DEV__) return LOOPBACK_URL;
+    return '';
+  }
+  return '';
+}
+
+/** Efectivo solo sin WWAN, WLAN ni LAN. Red desconocida no fuerza efectivo. */
+export function isCashOnlyPaymentNetwork(access: WebpayAccessNetwork): boolean {
+  return access === 'offline';
+}
+
+/** Hay interfaz usable para Webpay en celular genérico. */
+export function isCardPaymentNetwork(access: WebpayAccessNetwork): boolean {
+  return access === 'wwan' || access === 'wlan' || access === 'lan' || access === 'emulator';
+}
+
+export function webpayQrJsonPath(
+  paymentId: string,
+  access: WebpayAccessNetwork,
+  extra?: WebpayProxyUrlOverrides,
+): string {
+  const path = `/payments/webpay/${paymentId}/qr.json`;
+  const qrBase = resolveWebpayQrBaseUrl(access, extra);
+  if (!qrBase) return path;
+  return `${path}?qr_base=${encodeURIComponent(qrBase)}`;
 }
 
 /**
@@ -92,6 +201,8 @@ export function listProxyBaseUrlCandidates(
   }
 
   if (access === 'wwan') {
+    // El POS puede intentar LAN/USB en __DEV__ para llegar al proxy.
+    // El QR no usa esos candidatos: ver resolveWebpayQrBaseUrl.
     add(pub);
     if (__DEV__) {
       add(lan);
@@ -161,16 +272,17 @@ export function getLastWebpayAccessNetwork(): WebpayAccessNetwork {
   return resolvedAccess;
 }
 
-export async function getWebpayProxyBaseUrl(): Promise<string> {
+export async function resolveCurrentWebpayAccess(): Promise<WebpayAccessNetwork> {
   try {
-    if (await DeviceInfo.isEmulator()) {
-      resolvedAccess = 'emulator';
-    } else {
-      resolvedAccess = await detectWebpayAccessNetwork();
-    }
+    if (await DeviceInfo.isEmulator()) return 'emulator';
+    return await detectWebpayAccessNetwork();
   } catch {
-    resolvedAccess = 'unknown';
+    return 'unknown';
   }
+}
+
+export async function getWebpayProxyBaseUrl(): Promise<string> {
+  resolvedAccess = await resolveCurrentWebpayAccess();
 
   const candidates = listProxyBaseUrlCandidates(resolvedAccess);
   lastHealthyProxyUrl = '';

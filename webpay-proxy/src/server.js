@@ -2,6 +2,14 @@ import http from 'node:http';
 import { config } from './config.js';
 import { getDb } from './db.js';
 import { handleRequest } from './routes.js';
+import { publicTunnelWithoutToken } from './qrCheckoutPage.js';
+
+if (publicTunnelWithoutToken(config.publicBaseUrl, config.proxyApiToken)) {
+  console.error(
+    '[webpay-proxy] PUBLIC_BASE_URL es un host público y PROXY_API_TOKEN está vacío. No se abre el túnel.',
+  );
+  process.exit(1);
+}
 
 getDb();
 

@@ -1,10 +1,15 @@
 import { PaymentGatewayFactory } from '../src/services/paymentGateway/PaymentGatewayFactory';
+import { resolveCurrentWebpayAccess } from '../src/services/paymentGateway/webpayProxyConfig';
 
 jest.mock('../src/services/paymentGateway/webpayProxyConfig', () => ({
   WEBPAY_PROXY_PUBLIC_URL: '',
   WEBPAY_RETURN_DEEP_LINK: 'dtemitepos://payments/webpay/return',
   getWebpayProxyBaseUrl: async () => 'http://127.0.0.1:8787',
   isWebpayProxyConfigured: async () => true,
+  resolveCurrentWebpayAccess: jest.fn(async () => 'wlan'),
+  isCashOnlyPaymentNetwork: (access: string) => access === 'offline',
+  isCardPaymentNetwork: (access: string) =>
+    access === 'wwan' || access === 'wlan' || access === 'lan' || access === 'emulator',
 }));
 
 jest.mock('../src/services/tuuPayment', () => ({
@@ -51,6 +56,22 @@ describe('PaymentGatewayFactory', () => {
 
     webpaySpy.mockRestore();
     mockSpy.mockRestore();
+  });
+
+  it('celular genérico offline queda sin pasarela de tarjeta', async () => {
+    (resolveCurrentWebpayAccess as jest.Mock).mockResolvedValueOnce('offline');
+    const gateway = await PaymentGatewayFactory.getDefaultCardGateway('GENERIC_MOBILE', [
+      'webpay',
+      'mock',
+    ]);
+    expect(gateway).toBeNull();
+  });
+
+  it('Kozen sigue pudiendo usar TUU aunque la red del celular esté offline', async () => {
+    (resolveCurrentWebpayAccess as jest.Mock).mockResolvedValue('offline');
+    const gateway = await PaymentGatewayFactory.getDefaultCardGateway('TUU_KOZEN', ['tuu']);
+    expect(gateway?.id).toBe('tuu');
+    (resolveCurrentWebpayAccess as jest.Mock).mockResolvedValue('wlan');
   });
 
   it('retorna null en celular genérico sin pasarelas', async () => {

@@ -99,6 +99,7 @@ test('create + simulate approved + status', async () => {
     const status = await statusRes.json();
     assert.equal(status.status, 'approved');
     assert.equal(status.amount, 1500);
+    assert.equal(status.token, undefined);
   } finally {
     child.kill('SIGTERM');
     try {

@@ -1,6 +1,8 @@
 import { Linking } from 'react-native';
 import { webpayPaymentGateway } from '../src/services/paymentGateway/WebpayPaymentGateway';
 
+declare const global: { fetch: typeof fetch };
+
 jest.mock('react-native/Libraries/Linking/Linking', () => ({
   canOpenURL: jest.fn(),
   openURL: jest.fn(),
@@ -8,9 +10,16 @@ jest.mock('react-native/Libraries/Linking/Linking', () => ({
 
 jest.mock('../src/services/paymentGateway/webpayProxyConfig', () => ({
   WEBPAY_PROXY_PUBLIC_URL: '',
+  WEBPAY_PROXY_API_TOKEN: '',
   WEBPAY_RETURN_DEEP_LINK: 'dtemitepos://payments/webpay/return',
   getWebpayProxyBaseUrl: async () => 'http://proxy.test',
   isWebpayProxyConfigured: async () => true,
+  resolveCurrentWebpayAccess: async () => 'unknown',
+  resolveWebpayQrBaseUrl: () => '',
+  webpayQrJsonPath: (paymentId: string) => `/payments/webpay/${paymentId}/qr.json`,
+  isCashOnlyPaymentNetwork: (access: string) => access === 'offline',
+  isCardPaymentNetwork: (access: string) =>
+    access === 'wwan' || access === 'wlan' || access === 'lan' || access === 'emulator',
 }));
 
 describe('WebpayPaymentGateway', () => {
@@ -155,7 +164,7 @@ describe('WebpayPaymentGateway', () => {
     global.fetch = jest.fn().mockImplementation(async (url: string, init?: RequestInit) => {
       const u = String(url);
       if (u.endsWith('/payments/webpay/create')) {
-        controller.abort('cancel');
+        controller.abort();
         return {
           ok: true,
           status: 201,

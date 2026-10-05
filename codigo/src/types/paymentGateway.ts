@@ -3,7 +3,11 @@ import type { TuuPaymentResponse } from '../services/tuuPayment';
 /** Perfil de hardware para routing de pasarelas (HU-01). */
 export type DevicePaymentProfile = 'TUU_KOZEN' | 'GENERIC_MOBILE';
 
-/** Identificadores de pasarela registradas en factory (HU-02). */
+/**
+ * Ids registrados en PaymentGatewayFactory (HU-02).
+ * Pasarela futura (Flow, Mercado Pago u otra): añadir el id y un adapter
+ * IPaymentGateway. SalePaymentScreen no importa el adapter concreto.
+ */
 export type GatewayProviderId = 'tuu' | 'webpay' | 'mock';
 
 export type CardPaymentMethod = 'credit' | 'debit';

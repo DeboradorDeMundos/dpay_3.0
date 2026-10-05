@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
+declare const __dirname: string;
 import { NativeModules } from 'react-native';
 import { mapTuuMethodToMedioPago } from '../src/services/api';
 import { classifyTuuError } from '../src/services/tuuPayment';
@@ -28,6 +30,10 @@ jest.mock('../src/services/paymentGateway/webpayProxyConfig', () => ({
   WEBPAY_RETURN_DEEP_LINK: 'dtemitepos://payments/webpay/return',
   getWebpayProxyBaseUrl: async () => 'http://127.0.0.1:8787',
   isWebpayProxyConfigured: async () => true,
+  resolveCurrentWebpayAccess: async () => 'wlan',
+  isCashOnlyPaymentNetwork: (access: string) => access === 'offline',
+  isCardPaymentNetwork: (access: string) =>
+    access === 'wwan' || access === 'wlan' || access === 'lan' || access === 'emulator',
 }));
 
 describe('HU-06 TUU', () => {
