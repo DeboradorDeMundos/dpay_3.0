@@ -6,7 +6,15 @@ import type {
 import { mockPaymentGateway } from './MockPaymentGateway';
 import { tuuPaymentGateway } from './TuuPaymentGateway';
 import { webpayPaymentGateway } from './WebpayPaymentGateway';
+import {
+  isCashOnlyPaymentNetwork,
+  resolveCurrentWebpayAccess,
+} from './webpayProxyConfig';
 
+/**
+ * Adapters concretos. Una pasarela nueva (Flow, Mercado Pago u otra) se
+ * registra aquí junto a su GatewayProviderId; la pantalla de venta no cambia.
+ */
 const registry: Record<GatewayProviderId, IPaymentGateway> = {
   tuu: tuuPaymentGateway,
   webpay: webpayPaymentGateway,
@@ -21,15 +29,14 @@ export class PaymentGatewayFactory {
   static async getAvailableGateways(
     allowedIds: GatewayProviderId[],
   ): Promise<IPaymentGateway[]> {
-    const gateways: IPaymentGateway[] = [];
-    for (const id of allowedIds) {
-      const gateway = registry[id];
-      if (!gateway) continue;
-      if (await gateway.isAvailable()) {
-        gateways.push(gateway);
-      }
-    }
-    return gateways;
+    const checks = await Promise.all(
+      allowedIds.map(async id => {
+        const gateway = registry[id];
+        if (!gateway) return null;
+        return (await gateway.isAvailable()) ? gateway : null;
+      }),
+    );
+    return checks.filter((gateway): gateway is IPaymentGateway => gateway !== null);
   }
 
   /** TUU solo en terminal Kozen con app instalada. */
@@ -37,6 +44,13 @@ export class PaymentGatewayFactory {
     profile: DevicePaymentProfile | null,
     allowedIds: GatewayProviderId[],
   ): Promise<IPaymentGateway[]> {
+    // Celular genérico: efectivo solo sin WWAN, WLAN ni LAN. No por no ser Kozen.
+    if (profile !== 'TUU_KOZEN') {
+      const access = await resolveCurrentWebpayAccess();
+      if (isCashOnlyPaymentNetwork(access)) {
+        return [];
+      }
+    }
     const ids =
       profile === 'TUU_KOZEN'
         ? allowedIds

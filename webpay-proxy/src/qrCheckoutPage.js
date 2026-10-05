@@ -30,11 +30,77 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;');
 }
 
+export function isLoopbackHost(host) {
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '10.0.2.2';
+}
+
+export function isPrivateLanHost(host) {
+  if (isLoopbackHost(host)) return false;
+  if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+  if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/.exec(host);
+  if (!match) return false;
+  const second = Number(match[1]);
+  return second >= 16 && second <= 31;
+}
+
+/** Host público (túnel). Loopback y RFC1918 pueden quedar sin token en QA de LAN. */
+export function publicTunnelWithoutToken(publicBaseUrl, proxyApiToken) {
+  let host = '';
+  try {
+    host = new URL(String(publicBaseUrl || '')).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  if (!host || isLoopbackHost(host) || isPrivateLanHost(host)) return false;
+  return !String(proxyApiToken || '').trim();
+}
+
+/**
+ * Base pedida por la app para el QR.
+ * Acepta IP LAN/loopback o el mismo origen que PUBLIC_BASE_URL.
+ * Rechaza un HTTPS arbitrario (no abrir el QR hacia otro host).
+ */
+export function selectQrBaseUrl(requested, fallbackPublic) {
+  const fallback = String(fallbackPublic || '').replace(/\/$/, '');
+  const raw = String(requested || '').trim().replace(/\/$/, '');
+  if (!raw) return fallback;
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return fallback;
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return fallback;
+  if (parsed.username || parsed.password || parsed.search || parsed.hash) return fallback;
+  if (parsed.pathname !== '/' && parsed.pathname !== '') return fallback;
+  const host = parsed.hostname.toLowerCase();
+  if (isPrivateLanHost(host) || isLoopbackHost(host)) return raw;
+  try {
+    if (fallback && parsed.origin === new URL(fallback).origin) return raw;
+  } catch {
+    // PUBLIC_BASE_URL inválido: no usar el host pedido.
+  }
+  return fallback;
+}
+
 export function checkoutTargetUrl(payment, publicBaseUrl) {
   if (payment.provider === 'webpayplus') {
     return `${publicBaseUrl}/payments/webpay/${payment.id}/go`;
   }
-  return payment.redirect_url || `${publicBaseUrl}/sandbox/checkout/${payment.id}`;
+  if (payment.redirect_url) {
+    try {
+      const redirected = new URL(payment.redirect_url);
+      const base = new URL(publicBaseUrl);
+      if (redirected.origin !== base.origin) {
+        return `${publicBaseUrl}${redirected.pathname}${redirected.search}`;
+      }
+      return payment.redirect_url;
+    } catch {
+      return payment.redirect_url;
+    }
+  }
+  return `${publicBaseUrl}/sandbox/checkout/${payment.id}`;
 }
 
 export async function buildQrCheckoutPayload(payment, publicBaseUrl) {

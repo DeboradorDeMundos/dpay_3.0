@@ -7,7 +7,13 @@ import type {
 } from '../../types/paymentGateway';
 import {
   getWebpayProxyBaseUrl,
+  WEBPAY_PROXY_API_TOKEN,
+  isCardPaymentNetwork,
+  isCashOnlyPaymentNetwork,
   isWebpayProxyConfigured,
+  resolveCurrentWebpayAccess,
+  resolveWebpayQrBaseUrl,
+  webpayQrJsonPath,
 } from './webpayProxyConfig';
 import {
   WEBPAY_CHECKOUT_TIMEOUT_MS,
@@ -74,6 +80,7 @@ async function proxyFetch(path: string, init?: RequestInit): Promise<Response> {
       signal: ctrl.signal,
       headers: {
         'Content-Type': 'application/json',
+        ...(WEBPAY_PROXY_API_TOKEN ? { 'X-Proxy-Token': WEBPAY_PROXY_API_TOKEN } : {}),
         ...(init?.headers || {}),
       },
     });
@@ -105,8 +112,23 @@ function abortReason(signal: AbortSignal | undefined): string {
   return 'cancel';
 }
 
+function payloadUsesQrBase(payload: WebpayQrCheckoutPayload, qrBase: string): boolean {
+  const checkout = payload.checkout_url || '';
+  return checkout === qrBase || checkout.startsWith(`${qrBase}/`);
+}
+
 async function fetchQrCheckoutPayload(paymentId: string): Promise<WebpayQrCheckoutPayload> {
-  const res = await proxyFetch(`/payments/webpay/${paymentId}/qr.json`);
+  const access = await resolveCurrentWebpayAccess();
+  const qrBase = resolveWebpayQrBaseUrl(access);
+  if (access === 'wwan' && !qrBase) {
+    throw new Error(
+      'WEBPAY_QR_NETWORK: con datos móviles el QR exige el túnel HTTPS público. No se usa IP privada ni localhost.',
+    );
+  }
+  if ((access === 'wlan' || access === 'lan' || access === 'emulator') && !qrBase) {
+    throw new Error('WEBPAY_QR_NETWORK: falta la URL LAN del proxy para armar el QR.');
+  }
+  const res = await proxyFetch(webpayQrJsonPath(paymentId, access));
   const text = await res.text();
   let payload: WebpayQrCheckoutPayload;
   try {
@@ -116,6 +138,9 @@ async function fetchQrCheckoutPayload(paymentId: string): Promise<WebpayQrChecko
   }
   if (!res.ok) {
     throw new Error(`Webpay qr.json HTTP ${res.status}`);
+  }
+  if (qrBase && !payloadUsesQrBase(payload, qrBase)) {
+    throw new Error('WEBPAY_QR_NETWORK: el QR no coincide con la red del dispositivo.');
   }
   return payload;
 }
@@ -133,6 +158,14 @@ export class WebpayPaymentGateway implements IPaymentGateway {
    * En release: requiere WEBPAY_PROXY_BASE_URL configurado + health OK.
    */
   async isAvailable(): Promise<boolean> {
+    const access = await resolveCurrentWebpayAccess();
+    if (isCashOnlyPaymentNetwork(access)) {
+      return false;
+    }
+    // WWAN, WLAN o LAN: la pasarela sigue disponible en celular genérico.
+    if (isCardPaymentNetwork(access)) {
+      return true;
+    }
     if (!(await isWebpayProxyConfigured())) {
       return false;
     }
@@ -196,6 +229,9 @@ export class WebpayPaymentGateway implements IPaymentGateway {
         }
       }
       finalPayment = await this.waitForFinalStatus(created.payment_id, request.signal);
+      if (!finalPayment.token && created.token) {
+        finalPayment = { ...finalPayment, token: created.token };
+      }
     }
 
     if (finalPayment.status === 'cancelled') {

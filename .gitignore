@@ -7,6 +7,10 @@
 Thumbs.db
 desktop.ini
 
+# --- Python local (scripts Trello, etc.) ---
+**/__pycache__/
+*.py[cod]
+
 # --- Herramientas IA / IDE (local) ---
 .agents/
 .cursor/
@@ -22,3 +26,10 @@ codigo/.env.trello.local
 
 # --- Dependencias generador Word (Fase 1) ---
 /fase1/grupales/_gen/node_modules/
+
+# Fase 1 cerrada: en GitHub quedan los .docx. No commitear copias .md locales.
+/fase1/grupales/*.md
+/fase1/individuales/*.md
+
+# Evidencias de dispositivo / QA (carpeta local CAPSTONE, no el repo)
+/Evidencias_dpay/

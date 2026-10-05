@@ -118,8 +118,9 @@ export function updatePayment(id, patch) {
   return getPayment(id);
 }
 
-export function toPublicPayment(row) {
+export function toPublicPayment(row, options = {}) {
   if (!row) return null;
+  const includeToken = options.includeToken !== false;
   return {
     payment_id: row.id,
     sale_id: row.sale_id,
@@ -132,7 +133,7 @@ export function toPublicPayment(row) {
     redirect_url: row.redirect_url,
     qr_page_url: `${config.publicBaseUrl}/payments/webpay/${row.id}/qr`,
     qr_checkout_url: checkoutTargetUrl(row, config.publicBaseUrl),
-    token: row.token,
+    ...(includeToken ? { token: row.token } : {}),
     buy_order: row.buy_order,
     auth_code: row.auth_code,
     last4: row.last4,

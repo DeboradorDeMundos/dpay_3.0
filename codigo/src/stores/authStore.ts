@@ -72,7 +72,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
     
     try {
-      console.log('[AuthStore] Saving token:', loginInfo.token);
+      console.log('[AuthStore] Saving token');
       storage.set('token', loginInfo.token);
       
       // Regenerar siempre si hay password (alinea b64pass con login PHP)

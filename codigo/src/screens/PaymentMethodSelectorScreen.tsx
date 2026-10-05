@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StatusBar, SafeAreaView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StatusBar, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 import { BackButton } from '../components/base';
 import { useSettingsStore, DPAY_DEFAULT_PAYMENT_METHODS } from '../stores/settingsStore';
 import { useThemeColors } from '../hooks/useThemeColors';
+import {
+  isCashOnlyPaymentNetwork,
+  resolveCurrentWebpayAccess,
+} from '../services/paymentGateway/webpayProxyConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PaymentMethodSelector'>;
 
@@ -26,16 +31,20 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
   } = useSettingsStore();
   const [cardPaymentsBlocked, setCardPaymentsBlocked] = useState(false);
 
-  // HU-01: celular genérico = solo efectivo; Kozen/TUU = tarjetas permitidas
+  // Efectivo solo sin WWAN, WLAN ni LAN. Celular genérico con red mantiene Webpay.
   useEffect(() => {
     let cancelled = false;
     const syncProfile = async () => {
       const detection = await refreshDevicePaymentProfile();
       if (cancelled) return;
 
-      const isGenericMobile = detection.profile === 'GENERIC_MOBILE';
+      const access = await resolveCurrentWebpayAccess();
+      if (cancelled) return;
+
       const hasCardGateway = detection.availableGatewayIds.length > 0;
-      const shouldBlockCards = isGenericMobile && !hasCardGateway;
+      // Efectivo solo sin WWAN/WLAN/LAN. Un celular genérico con red sigue con Webpay.
+      const shouldBlockCards =
+        detection.profile !== 'TUU_KOZEN' && isCashOnlyPaymentNetwork(access);
       setCardPaymentsBlocked(shouldBlockCards);
 
       if (shouldBlockCards && globalPaymentMethods.length > 0) {
@@ -66,7 +75,6 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
   ]);
 
   const togglePaymentMethod = (methodId: string) => {
-    // En celulares, solo permitir Efectivo
     if (cardPaymentsBlocked && methodId !== 'Efectivo') {
       return;
     }
@@ -94,7 +102,6 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
   };
 
   const isMethodDisabled = (methodId: string) => {
-    // En celulares, deshabilitar todo excepto Efectivo
     return cardPaymentsBlocked && methodId !== 'Efectivo';
   };
 
@@ -163,8 +170,8 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
               lineHeight: 20,
               fontWeight: '600',
             }}>
-              ℹ️ Dispositivo móvil detectado:{'\n'}
-              Solo el método "Efectivo" está disponible. Los pagos con tarjeta requieren un dispositivo POS.
+              Sin datos móviles, Wi-Fi ni LAN.{'\n'}
+              Solo efectivo hasta que haya una de esas redes. Webpay vuelve a estar disponible en cuanto haya conexión.
             </Text>
           </View>
         )}
@@ -216,7 +223,7 @@ export const PaymentMethodSelectorScreen = ({ navigation }: Props) => {
                       marginLeft: 8,
                       fontStyle: 'italic',
                     }}>
-                      (Solo POS)
+                      (Sin red)
                     </Text>
                   )}
                 </View>
