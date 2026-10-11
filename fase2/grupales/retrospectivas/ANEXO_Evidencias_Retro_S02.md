@@ -10,11 +10,11 @@
 | Capturas 04/10 | `CLASIFICACION-CAPTURAS-2026-10-04.md` (MTC-10, TC-WP-04 MC, DEF-CFG) |
 | JPG empaquetados | `07_Plan_de_Pruebas/05_Evidencias_por_sprint/Sprint_02/capturas_20261004/` |
 
-**Sesión QA 04/10 — cierre parcial HU-03 rechazo:** MC 5186 → simulador Rechazar → pantalla Transbank fallida → diálogo *Cobro cancelado* en Honor.
+**Sesión QA 04/10 — cierre parcial HU-03 rechazo:** MC 5186 → simulador Rechazar → pantalla Transbank fallida → diálogo *Cobro cancelado* en Celular Android.
 
-**TBK aprobado 04/10:** `TC-WP-TBK_OK_comprobante-debito_2000_20261004_HonorNLA.jpg` (VISA integración → comprobante Honor).
+**TBK aprobado 04/10:** `TC-WP-TBK_OK_comprobante-debito_2000_20261004_CelularAndroid.jpg` (VISA integración → comprobante Celular Android).
 
-**MTC-13:** ~10 s QR → checkout (04/10) — `07_Plan_de_Pruebas/03_Rendimiento/metricas-honor-webpay-20261004.txt`.
+**MTC-13:** ~10 s QR → checkout (04/10) — `07_Plan_de_Pruebas/03_Rendimiento/metricas-celular-android-webpay-20261004.txt`.
 
 **Pendiente S3:** DTE boleta 39 + folio servidor.
 
