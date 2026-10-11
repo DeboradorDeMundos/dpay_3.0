@@ -1,19 +1,20 @@
 # Cómo firmar las retrospectivas (Diego, Pablo, Reinhartd)
 
-## Qué enviar al equipo
+## Estado de firmas
 
-| Sprint | Archivo para firmar | Carpeta |
-|--------|---------------------|---------|
-| **S1** | `DPAY3_ACTA_Retro_S01_PARA_FIRMAR.docx` | `06_Evidencia_Retrospectiva/Sprint_01/` |
-| **S2** | `DPAY3_ACTA_Retro_S02_PARA_FIRMAR.docx` | `06_Evidencia_Retrospectiva/Sprint_02/` |
+| Sprint | Archivo firmado | Carpeta | Estado |
+|--------|-----------------|---------|--------|
+| **S1** | `DPAY3_ACTA_Retro_S01.docx` | `06_Evidencia_Retrospectiva/Sprint_01/` | Firmado 04-10-2026 (3/3) — cerrado |
+| **S2** | `DPAY3_ACTA_Retro_S02.docx` | `06_Evidencia_Retrospectiva/Sprint_02/` | Firmado 04-10-2026 (3/3) — cerrado |
+| **S3** | `DPAY3_ACTA_Retro_S03.docx` (por crear) | `06_Evidencia_Retrospectiva/Sprint_03/` | Pendiente (Review S3) |
 
-Copia en Git: `dpay_3.0/fase2/grupales/retrospectivas/`
+Copia en Git: `dpay_3.0/fase2/grupales/retrospectivas/` — actas firmadas S01/S02 (`.docx` + espejo `.md`) y sus anexos, publicadas en la rama `docs/fase2-actas-retro-reinhard` (reemplazan a los borradores `_PARA_FIRMAR`). Las rutas de los anexos (`07_Plan_de_Pruebas/…`, `Evidencias_dpay/…`) apuntan a la carpeta de documentación del Drive, no al repo.
 
 ## Opciones de firma (elige una)
 
-1. **Imprimir** la última página (tabla de firmas) → firmar a mano → escanear → `Evidencia_S01_firmas_YYYYMMDD.pdf`
-2. **Word/PDF digital**: escribir nombre + fecha en columna Firma (aceptable en Capstone si los tres confirman por Discord)
-3. **Correo/WhatsApp**: mensaje único del grupo: *"Confirmamos acta Retro S1/S2 del [fecha], contenido DPAY3_ACTA_…"* + captura del chat (respaldo)
+1. **Imprimir** la última página (tabla de firmas) → firmar a mano → escanear → `Evidencia_S0X_firmas_YYYYMMDD.pdf`
+2. **Word/PDF digital**: firma (imagen) o nombre + fecha en columna Firma (usado en S1 y S2)
+3. **Correo/WhatsApp**: mensaje único del grupo: *"Confirmamos acta Retro S0X del [fecha], contenido DPAY3_ACTA_…"* + captura del chat (respaldo)
 
 ## Qué NO hace falta firmar
 
@@ -22,5 +23,6 @@ Copia en Git: `dpay_3.0/fase2/grupales/retrospectivas/`
 
 ## Después de firmar
 
-- Guardar PDF/foto en la carpeta del sprint.
+- Renombrar a `DPAY3_ACTA_Retro_S0X.docx`, marcar Estado «Cerrado» y quitar textos de borrador (criterio S01/S02).
+- Guardar PDF/foto en la carpeta del sprint si existe.
 - Subir carpeta **06_Evidencia_Retrospectiva** al Drive del proyecto.
