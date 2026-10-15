@@ -1,0 +1,30 @@
+DOC-07 / 03_Rendimiento — mediciones de laboratorio
+Fecha: 2026-09-27
+PC: Windows, localhost
+Proxy: http://127.0.0.1:8787  PROVIDER=sim
+API: POST https://proqa.dtemite.cl/api/login  (cuerpo vacio, espera 400)
+
+NO reemplaza el cronometro E2E en Celular Android.
+
+--- Webpay create + GET checkout (ms) ---
+M1  198.0   (incluye arranque / warmup)
+M2   12.5
+M3   11.6
+M4   11.3
+M5    9.9
+Promedio  48.7 ms   (0.049 s)
+Maximo   198.0 ms   (0.198 s)
+Objetivo redireccion E2E < 10 s
+Lab (solo proxy+HTML) CUMPLE como cota inferior: 0.20 s << 10 s
+
+--- Probe API login proqa (ms, HTTP 400) ---
+M1  234.1
+M2  157.4
+M3  155.0
+M4  158.7
+M5  150.7
+Promedio  171.2 ms   (0.171 s)
+Maximo    234.1 ms   (0.234 s)
+Objetivo login E2E app < 3 s
+Lab (solo RTT API, sin catalogo/CAF) CUMPLE como cota inferior: 0.23 s << 3 s
+Pendiente: 5 muestras Celular Android (Ingresar -> POS con catalogo).
