@@ -1,1 +1,0 @@
-Medición RNF: redirección Webpay < 10s. Login < 3s si aplica.

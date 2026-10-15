@@ -1,2 +1,0 @@
-DOC-06 · Evidencia de retrospectiva
-Propósito: qué mejoró el equipo. Una carpeta por sprint.

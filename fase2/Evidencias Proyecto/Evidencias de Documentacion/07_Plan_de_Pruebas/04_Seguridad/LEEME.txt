@@ -1,2 +1,0 @@
-Evidencia de que no hay PAN/CVV en logs ni MMKV.
-Repo sin keystore ni .env reales.
