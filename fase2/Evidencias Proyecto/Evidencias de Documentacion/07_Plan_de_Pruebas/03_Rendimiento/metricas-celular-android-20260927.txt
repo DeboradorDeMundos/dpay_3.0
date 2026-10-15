@@ -1,0 +1,24 @@
+DOC-07 / 03_Rendimiento — mediciones Celular Android E2E
+Fecha: 2026-09-27
+QA: Reinhartd Munzenmayer
+Dispositivo: Celular Android
+Metodo: cronometro; 1 muestra por escenario (no 5 repeticiones)
+
+WIFI
+- Levantar aplicacion:              5.0 s
+- Login primera vez:                1.5 s
+- Login credenciales + biometria:   1.0 s
+- Carga de catalogo:                1.0 s
+
+4G
+- Iniciar aplicacion:               2.0 s
+- Login / iniciar sesion:           2.5 s
+- Login credenciales cargadas:      1.5 s
+- Carga de catalogo:                1.0 s
+
+Evaluacion
+- RNF-01.1 Login < 3 s: CUMPLE (peor caso 2.5 s en 4G primera vez).
+- RNF-01.3 Catalogo < 5 s: CUMPLE (1.0 s WiFi y 4G).
+- Arranque app 5.0 s (WiFi) es informativo; no es el RNF de login.
+- RNF-01.5 Redireccion Webpay < 10 s: sin medir en Celular Android.
+- RNF-01.4 Emision DTE < 15 s: sin medir.
