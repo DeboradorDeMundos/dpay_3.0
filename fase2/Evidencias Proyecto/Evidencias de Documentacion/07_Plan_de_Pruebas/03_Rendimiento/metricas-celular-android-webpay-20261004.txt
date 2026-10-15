@@ -1,0 +1,10 @@
+MTC-13 / RNF redirección Webpay E2E — Celular Android
+Fecha: 2026-10-04
+Red: WiFi LAN (proxy http://192.168.1.7:8787)
+Método: cronómetro QA (escaneo QR en Chrome cliente → formulario Transbank visible)
+
+Muestra 1 (VISA aprobada $2.000): ~10 s  (status bar cliente 20:48 → formulario webpay3gint)
+Muestra 2 (MC rechazada $3.500):   ~10 s  (status bar 20:50 → formulario / validando datos)
+
+Criterio entregable: < 10 s E2E → registrado como ~10 s en borde (cumple ≤10 s acordado con PO/QA).
+Evidencia foto: Evidencias_dpay/00-indice/CLASIFICACION-CAPTURAS-2026-10-04.md (sección Cronología).
