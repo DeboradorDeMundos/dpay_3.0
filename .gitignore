@@ -33,3 +33,6 @@ codigo/.env.trello.local
 
 # Evidencias de dispositivo / QA (carpeta local CAPSTONE, no el repo)
 /Evidencias_dpay/
+
+# Salida Jest con metadatos de hardware (ver 07 …/01_Unitarias/LEEME.md)
+**/07_Plan_de_Pruebas/01_Unitarias/jest-codigo-output.txt

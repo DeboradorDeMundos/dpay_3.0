@@ -1,0 +1,2 @@
+Pruebas unitarias (Jest): factory y detección de dispositivo.
+Subir reporte / captura de npm test en verde.
