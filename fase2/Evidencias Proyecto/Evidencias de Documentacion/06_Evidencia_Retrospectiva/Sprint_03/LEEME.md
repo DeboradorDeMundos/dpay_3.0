@@ -1,7 +1,12 @@
 # DOC-06 Sprint 3 — retrospectiva (pre-sesión)
 
-`DPAY3_Retro_S03.md` **v0.4** (16/10): seguimiento S1/S2, TC-064 Parcial (13/10), Start/Stop/Continue borrador. **Acta:** `DPAY3_ACTA_Retro_S03_PARA_FIRMAR.docx` (generado desde el `.md`) — firmar en Review y guardar copia firmada como `DPAY3_ACTA_Retro_S03.docx`. S01/S02 ya cerrados (04/10); no reescribir.
+| Archivo | Uso |
+|---------|-----|
+| `DPAY3_ACTA_Retro_S03.docx` | Acta **firmada y cerrada** (15/10/2026, 3/3, remota) + Start/Stop/Continue |
+| `DPAY3_ACTA_Retro_S03.md` | Espejo en texto (prevalece el `.docx` firmado) |
+| `DPAY3_Retro_S03.md` v0.5 | Seguimiento técnico S1/S2 → S3; TC-064 Parcial (13/10) |
+| `DPAY3_Retro_S03.docx` | Plantilla técnica restaurada; puede desfasarse — usar `.md` + acta |
 
-`ANEXO_Evidencias_Retro_S03.md`: índice de pruebas S3 y capturas Kozen; no es acta.
+`ANEXO_Evidencias_Retro_S03.md`: índice de pruebas S3 y capturas Kozen.
 
-Al cerrar: crear `DPAY3_ACTA_Retro_S03.docx` con el mismo formato que `Sprint_01/` y `Sprint_02/`. No inventar firmas.
+S01/S02 cerrados 04/10 — no reescribir. S4: plantilla en `Sprint_04/`.

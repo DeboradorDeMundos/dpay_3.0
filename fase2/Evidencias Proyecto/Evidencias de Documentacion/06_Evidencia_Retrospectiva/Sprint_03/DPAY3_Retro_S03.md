@@ -1,16 +1,18 @@
-# Retrospectiva - Sprint 3 (pre-sesion)
+# Retrospectiva - Sprint 3
 
 _D-PAY 3.0 - Semanas 9-10 (06/10 - 17/10/2026)_
 
 - **Proyecto:** D-PAY 3.0 - POS movil multi-pasarela (DTemite)
 - **Asignatura:** Capstone APT122 - Duoc UC 2026-2
-- **Documento:** DOC-06 / Retrospectiva S03
-- **Version:** 0.4 (seguimiento + Start/Stop/Continue + acta borrador)
+- **Documento:** DOC-06 / Retrospectiva S03 (seguimiento tecnico)
+- **Version:** 0.5 (alineado acta firmada 15/10/2026)
 - **Fecha:** 2026-10-16
 - **Autor:** Reinhartd Munzenmayer (QA)
 - **Equipo:** Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer
-- **Estado:** Borrador acta — pendiente Review/firmas (ver `DPAY3_ACTA_Retro_S03_PARA_FIRMAR.docx`)
+- **Estado:** **Cerrado** — acta `DPAY3_ACTA_Retro_S03.docx` firmada 15/10/2026 (3/3, remota)
 - **Repositorio:** https://github.com/DeboradorDeMundos/dpay_3.0
+
+> Ante diferencia con el acta firmada prevalece `DPAY3_ACTA_Retro_S03.docx`. `DPAY3_Retro_S03.docx` puede quedar desfasado; preferir este `.md` + acta.
 
 ---
 
@@ -21,18 +23,18 @@ _D-PAY 3.0 - Semanas 9-10 (06/10 - 17/10/2026)_
 | Sprint | 3 (semanas 9-10) |
 | Ventana | 06/10 - 17/10/2026 |
 | Hito | Informe avance S10 (20%) |
-| Fecha retrospectiva | por completar (en la Review) |
-| Asistentes | por completar (registrar solo quienes asistan) |
+| Fecha retrospectiva | **15/10/2026** 20:30 (acta firmada; ventana S3 hasta 17/10) |
+| Asistentes | Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer |
 | Facilitador | Pablo Gutierrez (Scrum Master) |
 | Sprint Goal (plan) | Cerrar DTE, historial y NC. Informe de avance S10 (20%). |
 | Goal cumplido | **Parcial** (Webpay HU-06 y doc S10 avanzan; DTE/folio/NC sin cierre; TC-064 Kozen Parcial) |
 
-> Plantilla de entrada: se llena en la Review. Arrastre real desde S2.
+> Seguimiento confirmado en Retro S3 (15/10/2026). Detalle Start/Stop/Continue en acta firmada.
 
 
 ## 2. Seguimiento acciones Sprint 2 (acta firmada 04/10/2026)
 
-Estado verificado al 14/10/2026 contra evidencia local. Confirmar en la sesion (fecha y asistentes siguen por completar).
+Estado verificado al 14/10/2026; confirmado en sesion Retro S3 del 15/10/2026.
 
 | # | Accion S2 | Responsable | Estado al 11/10 | Evidencia |
 |---|---|---|---|---|
@@ -63,7 +65,7 @@ Estado verificado al 14/10/2026 contra evidencia local. Confirmar en la sesion (
 
 ## 5. Start / Stop / Continue
 
-Técnica Scrum: **tres listas** (no elige una sola). **Start** = empezar a hacer; **Stop** = dejar de hacer; **Continue** = mantener. Borrador al 16/10 — confirmar en Review.
+Técnica Scrum: **tres listas**. Acordado en acta 15/10/2026 (copia literal en `DPAY3_ACTA_Retro_S03.docx`).
 
 ### Continue (qué funcionó)
 
@@ -98,7 +100,7 @@ Técnica Scrum: **tres listas** (no elige una sola). **Start** = empezar a hacer
 
 ## 7. Evidencia adjunta
 
-- Acta para firmar: `DPAY3_ACTA_Retro_S03_PARA_FIRMAR.docx` (copia en `Evidencias Grupales/retrospectivas/`). Tras firmar: `DPAY3_ACTA_Retro_S03.docx`. **No inventar firmas.**
+- Acta firmada: `DPAY3_ACTA_Retro_S03.docx` (15/10/2026, 3/3). Espejo: `DPAY3_ACTA_Retro_S03.md`.
 - Indice pre-acta: `ANEXO_Evidencias_Retro_S03.md`.
 - Pruebas S3 v0.3: `07_Plan_de_Pruebas/05_Evidencias_por_sprint/Sprint_03/DPAY3_Pruebas_S03.md`.
 - 8 JPG Kozen 13/10: `.../Sprint_03/capturas_20261013/`.

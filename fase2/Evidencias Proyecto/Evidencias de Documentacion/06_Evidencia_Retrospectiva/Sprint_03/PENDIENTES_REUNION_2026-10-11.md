@@ -88,7 +88,7 @@ No se editó el DAS ni el catálogo RNF. Ver el detalle en el informe QA del 11/
 |-----------|--------|-----------|-------|
 | 06 · `DPAY3_ACTA_Retro_S01.docx` + anexo | Finalizado | — (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
 | 06 · `DPAY3_ACTA_Retro_S02.docx` + anexo | Finalizado | — (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
-| 06 · `DPAY3_Retro_S03` | Falta sesión | Fecha, asistentes, Start/Stop/Continue, acciones, acta firmada | Pablo (facilita), los 3 firman |
+| 06 · `DPAY3_Retro_S03` + acta | **Cerrado** 15/10/2026 | Acta firmada 3/3 (remota); seguimiento técnico en `DPAY3_Retro_S03.md` v0.5 | — |
 | 06 · `DPAY3_Retro_S04…S07` | Falta sesión (plantillas) | Se llenan en cada sprint | Equipo |
 | 06 · `LEEME_FIRMAS_RETROS.md` | Finalizado | — | — |
 | 07 · `DPAY3_Plan_Pruebas_v1.0` | Falta | TC-063 re-test, TC-064, TC-03/08/09 DTE, RNF-01.4; RNF-01.5 | Reinhartd, Diego, Pablo |

@@ -12,7 +12,7 @@ Una carpeta por sprint (`Sprint_01` … `Sprint_07`).
 |--------|---------|-------------------|--------|
 | 1 | 08/09–21/09 | `Sprint_01/DPAY3_ACTA_Retro_S01.docx` (+ `.md` espejo, anexo) | **Cerrado** — acta firmada por los 3 integrantes (04/10/2026) |
 | 2 | 22/09–05/10 | `Sprint_02/DPAY3_ACTA_Retro_S02.docx` (+ `.md` espejo, anexo) | **Cerrado** — acta firmada por los 3 integrantes (04/10/2026) |
-| 3 | 06/10–17/10 | `Sprint_03/DPAY3_Retro_S03.md` v0.4 + `DPAY3_ACTA_Retro_S03_PARA_FIRMAR.md` | Borrador acta 16/10; **firmas pendientes** → `DPAY3_ACTA_Retro_S03.docx`. Anexo: `ANEXO_Evidencias_Retro_S03.md` |
+| 3 | 06/10–17/10 | `Sprint_03/DPAY3_ACTA_Retro_S03.docx` (+ `.md` espejo, `DPAY3_Retro_S03.md` v0.5) | **Cerrado** — acta firmada 15/10/2026 (3/3). Anexo: `ANEXO_Evidencias_Retro_S03.md` |
 | 4–7 | ver Gantt | `DPAY3_Retro_S0X` plantilla v0.0 | No completar hasta la Review |
 
 ## Convención de cierre (S01/S02)

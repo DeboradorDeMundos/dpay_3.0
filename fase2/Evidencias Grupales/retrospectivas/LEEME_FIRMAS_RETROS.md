@@ -6,7 +6,7 @@
 |--------|---------------------|---------|
 | **S1** | `DPAY3_ACTA_Retro_S01_PARA_FIRMAR.docx` | `06_Evidencia_Retrospectiva/Sprint_01/` |
 | **S2** | `DPAY3_ACTA_Retro_S02_PARA_FIRMAR.docx` | `06_Evidencia_Retrospectiva/Sprint_02/` |
-| **S3** | `DPAY3_ACTA_Retro_S03_PARA_FIRMAR.docx` | `06_Evidencia_Retrospectiva/Sprint_03/` |
+| **S3** | `DPAY3_ACTA_Retro_S03.docx` (firmada; borrador `_PARA_FIRMAR` obsoleto) | `06_Evidencia_Retrospectiva/Sprint_03/` |
 
 Copia en Git: `dpay_3.0/fase2/Evidencias Grupales/retrospectivas/` (y espejo en `…/06_Evidencia_Retrospectiva/Sprint_03/`).
 
