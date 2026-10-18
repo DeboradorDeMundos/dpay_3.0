@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D-PAY 3.0 - Desarrollo del POS · Capstone Fase 2</title>
+<style>
+  :root{
+    --navy:#FFFFFF;
+    --navy-2:#F1F7F7;
+    --panel:#F4F9F9;
+    --panel-2:#E9F3F2;
+    --line:#DCE9E8;
+    --text:#0F2B34;
+    --muted:#5C7680;
+    --blue:#0E7490;
+    --blue-bright:#0EA79D;
+    --cyan:#14B8AE;
+    --orange:#D6257F;
+    --orange-2:#B81E6B;
+    --magenta:#9D1F63;
+    --white:#FFFFFF;
+    --brand-bar:#FFFFFF;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--navy); color:var(--text);
+    font-family:"Segoe UI", system-ui, -apple-system, sans-serif;
+    overflow:hidden;
+  }
+  .deck{ position:relative; width:100vw; height:100vh; }
+
+  .brandbar{
+    position:absolute; top:0; left:0; right:0; z-index:8;
+    height:64px;
+    background:var(--brand-bar);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 28px 8px 22px;
+    border-bottom:3px solid transparent;
+    border-image:linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan), var(--blue)) 1;
+  }
+  .brandbar img.logo-duoc{ height:46px; width:auto; display:block; }
+  .brandbar img.logo-dtemite{ height:48px; width:auto; display:block; }
+
+  .progress{
+    position:absolute; top:64px; left:0; height:3px;
+    background:linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan));
+    transition:width .35s ease; z-index:7;
+  }
+
+  .slide{
+    position:absolute; inset:0;
+    display:none;
+    padding: 88px clamp(32px, 6vw, 96px) 72px;
+    flex-direction:column;
+  }
+  .slide.active{ display:flex; }
+
+  .kicker{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:clamp(11px,1vw,13px);
+    color:var(--muted);
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+    margin-bottom:clamp(16px,2.4vw,28px);
+    flex-shrink:0;
+  }
+  .kicker .proj{ color:var(--orange); font-weight:700; letter-spacing:.04em; }
+  .presenter-badge{
+    display:flex; align-items:center; gap:8px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:6px 14px 6px 8px;
+    border-radius:999px;
+    text-transform:none; letter-spacing:0;
+  }
+  .presenter-badge .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 0 3px rgba(66,182,233,.18);
+  }
+
+  .body{ flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0; }
+
+  h1{
+    font-weight:700;
+    font-size:clamp(28px, 4.6vw, 52px);
+    line-height:1.08;
+    margin:0 0 .28em 0;
+    letter-spacing:-.02em;
+  }
+  h2.eyebrow-num{
+    color:var(--orange);
+    font-size:clamp(13px,1.2vw,16px);
+    margin:0 0 .5em 0;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  p.lede{
+    font-size:clamp(16px, 1.55vw, 21px);
+    color:var(--muted);
+    max-width:68ch;
+    line-height:1.5;
+    margin:0 0 clamp(16px,2.2vw,28px) 0;
+  }
+  .grid{ display:grid; gap:clamp(12px,1.5vw,20px); }
+  .cols-2{ grid-template-columns:1fr 1fr; }
+  .cols-3{ grid-template-columns:repeat(3,1fr); }
+  .cols-4{ grid-template-columns:repeat(4,1fr); }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:clamp(14px,1.8vw,22px);
+  }
+  .card h3{
+    font-size:clamp(16px,1.5vw,19px);
+    margin:0 0 8px 0;
+    font-weight:650;
+  }
+  .card p{
+    font-size:clamp(13.5px,1.1vw,16px);
+    color:var(--muted);
+    line-height:1.5;
+    margin:0;
+  }
+  .card .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.06em;
+    color:var(--cyan);
+    margin-bottom:8px;
+  }
+
+  ul.plain{ list-style:none; margin:0; padding:0; }
+  ul.plain li{
+    font-size:clamp(15px,1.25vw,18px);
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    display:flex; gap:14px; align-items:baseline;
+  }
+  ul.plain li:last-child{ border-bottom:none; }
+  ul.plain li .n{
+    color:var(--orange);
+    font-size:.82em;
+    font-weight:700;
+    flex-shrink:0;
+    min-width:2.2ch;
+  }
+
+  .arch{ display:flex; flex-direction:column; gap:8px; }
+  .arch-layer{
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:10px;
+    padding:14px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:clamp(13px,1.1vw,15px);
+    gap:12px;
+  }
+  .arch-layer .lbl{ font-weight:700; }
+  .arch-layer .detail{ color:var(--muted); font-size:.88em; }
+  .arch-layer.highlight{
+    border-color:var(--orange);
+    background:linear-gradient(90deg, rgba(214,37,127,.12), rgba(20,184,174,.10), transparent);
+  }
+  .arch-arrow{ text-align:center; color:var(--cyan); font-size:16px; margin:-2px 0; }
+  .gateways{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .gw{
+    font-size:12px; font-weight:650;
+    padding:4px 10px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted);
+  }
+  .gw.active{ border-color:var(--cyan); color:var(--cyan); background:rgba(20,184,174,.10); }
+  .gw.legacy{ border-color:var(--orange-2); color:var(--orange); }
+  .gw.wait{ border-color:var(--orange); color:var(--orange); background:rgba(214,37,127,.08); }
+
+  .cycle{ display:flex; gap:0; align-items:stretch; }
+  .cycle-step{
+    flex:1; text-align:center; padding:16px 8px;
+    border-top:2px solid var(--line);
+    position:relative;
+  }
+  .cycle-step:not(:last-child)::after{
+    content:'→'; position:absolute; right:-10px; top:12px; color:var(--orange);
+  }
+  .cycle-step .k{ font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--cyan); }
+  .cycle-step .t{ font-weight:650; margin-top:6px; font-size:clamp(13px,1.1vw,16px); }
+
+  table.plan{ width:100%; border-collapse:collapse; font-size:clamp(12px,1.05vw,15px); }
+  table.plan th, table.plan td{
+    text-align:left; padding:11px 12px; border-bottom:1px solid var(--line);
+  }
+  table.plan th{
+    color:var(--orange); font-weight:700; font-size:.82em;
+    letter-spacing:.05em; text-transform:uppercase;
+  }
+  table.plan td.muted{ color:var(--muted); }
+
+  .note{ color:var(--muted); font-size:clamp(12px,1.05vw,14px); margin:12px 0 0; line-height:1.45; }
+
+  .footer-nav{
+    position:absolute; bottom:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px clamp(18px,3vw,40px) 12px;
+    font-size:12px; color:var(--muted); z-index:6;
+    background:linear-gradient(180deg, transparent, rgba(255,255,255,.95));
+  }
+  .nav-btns{ display:flex; gap:8px; align-items:center; }
+  .nav-btns button{
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    width:34px; height:34px; border-radius:8px; cursor:pointer;
+    font-size:16px; display:flex; align-items:center; justify-content:center;
+  }
+  .nav-btns button:hover{ border-color:var(--cyan); color:var(--cyan); }
+
+  .timer-box{
+    display:flex; align-items:center; gap:10px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:5px 12px 5px 8px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .timer-box.paused{ border-color:var(--orange); }
+  .timer-box.over{ border-color:#E4573F; color:#B3271E; }
+  .timer-box .clock{
+    font-variant-numeric:tabular-nums;
+    font-weight:700; color:var(--text); min-width:4.2em;
+  }
+  .timer-box .slide-clock{
+    font-variant-numeric:tabular-nums;
+    color:var(--cyan); font-weight:650; min-width:3.4em;
+  }
+  .timer-box .sep{ opacity:.4; }
+  .click-zone{ position:absolute; top:64px; bottom:56px; width:10%; z-index:4; cursor:pointer; }
+  .click-zone.left{ left:0; } .click-zone.right{ right:0; }
+
+  .cover{ justify-content:center; padding-top:100px; }
+  .cover .super{
+    color:var(--cyan); letter-spacing:.08em; font-size:clamp(12px,1.1vw,14px);
+    font-weight:700; text-transform:uppercase; margin-bottom:14px;
+  }
+  .cover h1{ font-size:clamp(42px,7vw,86px); }
+  .cover .tagline{
+    font-size:clamp(18px,2vw,26px); color:var(--orange); font-weight:650; margin:0 0 16px;
+  }
+  .cover .meta{ display:flex; gap:28px; flex-wrap:wrap; margin-top:clamp(20px,3vw,36px); }
+  .cover .meta div{ font-size:clamp(13px,1.1vw,15px); color:var(--muted); }
+  .cover .meta b{ display:block; color:var(--text); font-size:clamp(15px,1.3vw,18px); font-weight:700; margin-bottom:2px; }
+
+  .closing h1{ font-size:clamp(32px,5vw,54px); }
+
+  .overlay{
+    position:fixed; inset:0; z-index:20;
+    background:rgba(15,43,52,.45);
+    backdrop-filter:blur(8px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .overlay.hidden{ display:none; }
+  .start-card{
+    width:min(520px, 100%);
+    background:var(--navy-2);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:28px 28px 24px;
+    box-shadow:0 24px 60px rgba(15,43,52,.18);
+  }
+  .start-card .logos{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:20px;
+  }
+  .start-card .logos img.logo-duoc{ height:40px; }
+  .start-card .logos img.logo-dtemite{ height:42px; }
+  .start-card h2{ margin:0 0 6px; font-size:22px; }
+  .start-card p.hint{ margin:0 0 18px; color:var(--muted); font-size:14px; line-height:1.45; }
+  .fields{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+  .field label{ display:block; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--cyan); margin-bottom:6px; }
+  .field input{
+    width:100%; background:var(--panel); border:1px solid var(--line); color:var(--text);
+    border-radius:10px; padding:10px 12px; font-size:16px; font-weight:700;
+  }
+  .check{ display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px; margin:0 0 18px; }
+  .btn-go{
+    width:100%; border:0; cursor:pointer;
+    background:linear-gradient(90deg, var(--orange), var(--magenta) 55%, var(--blue-bright));
+    color:#fff; font-weight:800; font-size:16px; letter-spacing:.02em;
+    padding:14px 16px; border-radius:12px;
+  }
+  .keys{ margin-top:14px; color:var(--muted); font-size:12px; line-height:1.5; }
+
+  @media (max-width: 860px){
+    .cols-2, .cols-3, .cols-4{ grid-template-columns:1fr; }
+    .cycle{ flex-direction:column; }
+    .cycle-step::after{ content:'↓'; right:auto; left:50%; top:auto; bottom:-14px; transform:translateX(-50%); }
+    .brandbar{ padding:6px 12px; height:56px; }
+    .brandbar img.logo-duoc{ height:34px; }
+    .brandbar img.logo-dtemite{ height:36px; }
+    .slide{ padding:72px 18px 68px; }
+    .fields{ grid-template-columns:1fr; }
+  }
+  @media print{
+    .footer-nav, .click-zone, .overlay, .brandbar{ display:none; }
+    .slide{ display:flex !important; position:relative; height:100vh; page-break-after:always; padding-top:40px; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <header class="brandbar">
+    <img class="logo-duoc" alt="Duoc UC · Escuela de Informática y Telecomunicaciones" src="assets/logo-duoc.png">
+    <img class="logo-dtemite" alt="Dtemite · Somos Innovación" src="assets/logo-dtemite.png">
+  </header>
+  <div class="progress" id="progress"></div>
+
+  <section class="slide active cover">
+    <div class="super">Duoc UC · PTY4614 Capstone · Sección 001 · Fase 2</div>
+    <h1>D-PAY 3.0</h1>
+    <p class="tagline">Desarrollo del POS móvil</p>
+    <p class="lede">El cobro con tarjeta dejó de depender solo del Kozen. Hoy la misma venta elige efectivo, TUU o Webpay según el aparato, y queda integrada a la plataforma de DTemite.</p>
+    <div class="meta">
+      <div><b>Diego Madrid</b>Arquitectura y desarrollo</div>
+      <div><b>Pablo Gutiérrez</b>Scrum Master</div>
+      <div><b>Reinhartd Munzenmayer</b>QA y documentación</div>
+      <div><b>Dtemite</b>José Robles Rocha · Product Owner</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Equipo</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">00 - Recorrido</h2>
+      <h1>Lo que vamos a mostrar</h1>
+      <ul class="plain">
+        <li><span class="n">01</span> Qué cambió respecto del POS que solo cobraba con TUU</li>
+        <li><span class="n">02</span> Arquitectura, flujo de caja y dónde queda la venta</li>
+        <li><span class="n">03</span> Sprints cerrados y el que está en curso</li>
+        <li><span class="n">04</span> Pruebas, rendimiento y carpeta de evidencias</li>
+        <li><span class="n">05</span> Lo que falta para llegar a la defensa</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Diego Madrid</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">01 - De la definición al código</h2>
+      <h1>La Fase 1 nombró el producto. La Fase 2 lo está cobrando</h1>
+      <p class="lede">D-PAY 2.0 ya vendía en producción con tarjeta TUU, solo en terminal Kozen. Este semestre abre el mismo POS a un celular Android.</p>
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="tag">Línea base</div>
+          <h3>Kozen + TUU</h3>
+          <p>Crédito y débito por Intent. Sigue siendo el cobro con tarjeta del terminal. No se reescribió.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Este semestre</div>
+          <h3>PaymentGateway</h3>
+          <p>La pantalla de venta no conoce la pasarela. Un factory elige TUU, Webpay o Mock.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Al 15 de octubre</div>
+          <h3>Sprint 3 en curso</h3>
+          <p>Sprints 1 y 2 cerrados. Webpay ya tiene evidencia del 4 de octubre. La boleta 39 con folio sigue abierta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Diego Madrid</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">02 - Arquitectura</h2>
+      <h1>Una venta, tres caminos de cobro</h1>
+      <div class="arch">
+        <div class="arch-layer highlight">
+          <div><div class="lbl">D-PAY · React Native 0.75 + TypeScript</div><div class="detail">Login, venta, historial · Zustand + MMKV</div></div>
+          <div class="gateways"><span class="gw active">Android</span></div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer highlight">
+          <div><div class="lbl">PaymentGatewayFactory</div><div class="detail">Detecta Kozen o celular y la red disponible</div></div>
+          <div class="gateways">
+            <span class="gw legacy">TUU</span>
+            <span class="gw active">Webpay</span>
+            <span class="gw">Mock</span>
+          </div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <div><div class="lbl">Proxy Node · webpay-proxy + SQLite</div><div class="detail">Checkout Transbank. El APK no guarda comercio ni llaves</div></div>
+          <div class="gateways"><span class="gw active">GET /health</span></div>
+        </div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer">
+          <div><div class="lbl">API DTemite + PostgreSQL multi-tenant</div><div class="detail">Login, catálogo, tbl_dpay y emisión legacy al SII</div></div>
+          <div class="gateways"><span class="gw">proqa</span><span class="gw">pro</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Diego Madrid</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">03 - Flujo de caja</h2>
+      <h1>El cajero no elige la pasarela: la elige el aparato</h1>
+      <div class="cycle">
+        <div class="cycle-step"><div class="k">01</div><div class="t">Login</div></div>
+        <div class="cycle-step"><div class="k">02</div><div class="t">Venta</div></div>
+        <div class="cycle-step"><div class="k">03</div><div class="t">Medio de pago</div></div>
+        <div class="cycle-step"><div class="k">04</div><div class="t">Cobro</div></div>
+        <div class="cycle-step"><div class="k">05</div><div class="t">Historial</div></div>
+      </div>
+      <div class="grid cols-3" style="margin-top:22px;">
+        <div class="card">
+          <div class="tag">Kozen P8 Neo</div>
+          <h3>TUU</h3>
+          <p>Crédito y débito por la app TUU. Webpay no reemplaza ese Intent.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Celular Android</div>
+          <h3>Webpay Plus</h3>
+          <p>QR al checkout de Transbank si el proxy responde. Sin red útil, solo efectivo.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Siempre</div>
+          <h3>Efectivo</h3>
+          <p>Sigue disponible en ambos aparatos. Un Webpay aprobado no se graba como TUU ni como efectivo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Pablo Gutiérrez</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">04 - Datos</h2>
+      <h1>La venta del celular cae en el tenant del comercio</h1>
+      <p class="lede">D-PAY no tiene base propia. PostgreSQL de DTemite resuelve la empresa y guarda la transacción donde el ERP de oficina ya mira.</p>
+      <table class="plan">
+        <thead>
+          <tr><th>Pieza</th><th>Dónde vive</th><th>Qué guarda</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>admin_dtemite</td><td class="muted">Base global</td><td class="muted">Sistema, servidor y tenant del RUT</td></tr>
+          <tr><td>empresa_{rut}_cl</td><td class="muted">Base del cliente</td><td class="muted">Productos, clientes, documentos y tbl_dpay</td></tr>
+          <tr><td>tbl_dpay</td><td class="muted">Tenant</td><td class="muted">Monto, medio de pago, folio, estado</td></tr>
+          <tr><td>tbl_documento</td><td class="muted">Tenant</td><td class="muted">DTE asociado a la transacción</td></tr>
+          <tr><td>Proxy SQLite</td><td class="muted">webpay-proxy</td><td class="muted">Sesión de checkout. No es el libro de ventas</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Pendiente de este sprint: sincronizar el medio de pago Webpay en tbl_dpay. Hoy el resultado se marca aparte para no mezclarlo con TUU ni con efectivo.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Pablo Gutiérrez</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">05 - Sprints</h2>
+      <h1>Dos sprints cerrados. El tercero trabaja el DTE</h1>
+      <table class="plan">
+        <thead>
+          <tr><th>Sprint</th><th>Meta</th><th>Estado</th><th>Qué quedó demostrado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Entrar y armar la venta</td>
+            <td>Cerrado</td>
+            <td class="muted">Login, PIN, biometría, catálogo y carrito</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Cobrar en efectivo</td>
+            <td>Cerrado</td>
+            <td class="muted">Venta en efectivo e historial local</td>
+          </tr>
+          <tr>
+            <td>Webpay</td>
+            <td>Tarjeta en celular</td>
+            <td>Evidenciado 4 oct</td>
+            <td class="muted">Aprobado, rechazado, cancelado y proxy caído</td>
+          </tr>
+          <tr>
+            <td>3 · 6–17 oct</td>
+            <td>Regresión TUU y DTE</td>
+            <td>En curso</td>
+            <td class="muted">Débito Kozen OK. Boleta 39 con folio, abierta</td>
+          </tr>
+          <tr>
+            <td>Defensa</td>
+            <td>Mismo producto, sin alcance nuevo</td>
+            <td>30 nov – 5 dic</td>
+            <td class="muted">Venta, efectivo, boleta, TUU y Webpay en su aparato</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">Definition of Done v1.0: rama feature, pull request de un par, prueba en Android, demo al Product Owner y retrospectiva.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Reinhartd Munzenmayer</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">06 - Pruebas</h2>
+      <h1>Lo que ya tiene captura y lo que no</h1>
+      <table class="plan">
+        <thead>
+          <tr><th>Caso</th><th>Resultado</th><th>Evidencia</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Clave incorrecta</td><td>OK</td><td class="muted">TC-02 · celular · 4 oct</td></tr>
+          <tr><td>Webpay débito $2.000 aprobado</td><td>OK</td><td class="muted">Comprobante Transbank · 4 oct</td></tr>
+          <tr><td>Webpay rechazado y cancelado</td><td>OK</td><td class="muted">Checkout y diálogo en la app · 4 oct</td></tr>
+          <tr><td>Proxy sin configurar</td><td>OK</td><td class="muted">Webpay no se ofrece; el efectivo sigue</td></tr>
+          <tr><td>TUU débito $2.000 en Kozen</td><td>OK</td><td class="muted">Pago exitoso · 13 oct</td></tr>
+          <tr><td>TUU crédito cancelado por el cajero</td><td>OK</td><td class="muted">No es rechazo del emisor · 13 oct</td></tr>
+          <tr><td>TUU crédito aprobado y rechazo de emisor</td><td>Sin evidencia</td><td class="muted">TC-RG-01 queda parcial</td></tr>
+          <tr><td>Boleta 39 con folio en servidor</td><td>Abierta</td><td class="muted">TC-03, historial y nota de crédito</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Reinhartd Munzenmayer</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">07 - Rendimiento</h2>
+      <h1>El login cumple. El DTE todavía no se mide</h1>
+      <table class="plan">
+        <thead>
+          <tr><th>Requisito</th><th>Umbral</th><th>Medición</th><th>Lectura</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RNF-01.1 Login</td>
+            <td>&lt; 3 s</td>
+            <td class="muted">Peor caso 2,5 s en 4G</td>
+            <td>Cumple</td>
+          </tr>
+          <tr>
+            <td>RNF-01.3 Catálogo</td>
+            <td>&lt; 5 s</td>
+            <td class="muted">1,0 s en WiFi y 4G</td>
+            <td>Cumple en el catálogo QA actual</td>
+          </tr>
+          <tr>
+            <td>RNF-01.5 Webpay</td>
+            <td>&lt; 10 s</td>
+            <td class="muted">~10 s · dos muestras · 4 oct</td>
+            <td>En el borde del umbral</td>
+          </tr>
+          <tr>
+            <td>RNF-01.4 Emisión DTE</td>
+            <td>&lt; 15 s</td>
+            <td class="muted">Sin medir</td>
+            <td>Espera la boleta 39 con folio</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">En laboratorio el proxy arma el checkout en menos de 0,2 s y el login de la API responde en ~0,17 s. Esas cifras no reemplazan el cronómetro en el celular. El timeout oficial del checkout Webpay es 300 s. Falta repetir el catálogo con 500 productos.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Equipo</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">08 - Dónde está cada evidencia</h2>
+      <h1>Esta lámina vive en Evidencias Proyecto</h1>
+      <p class="lede">La entrega de Fase 2 separa el producto, el trabajo del equipo y el de cada integrante.</p>
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="tag">Evidencias Proyecto</div>
+          <h3>Producto</h3>
+          <p>Esta presentación. Documentación (visión, backlog, sprints, diseño, RNF, retrospectivas, pruebas y manual). Aplicación en <b>Evidencias de Sistema</b>. El modelo de datos describe tbl_dpay sobre el PostgreSQL de DTemite.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Evidencias Grupales</div>
+          <h3>Equipo</h3>
+          <p>Informe de avance 2.3 y la guía del informe final 2.6. Cuentan el mismo avance: sprints 1 y 2 cerrados, Sprint 3 en curso, Webpay evidenciado.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Evidencias Individuales</div>
+          <h3>Cada integrante</h3>
+          <p>Diario de reflexión y autoevaluación de Diego Madrid, Pablo Gutiérrez y Reinhartd Munzenmayer.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Responsables de la carpeta</div>
+          <h3>Quién firma qué</h3>
+          <p>Pablo: sprint backlog y Definition of Done. Diego: diseño y manual de despliegue. Reinhartd: retrospectivas y plan de pruebas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Pablo Gutiérrez</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">09 - Scrum en esta fase</h2>
+      <h1>El proceso que sostiene el producto</h1>
+      <div class="cycle">
+        <div class="cycle-step"><div class="k">Planning</div><div class="t">Comprometer</div></div>
+        <div class="cycle-step"><div class="k">Daily</div><div class="t">Sincronizar</div></div>
+        <div class="cycle-step"><div class="k">Review</div><div class="t">Demo a Dtemite</div></div>
+        <div class="cycle-step"><div class="k">Retro</div><div class="t">Acta firmada</div></div>
+      </div>
+      <div class="grid cols-3" style="margin-top:28px;">
+        <div class="card">
+          <div class="tag">Product Owner</div>
+          <h3>José Robles Rocha</h3>
+          <p>Acepta la demo. Efectivo y TUU, ya aceptados, tienen que seguir cobrando en cada review.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Scrum Master</div>
+          <h3>Pablo Gutiérrez</h3>
+          <p>Ceremonias, tablero y flujo Git. El merge a la rama principal pasa por pull request.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Desarrollo y QA</div>
+          <h3>Diego y Reinhartd</h3>
+          <p>Diego construye la app y el proxy. Reinhartd ejecuta el plan de pruebas y clasifica las capturas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide closing">
+    <div class="kicker">
+      <span class="proj">D-PAY 3.0 · Desarrollo Fase 2</span>
+      <span class="presenter-badge"><span class="dot"></span> Equipo</span>
+    </div>
+    <div class="body">
+      <h2 class="eyebrow-num">10 - Hacia la defensa</h2>
+      <h1>Lo que falta cerrar</h1>
+      <ul class="plain">
+        <li><span class="n">01</span> Boleta 39 con folio en el servidor, historial de ese folio y nota de crédito.</li>
+        <li><span class="n">02</span> Crédito aprobado y rechazo del emisor en el Kozen. Hoy el crédito solo tiene cancelación del cajero.</li>
+        <li><span class="n">03</span> Re-test de conexión sin cable USB, con el proxy en la red local y con el proxy apagado.</li>
+        <li><span class="n">04</span> Defensa del 30 de noviembre al 5 de diciembre, con el mismo APK y sin abrir alcance nuevo.</li>
+      </ul>
+      <p class="lede" style="margin-top:22px;">Gracias. Preguntas - Diego Madrid, Pablo Gutiérrez y Reinhartd Munzenmayer.</p>
+    </div>
+  </section>
+
+  <div class="click-zone left" id="zonePrev"></div>
+  <div class="click-zone right" id="zoneNext"></div>
+
+  <footer class="footer-nav">
+    <span id="slideCount">01 / 12</span>
+    <div class="nav-btns">
+      <button id="btnPrev" type="button" aria-label="Anterior">‹</button>
+      <button id="btnPause" type="button" aria-label="Pausar">⏸</button>
+      <button id="btnNext" type="button" aria-label="Siguiente">›</button>
+    </div>
+    <div class="timer-box" id="timerBox" title="Clic para pausar">
+      <span class="clock" id="totalClock">12:00</span>
+      <span class="sep">·</span>
+      <span class="slide-clock" id="slideClock">1:00</span>
+      <span>slide</span>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay" id="startOverlay">
+  <div class="start-card">
+    <div class="logos">
+      <img class="logo-duoc" alt="Duoc UC" src="assets/logo-duoc.png">
+      <img class="logo-dtemite" alt="Dtemite" src="assets/logo-dtemite.png">
+    </div>
+    <h2>Iniciar presentación</h2>
+    <p class="hint">Fase 2 · desarrollo del POS. Timer del tiempo total y avance automático por diapositiva.</p>
+    <div class="fields">
+      <div class="field">
+        <label for="totalMin">Duración total (min)</label>
+        <input id="totalMin" type="number" min="3" max="60" value="12">
+      </div>
+      <div class="field">
+        <label for="slideSec">Cambiar cada (seg)</label>
+        <input id="slideSec" type="number" min="15" max="180" value="60">
+      </div>
+    </div>
+    <label class="check"><input id="autoAdvance" type="checkbox" checked> Avance automático de diapositivas</label>
+    <button class="btn-go" id="btnStart" type="button">Comenzar · F para pantalla completa</button>
+    <div class="keys">← → o clic en los bordes para navegar · Espacio o P para pausar · Home / End · F pantalla completa</div>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  let totalMs = 12 * 60 * 1000;
+  let perSlideMs = 60 * 1000;
+  let autoAdvance = true;
+  let running = false;
+  let startedAt = 0;
+  let pausedAt = 0;
+  let pauseAcc = 0;
+  let slideStartedAt = 0;
+  let slidePauseAcc = 0;
+  let tickId = null;
+
+  document.getElementById('totalMin').addEventListener('input', syncSuggestedInterval);
+  function syncSuggestedInterval(){
+    const mins = Number(document.getElementById('totalMin').value) || 12;
+    document.getElementById('slideSec').value = Math.max(20, Math.round((mins * 60) / total));
+  }
+  syncSuggestedInterval();
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmt(ms){
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return Math.floor(s / 60) + ':' + pad(s % 60);
+  }
+
+  function render(){
+    slides.forEach((s,i)=> s.classList.toggle('active', i===current));
+    document.getElementById('slideCount').textContent =
+      String(current+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+    document.getElementById('progress').style.width = ((current+1)/total*100) + '%';
+  }
+
+  function resetSlideClock(){
+    slideStartedAt = Date.now();
+    slidePauseAcc = 0;
+  }
+
+  function nextSlide(){
+    if(current < total-1){ current++; resetSlideClock(); render(); }
+  }
+  function prevSlide(){
+    if(current > 0){ current--; resetSlideClock(); render(); }
+  }
+
+  function updateClocks(){
+    if(!running && !pausedAt) return;
+    const now = pausedAt || Date.now();
+    const remainTotal = totalMs - (now - startedAt - pauseAcc);
+    const remainSlide = perSlideMs - (now - slideStartedAt - slidePauseAcc);
+    const box = document.getElementById('timerBox');
+    document.getElementById('totalClock').textContent = fmt(remainTotal);
+    document.getElementById('slideClock').textContent = fmt(remainSlide);
+    box.classList.toggle('over', remainTotal <= 0);
+    box.classList.toggle('paused', Boolean(pausedAt));
+
+    if(running && autoAdvance && remainSlide <= 0 && current < total-1){
+      nextSlide();
+    }
+  }
+
+  function startPresentation(){
+    const mins = Math.max(3, Number(document.getElementById('totalMin').value) || 12);
+    const secs = Math.max(15, Number(document.getElementById('slideSec').value) || 60);
+    autoAdvance = document.getElementById('autoAdvance').checked;
+    totalMs = mins * 60 * 1000;
+    perSlideMs = secs * 1000;
+    startedAt = Date.now();
+    slideStartedAt = Date.now();
+    pauseAcc = 0;
+    slidePauseAcc = 0;
+    pausedAt = 0;
+    running = true;
+    current = 0;
+    render();
+    document.getElementById('startOverlay').classList.add('hidden');
+    document.getElementById('btnPause').textContent = '⏸';
+    if(tickId) clearInterval(tickId);
+    tickId = setInterval(updateClocks, 250);
+    updateClocks();
+  }
+
+  function togglePause(){
+    if(!startedAt) return;
+    if(running){
+      running = false;
+      pausedAt = Date.now();
+      document.getElementById('btnPause').textContent = '▶';
+    } else {
+      const now = Date.now();
+      pauseAcc += now - pausedAt;
+      slidePauseAcc += now - pausedAt;
+      pausedAt = 0;
+      running = true;
+      document.getElementById('btnPause').textContent = '⏸';
+    }
+    updateClocks();
+  }
+
+  document.getElementById('btnStart').addEventListener('click', startPresentation);
+  document.getElementById('btnNext').addEventListener('click', nextSlide);
+  document.getElementById('btnPrev').addEventListener('click', prevSlide);
+  document.getElementById('btnPause').addEventListener('click', togglePause);
+  document.getElementById('timerBox').addEventListener('click', togglePause);
+  document.getElementById('zoneNext').addEventListener('click', nextSlide);
+  document.getElementById('zonePrev').addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e)=>{
+    if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if(['ArrowRight','PageDown'].includes(e.key)) { nextSlide(); e.preventDefault(); }
+    if(['ArrowLeft','PageUp'].includes(e.key)) { prevSlide(); e.preventDefault(); }
+    if(e.key === ' ' || e.key === 'p' || e.key === 'P'){ togglePause(); e.preventDefault(); }
+    if(e.key === 'Home'){ current=0; resetSlideClock(); render(); }
+    if(e.key === 'End'){ current=total-1; resetSlideClock(); render(); }
+    if(e.key === 'f' || e.key === 'F'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    if(e.key === 'Enter' && !document.getElementById('startOverlay').classList.contains('hidden')){
+      startPresentation();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
