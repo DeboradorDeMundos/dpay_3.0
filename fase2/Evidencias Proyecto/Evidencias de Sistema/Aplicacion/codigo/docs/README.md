@@ -1,7 +1,7 @@
-# Documentación Capstone — D-PAY 3.0
+# Documentación Capstone - D-PAY 3.0
 
-**Institución:** Duoc UC — Escuela de Informática y Telecomunicaciones — Sede San Bernardo  
-**Asignatura:** DSY1102 / PTY4614-001V — Capstone  
+**Institución:** Duoc UC - Escuela de Informática y Telecomunicaciones - Sede San Bernardo  
+**Asignatura:** DSY1102 / PTY4614-001V - Capstone  
 **Docente:** Fabián Alcántara Guajardo · f.alcantara@profesor.duoc.cl  
 **Semestre:** 2026-2  
 **Empresa mandante:** DTemite  
@@ -27,8 +27,8 @@ DTemite aporta la plataforma cloud (ERP + API). D-PAY es el nuevo rubro (punto d
 | Pablo Gutiérrez | Arquitectura / **Scrum Master** |
 | Reinhartd Munzenmayer | QA / documentación |
 
-**Product Owner:** José Robles Rocha — DTemite  
-**Metodología:** Scrum (Opción 2 — Marco Ágil, guía APT122)
+**Product Owner:** José Robles Rocha - DTemite  
+**Metodología:** Scrum (Opción 2 - Marco Ágil, guía APT122)
 
 ---
 
@@ -101,4 +101,4 @@ DTemite aporta la plataforma cloud (ERP + API). D-PAY es el nuevo rubro (punto d
 | App D-PAY (flujos core en `codigo/`) | Operativa (login, venta, cobro, DTE, historial) |
 | Evidencias formales de pruebas | Plan listo; capturas pendientes |
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

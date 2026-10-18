@@ -1,4 +1,4 @@
-# COD-00 — Inventario baseline (capa de pagos)
+# COD-00 - Inventario baseline (capa de pagos)
 
 **Proyecto:** D-PAY 3.0 Capstone · **Fecha:** 2026-09-09 · **Responsable:** Equipo (baseline Diego / implementación Reinhartd)
 
@@ -17,7 +17,7 @@ Mapa del código **antes** de la capa `PaymentGateway`: qué existe, qué no, y 
 | Servicio TUU | `codigo/src/services/tuuPayment.ts` | Intent Android → app TUU; tipos `TuuPaymentRequest/Response` |
 | Bridge nativo TUU | `codigo/android/.../TuuPaymentModule.java` | `isTuuAppInstalled`, `startPayment` |
 | UI cobro en venta | `codigo/src/components/payment/PaymentsMethods.tsx` | **Import directo** a `tuuPaymentService` |
-| Pantalla cobro externo | `codigo/src/screens/ExternalPaymentScreen.tsx` | Idem (Hub) — fuera de alcance Sprint 1 |
+| Pantalla cobro externo | `codigo/src/screens/ExternalPaymentScreen.tsx` | Idem (Hub) - fuera de alcance Sprint 1 |
 | Serial / POS | `codigo/src/utils/deviceInfo.ts` | `getTerminalSerial`, `isPOSDevice` (huérfana) |
 | Nativo serial Kozen | `codigo/android/.../PosDeviceInfoModule.java` | SDK `com.pos.sdk`, getprop |
 | Settings | `codigo/src/stores/settingsStore.ts` | Métodos de pago globales; **sin perfil de dispositivo** |
@@ -77,11 +77,11 @@ No confundir con `PaymentGatewayFactory`.
 
 ## 7. Riesgos / notas
 
-- `isPOSDevice()` existía pero no se usaba — se integra en detección Kozen.
+- `isPOSDevice()` existía pero no se usaba - se integra en detección Kozen.
 - `processPayments` en settings no gatea el flujo (pendiente producto).
 - Refactor Hub (`ExternalPaymentScreen`) queda para sprint posterior.
 - Producción: tarjeta solo en Kozen con TUU instalado; celular genérico → efectivo hasta Webpay.
 
 ---
 
-*Baseline cerrado — base para COD-01 y COD-02.*
+*Baseline cerrado - base para COD-01 y COD-02.*

@@ -1,4 +1,4 @@
-# Fase 2 — Desarrollo (Semanas 5–15)
+# Fase 2 - Desarrollo (Semanas 5–15)
 
 **Ponderación:** 50%  
 **Hitos:** Informe S10 (20%) + Producto S15 (30%)
@@ -13,7 +13,7 @@ Dejar **D-PAY defendible como POS**: login → venta → cobro → DTE → histo
 
 ## Estructura (repo público)
 
-Alineada a entregables APT Fase 2 — **proyecto · grupales · individuales**:
+Alineada a entregables APT Fase 2 - **proyecto · grupales · individuales**:
 
 ```
 fase2/
@@ -23,9 +23,9 @@ fase2/
 └── evidencias/     Placeholders de capturas/logs referenciados en el repo
 ```
 
-**Informes Word / planillas Duoc (2.x APT122):** `C:\CAPSTONE_documentos\Fase2\` — no van al repo público.
+**Informes Word / planillas Duoc (2.x APT122):** `C:\CAPSTONE_documentos\Fase2\` - no van al repo público.
 
-**Capturas QA Honor:** `C:\Users\NEKODev\Documents\CAPSTONE\Evidencias_dpay\` — local, no GitHub.
+**Capturas QA Honor:** `C:\Users\NEKODev\Documents\CAPSTONE\Evidencias_dpay\` - local, no GitHub.
 
 ---
 

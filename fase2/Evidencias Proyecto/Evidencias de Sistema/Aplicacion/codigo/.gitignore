@@ -66,6 +66,7 @@ docs/postman/demo-partner-devdiego.ps1
 # node.js
 #
 node_modules/
+e2e/appium/results/
 npm-debug.log
 yarn-error.log
 

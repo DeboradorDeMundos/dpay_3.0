@@ -1,4 +1,4 @@
-# Sprint 2 — evidencias (22/09–05/10/2026)
+# Sprint 2 - evidencias (22/09–05/10/2026)
 
 Documento: `DPAY3_Pruebas_S02.docx` (v1.0).
 

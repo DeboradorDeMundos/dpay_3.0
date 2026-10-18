@@ -1,4 +1,4 @@
-# Arquitectura del Sistema — D-PAY + plataforma DTemite
+# Arquitectura del Sistema - D-PAY + plataforma DTemite
 
 ---
 
@@ -8,7 +8,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ PRESENTACIÓN — D-PAY (React Native 0.75.5 + TypeScript)                 │
+│ PRESENTACIÓN - D-PAY (React Native 0.75.5 + TypeScript)                 │
 │  Screens │ Components │ Zustand+MMKV │ Hooks │ Módulos nativos          │
 │  Login, Venta, Pago, Historial, NC, Settings, Hub, Impresora            │
 │  TuuPayment · ScanBeep · PosDeviceInfo · Bluetooth ESC/POS              │
@@ -30,14 +30,14 @@
           │                              │
           ▼                              ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ DATOS — PostgreSQL                                                      │
+│ DATOS - PostgreSQL                                                      │
 │  admin_dtemite          │  BD tenant (empresa_{rut}_cl)                 │
 │  tbl_sistema, Hub       │  tbl_dpay, tbl_documento, productos, clientes │
 └─────────────────────────────────────────────────────────────────────────┘
           │
           ▼
 ┌────────────────────┐
-│ TUU Negocio        │  (solo Kozen — Intent Android)
+│ TUU Negocio        │  (solo Kozen - Intent Android)
 └────────────────────┘
 ```
 
@@ -54,14 +54,14 @@ Detalle de negocio: [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | Framework | React Native | 0.75.5 |
 | Lenguaje | TypeScript | 5.9.3 |
 | Estado | Zustand | 5.x |
-| Persistencia | react-native-mmkv | — |
+| Persistencia | react-native-mmkv | - |
 | Navegación | React Navigation | 7.x |
-| Firma DTE | jsrsasign (SHA1withRSA) | — |
-| PDF | react-native-html-to-pdf | — |
-| Bluetooth | react-native-bluetooth-escpos-printer | — |
-| Cámara | react-native-vision-camera | — |
-| Biometría | react-native-biometrics | — |
-| Android | Gradle 8.6, SDK 35, minSdk 24 | — |
+| Firma DTE | jsrsasign (SHA1withRSA) | - |
+| PDF | react-native-html-to-pdf | - |
+| Bluetooth | react-native-bluetooth-escpos-printer | - |
+| Cámara | react-native-vision-camera | - |
+| Biometría | react-native-biometrics | - |
+| Android | Gradle 8.6, SDK 35, minSdk 24 | - |
 
 ### Plataforma DTemite (`nuevodtemite`)
 
@@ -119,8 +119,8 @@ dpay_3.0/codigo/
 | `salesStore` | `stores/salesStore.ts` | Carrito, cliente, tipo DTE |
 | `mySalesStore` | `stores/mySalesStore.ts` | Historial local y sync |
 | `catalogueStore` | `stores/catalogueStore.ts` | Productos |
-| `clientsStore` | — | Clientes |
-| `cafStore` | — | CAF para TED |
+| `clientsStore` | - | Clientes |
+| `cafStore` | - | CAF para TED |
 | `settingsStore` | `stores/settingsStore.ts` | Impresión, documentos, pagos |
 | `paymentHubStore` | `stores/paymentHubStore.ts` | Cobros externos |
 | `printerStore` | `stores/printerStore.ts` | Impresora Bluetooth |
@@ -128,7 +128,7 @@ dpay_3.0/codigo/
 
 ---
 
-## 5. Flujo principal — venta + cobro + DTE
+## 5. Flujo principal - venta + cobro + DTE
 
 ```mermaid
 sequenceDiagram
@@ -291,4 +291,4 @@ Archivo: `src/services/apiClient.ts`. Ver `codigo/CONFIGURACION_ENTORNOS.md`.
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

@@ -1,16 +1,16 @@
-# Acta de retrospectiva — Sprint 2 (para firmar)
+# Acta de retrospectiva - Sprint 2 (para firmar)
 
-_Borrador de cierre + constancia de asistencia — D-PAY 3.0_
+_Borrador de cierre + constancia de asistencia - D-PAY 3.0_
 
-- **Proyecto:** D-PAY 3.0 — POS móvil multi-pasarela (DTemite)
-- **Asignatura:** Capstone APT122 — Duoc UC 2026-2
+- **Proyecto:** D-PAY 3.0 - POS móvil multi-pasarela (DTemite)
+- **Asignatura:** Capstone APT122 - Duoc UC 2026-2
 - **Entregable Drive:** 06 Evidencia de Retrospectiva
 - **Product Owner:** José Robles Rocha (Dtemite)
 - **Docente guía:** Fabián Alcántara Guajardo
 - **Documento:** DOC-06 / Retro S02 + Acta
 - **Referencia técnica:** DPAY3_Retro_S02.docx (misma carpeta)
-- **Ventana sprint:** 22/09 — 05/10/2026 (semanas 7-8)
-- **Estado:** Cierre ~05/10 — pendiente firmas
+- **Ventana sprint:** 22/09 - 05/10/2026 (semanas 7-8)
+- **Estado:** Cierre ~05/10 - pendiente firmas
 
 ---
 > Borrador anclado a evidencia 27/09 y 03/10/2026. Completar fecha exacta y firmas en la Sprint Review. Si acuerdan cambios en Start/Stop/Continue, anótenlos en Observaciones antes de firmar.
@@ -24,7 +24,7 @@ _Borrador de cierre + constancia de asistencia — D-PAY 3.0_
 | Goal al 03/10/2026 | Parcial: cancelación y QR cerrados; rechazo y DTE no; Transbank sin comprobante en Honor. |
 | Asistentes | Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer |
 | Facilitador | Pablo Gutierrez (Scrum Master) |
-| Fecha retrospectiva | Al cierre del sprint — estimada 05/10/2026 |
+| Fecha retrospectiva | Al cierre del sprint - estimada 05/10/2026 |
 
 
 ## 2. Seguimiento acciones Sprint 1
@@ -42,7 +42,7 @@ _Borrador de cierre + constancia de asistencia — D-PAY 3.0_
 ## 3. Qué funcionó (Continue)
 
 - Clasificar capturas el mismo día (índices 27/09 y 03/10; _por-clasificar vacío).
-- Modal QR in-app (monto, timer, tarjetas integración, Cancelar cobro) — COD-04/PR #14.
+- Modal QR in-app (monto, timer, tarjetas integración, Cancelar cobro) - COD-04/PR #14.
 - Efectivo $100.000 + PDF + historial local (TC-RNF03).
 - DEF-NET documentado (proxy caído / loopback / NetInfo).
 - QR LAN → webpay3gint (formulario + banco $4.165) en misma Wi‑Fi.
@@ -52,7 +52,7 @@ _Borrador de cierre + constancia de asistencia — D-PAY 3.0_
 
 - Tarjeta sin proxy: Procesando… o solo Efectivo (DEF-NET-01/03).
 - Doc timeout 5 min vs 120 s en código (DEF-DOC-01).
-- ID TC-WP-03 usado para escenarios distintos — usar TC-WP-TBK / DEF-NET.
+- ID TC-WP-03 usado para escenarios distintos - usar TC-WP-TBK / DEF-NET.
 - HU-03 incompleto: sin comprobante D-PAY post-banco ni TC-WP-04 en app.
 - WWAN sin túnel HTTPS: QR no alcanzable fuera de LAN.
 

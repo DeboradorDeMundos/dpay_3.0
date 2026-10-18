@@ -1,4 +1,4 @@
-# Clasificación capturas — 2026-10-13 (TUU/Kozen P8 Neo)
+# Clasificación capturas - 2026-10-13 (TUU/Kozen P8 Neo)
 
 **Dispositivo:** Kozen P8 Neo (título de ventana `P8 Neo` / `D-PAY-3.0`)  
 **Pasarela en UI:** TUU / Kozen (no Webpay)  
@@ -17,7 +17,7 @@ Hay **dos ventanas de hora** en la barra de estado:
 
 | Sesión | Reloj en captura | Qué cubre |
 |---|---|---|
-| A (mañana) | **10:32 a. m.** | Débito **aprobado** $2.000 — *Pago exitoso* (UI TUU nativa, título `P8 Neo`) |
+| A (mañana) | **10:32 a. m.** | Débito **aprobado** $2.000 - *Pago exitoso* (UI TUU nativa, título `P8 Neo`) |
 | B (tarde) | **2:18–2:21 p. m.** | Crédito $5.000: Opera tarjeta → cancelar → *Transacción cancelada*; luego débito $5.000: Opera + PIN (sin comprobante de éxito) |
 
 El “rechazo” de crédito **no es rechazo del emisor**. Es **cancelación de usuario** en TUU (`Cancelar transacción` → `La transacción fue cancelada.`). Equivale a flujo negativo tipo cancel, no a declined de marca.
@@ -29,7 +29,7 @@ El “rechazo” de crédito **no es rechazo del emisor**. Es **cancelación de 
 
 ---
 
-## A — Crédito $5.000 (sesión B, ~14:18)
+## A - Crédito $5.000 (sesión B, ~14:18)
 
 Carpeta: `Evidencias_dpay/COD-08-HU06-tuu-kozen/capturas/`
 
@@ -42,7 +42,7 @@ Carpeta: `Evidencias_dpay/COD-08-HU06-tuu-kozen/capturas/`
 
 ---
 
-## B — Débito (sesión A $2.000 aprobado + sesión B $5.000 PIN)
+## B - Débito (sesión A $2.000 aprobado + sesión B $5.000 PIN)
 
 | # | Archivo | Qué se ve | Resultado |
 |---|---|---|---|
@@ -59,8 +59,8 @@ Carpeta: `Evidencias_dpay/COD-08-HU06-tuu-kozen/capturas/`
 |---|---|---|---|
 | TC-RG-01 / TC-064 débito aprobado | HU-06 | **OK** | `TC-RG-01c_OK_pago-exitoso-debito_2000_20261013_KozenP8Neo.jpg` |
 | TC-RG-01 / TC-064 crédito cancelado | HU-06 | **OK** (cancel, no declined emisor) | `TC-RG-01e_OK_transaccion-cancelada_5000_20261013_KozenP8Neo.jpg` |
-| TC-RG-01 / TC-064 crédito aprobado | HU-06 | **Sin evidencia** | — |
-| TC-RG-01 / TC-064 rechazo emisor | HU-06 | **Sin evidencia** | — |
+| TC-RG-01 / TC-064 crédito aprobado | HU-06 | **Sin evidencia** | - |
+| TC-RG-01 / TC-064 rechazo emisor | HU-06 | **Sin evidencia** | - |
 | HU-01 detección en Kozen | HU-01 | **OK** | selector *Pasarela: TUU / Kozen* $5.000 y $2.000 |
 | TC-RG-01 / TC-064 **conjunto** | HU-06 | **Parcial** | 8 JPG + Jest 17/17 (11/10) |
 

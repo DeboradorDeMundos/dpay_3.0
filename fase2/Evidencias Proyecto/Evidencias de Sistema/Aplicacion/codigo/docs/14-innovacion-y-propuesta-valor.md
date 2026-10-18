@@ -1,4 +1,4 @@
-# Innovación y Propuesta de Valor — D-PAY 3.0
+# Innovación y Propuesta de Valor - D-PAY 3.0
 
 Respuestas exigidas por la guía Capstone APT122.
 
@@ -76,4 +76,4 @@ D-PAY no “agrega una pasarela”. **Lleva DTemite al punto de venta.** La mism
 
 **Uso:** presentación Fase 1, informe S10 y defensa S17.
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

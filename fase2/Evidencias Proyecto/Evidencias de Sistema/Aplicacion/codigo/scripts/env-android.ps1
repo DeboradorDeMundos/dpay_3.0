@@ -1,4 +1,4 @@
-# Entorno Android para Diego — source: . .\scripts\env-android.ps1
+# Entorno Android para Diego - source: . .\scripts\env-android.ps1
 $jdk = Get-ChildItem "C:\Program Files\Microsoft\jdk-17*" -Directory -ErrorAction SilentlyContinue |
     Sort-Object Name -Descending | Select-Object -First 1
 if (-not $jdk) {

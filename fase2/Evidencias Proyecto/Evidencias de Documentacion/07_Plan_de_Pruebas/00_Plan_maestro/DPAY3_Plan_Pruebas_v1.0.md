@@ -331,10 +331,10 @@ Los IDs TC-061..064 de la guia HU-06 se mapean a los IDs del plan; no se renombr
 
 | HU-06 | Escenario | RNF / HU | IDs del plan | Resultado | Evidencia | Defecto |
 |---|---|---|---|---|---|---|
-| TC-061 | Pago aprobado Webpay sandbox | HU-03 / RNF-02.4 | TC-WP-01, TC-WP-TBK, MTC-04 | PASS (19/09 y 04/10) | TC-WP-01_OK_comprobante-credito-7000_20260919_CelularAndroid.jpg, TC-WP-01_OK_comprobante-debito-1200000_20260919_CelularAndroid.jpg, TC-WP-TBK_OK_comprobante-debito_2000_20261004_CelularAndroid.jpg | — |
-| TC-062 | Pago rechazado Webpay sandbox | HU-03 / RNF-03.2 | TC-WP-02 / TC-WP-04, MTC-09 | PASS (04/10) | TC-WP-04_07_DECLINED_webpay-final_2000_20261004_cliente.jpg, TC-WP-04_DECLINED_pago-no-completado_3500_20261004_CelularAndroid.jpg | — |
+| TC-061 | Pago aprobado Webpay sandbox | HU-03 / RNF-02.4 | TC-WP-01, TC-WP-TBK, MTC-04 | PASS (19/09 y 04/10) | TC-WP-01_OK_comprobante-credito-7000_20260919_CelularAndroid.jpg, TC-WP-01_OK_comprobante-debito-1200000_20260919_CelularAndroid.jpg, TC-WP-TBK_OK_comprobante-debito_2000_20261004_CelularAndroid.jpg | - |
+| TC-062 | Pago rechazado Webpay sandbox | HU-03 / RNF-03.2 | TC-WP-02 / TC-WP-04, MTC-09 | PASS (04/10) | TC-WP-04_07_DECLINED_webpay-final_2000_20261004_cliente.jpg, TC-WP-04_DECLINED_pago-no-completado_3500_20261004_CelularAndroid.jpg | - |
 | TC-063 | Error de conexion / timeout | HU-03 / RNF-03.2, RNF-04.1 | TC-WP-03 (plan), DEF-NET, TC-WP-TIMEOUT | Parcial: falla documentada y mitigada; falta re-test PASS sin USB | capturas/defectos/TC-WP-DEF-NET-01_*, TC-WP-DEF-NET-03_* (FAIL 03/10); TC-WP-TIMEOUT_dialogo-300s_20500_20261003_CelularAndroid.jpg | DEF-NET-01/03 (mitigados); DEF-DOC-01 cerrado (timeout oficial 300 s) |
-| TC-064 | Regresion TUU/Kozen | HU-01, HU-02 / RNF-01.2, RNF-05.2 | TC-RG-01 | Parcial 13/10: debito aprobado $2.000 + credito $5.000 cancelado (no declined emisor); unit PASS 11/10 | COD-08-HU06-tuu-kozen/capturas/TC-RG-01*; CLASIFICACION-CAPTURAS-2026-10-13.md; 01_Unitarias/jest-hu06Tuu-factory-deteccion-output-20261011.txt | — |
+| TC-064 | Regresion TUU/Kozen | HU-01, HU-02 / RNF-01.2, RNF-05.2 | TC-RG-01 | Parcial 13/10: debito aprobado $2.000 + credito $5.000 cancelado (no declined emisor); unit PASS 11/10 | COD-08-HU06-tuu-kozen/capturas/TC-RG-01*; CLASIFICACION-CAPTURAS-2026-10-13.md; 01_Unitarias/jest-hu06Tuu-factory-deteccion-output-20261011.txt | - |
 
 Checklist HU-06 (dpay-acceptance-criteria): aprobado [x], rechazado [x], error de conexion [ ] (parcial), regresion TUU [ ] (parcial: debito OK + cancel credito; falta credito aprobado), defectos en formato estandar [x], matriz RF->HU->TC completa [ ] (faltan TC-03/TC-09/RNF-01.4 de DTE).
 

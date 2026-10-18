@@ -1,4 +1,4 @@
-DOC-07 / 03_Rendimiento — mediciones Celular Android E2E
+DOC-07 / 03_Rendimiento - mediciones Celular Android E2E
 Fecha: 2026-09-27
 QA: Reinhartd Munzenmayer
 Dispositivo: Celular Android

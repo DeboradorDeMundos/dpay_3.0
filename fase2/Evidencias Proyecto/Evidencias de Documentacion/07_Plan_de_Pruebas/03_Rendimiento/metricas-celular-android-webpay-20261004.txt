@@ -1,4 +1,4 @@
-MTC-13 / RNF redirección Webpay E2E — Celular Android
+MTC-13 / RNF redirección Webpay E2E - Celular Android
 Fecha: 2026-10-04
 Red: WiFi LAN (proxy http://192.168.1.7:8787)
 Método: cronómetro QA (escaneo QR en Chrome cliente → formulario Transbank visible)

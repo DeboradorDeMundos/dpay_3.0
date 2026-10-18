@@ -1,6 +1,6 @@
 # Ecosistema DTemite y D-PAY
 
-**Documento de contexto Capstone** — leer antes de Vision, Arquitectura o Backlog.
+**Documento de contexto Capstone** - leer antes de Vision, Arquitectura o Backlog.
 
 ---
 
@@ -70,14 +70,14 @@ D-PAY **no copia el ERP entero**. Replica en el teléfono lo que el cajero neces
 |---|---|---|
 | Login por empresa (RUT + usuario) | Sí + PIN patrón 3×3 + biometría | Sí |
 | Contrato / anexo `dpay_pos` | Aceptación en primer uso | Inscripción corporate |
-| Venta rápida (calculadora / catálogo / scanner / producto rápido) | Sí — flujo principal | Ventas de escritorio + D-POS |
+| Venta rápida (calculadora / catálogo / scanner / producto rápido) | Sí - flujo principal | Ventas de escritorio + D-POS |
 | Cobro efectivo y tarjeta | Efectivo + TUU crédito (101) / débito (104) | Webpay de **mensualidades** DTemite; panel POS |
 | Emisión DTE en venta | 0, 33, 34, 39, 41 + NC 61 | Todos los tipos + compras, guías, exportación |
 | Historial / anulación | Mis ventas + NC / eliminar boleta | Libros SII, informes, conciliación |
 | Impresión térmica Bluetooth + compartir | Sí (ticket, voucher, SMS/email) | Impresoras de oficina |
 | Payment Hub (cobros remotos) | Agente en el POS | API + cola de intents |
 | Abonos, liquidaciones, onboarding | No | Panel POS + `tbl_inscripcion_dpay` |
-| Inventario, WMS, contabilidad, remuneraciones, CRM | No | Sí — quedan en el ERP |
+| Inventario, WMS, contabilidad, remuneraciones, CRM | No | Sí - quedan en el ERP |
 
 El ERP es grande a propósito (Administradores, Emisión, Libros, Cobranza, Contabilidad, Inventario/WMS, Caja, Remuneraciones, CRM, Reportes, panel `/Pos` y `/DPos`). Llevar *todo* eso al celular no tiene sentido. D-PAY lleva **solo el momento de la venta**.
 
@@ -110,7 +110,7 @@ El ERP es grande a propósito (Administradores, Emisión, Libros, Cobranza, Cont
 
 ---
 
-## 5. Backend DTemite — módulos que D-PAY usa
+## 5. Backend DTemite - módulos que D-PAY usa
 
 | Módulo | Archivos | Para qué lo usa D-PAY |
 |---|---|---|
@@ -161,9 +161,9 @@ Schema: `nuevodtemite/sql/estructura-dpay.txt`, `paymenthub.sql`, `Estructura_BD
 
 ## 9. Referencias
 
-- [01-vision.md](./01-vision.md) — Product Vision de D-PAY
-- [05-arquitectura.md](./05-arquitectura.md) — Arquitectura del producto
-- [06-base-datos.md](./06-base-datos.md) — Modelo de datos
-- [codigo/README.md](../codigo/README.md) — Desarrollo de la app
+- [01-vision.md](./01-vision.md) - Product Vision de D-PAY
+- [05-arquitectura.md](./05-arquitectura.md) - Arquitectura del producto
+- [06-base-datos.md](./06-base-datos.md) - Modelo de datos
+- [codigo/README.md](../codigo/README.md) - Desarrollo de la app
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

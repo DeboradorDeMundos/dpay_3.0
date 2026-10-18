@@ -35,7 +35,7 @@ Asignatura CSY4111 Calidad de Software. Actividades 1.2.2 / 2.1.2: 10 casos func
 13/10: TC-064 / TC-RG-01 deja de estar Bloqueado (Parcial: debito aprobado + credito cancelado en Kozen).
 
 
-## 3. Casos funcionales (caja negra) — 10
+## 3. Casos funcionales (caja negra) - 10
 
 | ID | Nombre | Tipo | Estrategia | Esperado | Obtenido | Modulo | Resultado | Auto |
 |---|---|---|---|---|---|---|---|---|
@@ -51,7 +51,7 @@ Asignatura CSY4111 Calidad de Software. Actividades 1.2.2 / 2.1.2: 10 casos func
 | MTC-10 | Clave incorrecta | Funcional / Error | Caja negra | Error en espanol, no entra | TC-02_OK_clave-incorrecta_20261004_CelularAndroid.jpg | Auth | OK | NO |
 
 
-## 4. Casos no funcionales — 5
+## 4. Casos no funcionales - 5
 
 | ID | Nombre | Tipo | Estrategia | Esperado | Obtenido | Resultado | Auto |
 |---|---|---|---|---|---|---|---|
@@ -83,7 +83,7 @@ Asignatura CSY4111 Calidad de Software. Actividades 1.2.2 / 2.1.2: 10 casos func
 | TUU/Kozen (regresion HW) | Kozen P8 Neo 13/10: debito $2.000 *Pago exitoso*; credito $5.000 *Transaccion cancelada*. Falta credito aprobado y declined emisor. Jest 17/17 (11/10). | Parcial |
 
 
-## 7. Prueba estatica — ambiguedades (1.3.2)
+## 7. Prueba estatica - ambiguedades (1.3.2)
 
 | Doc | Texto ambiguo | Sugerencia |
 |---|---|---|

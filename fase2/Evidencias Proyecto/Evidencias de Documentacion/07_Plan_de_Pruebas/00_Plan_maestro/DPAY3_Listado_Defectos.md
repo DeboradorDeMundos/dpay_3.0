@@ -24,7 +24,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Bajo | 2 (D-02, DEF-QA-01) | 1 (DEF-DOC-01) |
 
 
-## D-01 — App.test.tsx no carga
+## D-01 - App.test.tsx no carga
 
 | Campo | Valor |
 |---|---|
@@ -42,7 +42,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Tester | Reinhartd Munzenmayer |
 
 
-## D-02 — Trello CLI sin .env
+## D-02 - Trello CLI sin .env
 
 | Campo | Valor |
 |---|---|
@@ -55,7 +55,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Tester | Reinhartd Munzenmayer |
 
 
-## DEF-NET-01 — Solo efectivo sin USB
+## DEF-NET-01 - Solo efectivo sin USB
 
 | Campo | Valor |
 |---|---|
@@ -69,7 +69,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Estado | Mitigado (LAN 192.168.1.4 + overrides); re-test S3 |
 
 
-## DEF-NET-03 — Procesando eterno
+## DEF-NET-03 - Procesando eterno
 
 | Campo | Valor |
 |---|---|
@@ -82,7 +82,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Estado | Mitigado (proxy :8787 + timeout 8 s); re-test S3 |
 
 
-## DEF-CFG-01 — Proxy no configurado
+## DEF-CFG-01 - Proxy no configurado
 
 | Campo | Valor |
 |---|---|
@@ -95,7 +95,7 @@ _Plantilla CSY4111 2.3.4 / 2.3.6 + skill qa-defect-report_
 | Estado | Mitigado (configurar overrides + IP LAN antes de cobrar) |
 
 
-## DEF-CFG-02 — QR sin URL LAN
+## DEF-CFG-02 - QR sin URL LAN
 
 | Campo | Valor |
 |---|---|

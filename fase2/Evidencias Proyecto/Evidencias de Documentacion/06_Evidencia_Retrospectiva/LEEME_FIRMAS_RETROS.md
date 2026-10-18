@@ -4,11 +4,11 @@
 
 | Sprint | Archivo firmado | Carpeta | Estado |
 |--------|-----------------|---------|--------|
-| **S1** | `DPAY3_ACTA_Retro_S01.docx` | `06_Evidencia_Retrospectiva/Sprint_01/` | Firmado 04-10-2026 (3/3) — cerrado |
-| **S2** | `DPAY3_ACTA_Retro_S02.docx` | `06_Evidencia_Retrospectiva/Sprint_02/` | Firmado 04-10-2026 (3/3) — cerrado |
-| **S3** | `DPAY3_ACTA_Retro_S03.docx` | `06_Evidencia_Retrospectiva/Sprint_03/` | Firmado **15-10-2026** (3/3, remota) — cerrado |
+| **S1** | `DPAY3_ACTA_Retro_S01.docx` | `06_Evidencia_Retrospectiva/Sprint_01/` | Firmado 04-10-2026 (3/3) - cerrado |
+| **S2** | `DPAY3_ACTA_Retro_S02.docx` | `06_Evidencia_Retrospectiva/Sprint_02/` | Firmado 04-10-2026 (3/3) - cerrado |
+| **S3** | `DPAY3_ACTA_Retro_S03.docx` | `06_Evidencia_Retrospectiva/Sprint_03/` | Firmado **15-10-2026** (3/3, remota) - cerrado |
 
-Copia en Git: `dpay_3.0/fase2/grupales/retrospectivas/` — actas firmadas S01/S02 (`.docx` + espejo `.md`) y sus anexos, publicadas en la rama `docs/fase2-actas-retro-reinhartd`, [PR #17](https://github.com/DeboradorDeMundos/dpay_3.0/pull/17) (reemplazan a los borradores `_PARA_FIRMAR`). Las rutas de los anexos (`07_Plan_de_Pruebas/…`, `Evidencias_dpay/…`) apuntan a la carpeta de documentación del Drive, no al repo.
+Copia en Git: `dpay_3.0/fase2/grupales/retrospectivas/` - actas firmadas S01/S02 (`.docx` + espejo `.md`) y sus anexos, publicadas en la rama `docs/fase2-actas-retro-reinhartd`, [PR #17](https://github.com/DeboradorDeMundos/dpay_3.0/pull/17) (reemplazan a los borradores `_PARA_FIRMAR`). Las rutas de los anexos (`07_Plan_de_Pruebas/…`, `Evidencias_dpay/…`) apuntan a la carpeta de documentación del Drive, no al repo.
 
 **Decisión de publicación (equipo, 11/10/2026):** las actas firmadas, con las imágenes de firma, **se suben a GitHub** (repo público) para dar continuidad al proyecto académico de titulación. Aplica también a las actas de los sprints siguientes. **Pablo Gutiérrez y Diego Madrid** publican, revisan y actualizan en Git (PR #17). Reinhartd no es el responsable de mergear.
 

@@ -1,15 +1,15 @@
-# Acta de retrospectiva — Sprint 3
+# Acta de retrospectiva - Sprint 3
 
-_Anexo técnico + constancia de asistencia — D-PAY 3.0_
+_Anexo técnico + constancia de asistencia - D-PAY 3.0_
 
-- **Proyecto:** D-PAY 3.0 — POS móvil multi-pasarela (DTemite)
-- **Asignatura:** Capstone APT122 — Duoc UC 2026-2
+- **Proyecto:** D-PAY 3.0 - POS móvil multi-pasarela (DTemite)
+- **Asignatura:** Capstone APT122 - Duoc UC 2026-2
 - **Entregable Drive:** 06 Evidencia de Retrospectiva
 - **Product Owner:** José Robles Rocha (Dtemite)
 - **Docente guía:** Fabián Alcántara Guajardo
 - **Documento:** DOC-06 / Retro S03 + Acta
 - **Referencia técnica:** `DPAY3_Retro_S03.md` v0.5
-- **Ventana sprint:** 06/10 — 17/10/2026 (semanas 9-10)
+- **Ventana sprint:** 06/10 - 17/10/2026 (semanas 9-10)
 - **Estado:** **Cerrado**
 
 > Espejo en texto del documento firmado `DPAY3_ACTA_Retro_S03.docx` (misma carpeta). Ante cualquier diferencia prevalece el `.docx` firmado (incluye imágenes de firma).
@@ -24,7 +24,7 @@ _Anexo técnico + constancia de asistencia — D-PAY 3.0_
 | Goal al cierre S3 | **Parcial:** HU-06 Webpay aprobado/rechazado PASS; TC-064 Kozen **Parcial** (13/10); timeout Webpay **300 s** alineado; DTE boleta 39 / folio servidor / NC 61 sin evidencia de cierre; informe 2.3 Fase 2 actualizado (Word 16/10). |
 | Asistentes | Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer |
 | Facilitador | Pablo Gutierrez (Scrum Master) |
-| Fecha retrospectiva | **15/10/2026** 20:30 — remota (Santiago de Chile) |
+| Fecha retrospectiva | **15/10/2026** 20:30 - remota (Santiago de Chile) |
 
 
 ## 2. Seguimiento acciones Sprint 2
@@ -33,7 +33,7 @@ _Anexo técnico + constancia de asistencia — D-PAY 3.0_
 |---|---|---|---|
 | 1 | Comprobante D-PAY post-Transbank + TC-WP-04 declined | Reinhartd | **CERRADO** 04/10 (Celular Android) |
 | 2a | Re-test DEF-NET-01/03 sin USB | Reinhartd | **Abierto** (sin evidencia post-03/10) |
-| 2b | DEF-DOC-01 timeout oficial | Reinhartd | **CERRADO** 12/10 — **300 s** |
+| 2b | DEF-DOC-01 timeout oficial | Reinhartd | **CERRADO** 12/10 - **300 s** |
 | 3 | Efectivo + boleta 39 → DTE + folio servidor | Diego / QA | **Pendiente** |
 | 4 | Mock @react-navigation (D-01) | Diego | **Abierto** |
 

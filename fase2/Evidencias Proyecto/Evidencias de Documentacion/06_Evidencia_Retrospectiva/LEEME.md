@@ -1,4 +1,4 @@
-# DOC-06 — Evidencia de retrospectiva
+# DOC-06 - Evidencia de retrospectiva
 
 **Fuente de trabajo (Reinhartd):** `C:\CAPSTONE_documentos\06_Evidencia_Retrospectiva`  
 **Carpeta Drive / Git a publicar:** `06_Evidencia_Retrospectiva`  
@@ -6,13 +6,13 @@
 
 Una carpeta por sprint (`Sprint_01` … `Sprint_07`).
 
-## Estado (corte 14/10/2026)
+## Estado (corte 18/10/2026)
 
 | Sprint | Ventana | Archivo principal | Estado |
 |--------|---------|-------------------|--------|
-| 1 | 08/09–21/09 | `Sprint_01/DPAY3_ACTA_Retro_S01.docx` (+ `.md` espejo, anexo) | **Cerrado** — acta firmada por los 3 integrantes (04/10/2026) |
-| 2 | 22/09–05/10 | `Sprint_02/DPAY3_ACTA_Retro_S02.docx` (+ `.md` espejo, anexo) | **Cerrado** — acta firmada por los 3 integrantes (04/10/2026) |
-| 3 | 06/10–17/10 | `Sprint_03/DPAY3_ACTA_Retro_S03.docx` (+ `.md` espejo, `DPAY3_Retro_S03.md` v0.5) | **Cerrado** — acta firmada 15/10/2026 (3/3). Anexo: `ANEXO_Evidencias_Retro_S03.md` |
+| 1 | 08/09–21/09 | `Sprint_01/DPAY3_ACTA_Retro_S01.docx` (+ `.md` espejo, anexo) | **Cerrado** - acta firmada por los 3 integrantes (04/10/2026) |
+| 2 | 22/09–05/10 | `Sprint_02/DPAY3_ACTA_Retro_S02.docx` (+ `.md` espejo, anexo) | **Cerrado** - acta firmada por los 3 integrantes (04/10/2026) |
+| 3 | 06/10–17/10 | `Sprint_03/DPAY3_ACTA_Retro_S03.docx` (+ `.md` espejo, `DPAY3_Retro_S03.md` v0.5) | **Cerrado** - acta firmada 15/10/2026 (3/3). Anexo: `ANEXO_Evidencias_Retro_S03.md` |
 | 4–7 | ver Gantt | `DPAY3_Retro_S0X` plantilla v0.0 | No completar hasta la Review |
 
 ## Convención de cierre (S01/S02)

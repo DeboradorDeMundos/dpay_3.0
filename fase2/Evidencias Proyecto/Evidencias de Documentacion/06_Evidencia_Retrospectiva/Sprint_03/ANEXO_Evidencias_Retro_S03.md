@@ -1,6 +1,6 @@
-# Anexo — Evidencia Sprint 3
+# Anexo - Evidencia Sprint 3
 
-Retro S03 **cerrada** — acta firmada **15/10/2026** (remota, 3/3).
+Retro S03 **cerrada** - acta firmada **15/10/2026** (remota, 3/3).
 
 | Tipo | Referencia |
 |------|------------|

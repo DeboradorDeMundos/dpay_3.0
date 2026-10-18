@@ -1,4 +1,4 @@
-# Diagramas UML — D-PAY 3.0
+# Diagramas UML - D-PAY 3.0
 
 Diagramas mínimos de la guía APT122. El caso principal es **realizar una venta completa** (cobro + DTE), no un módulo de pasarelas.
 
@@ -52,7 +52,7 @@ flowchart LR
     A2 -.-> UC3
 ```
 
-### CU-02/03/04 — Venta + cobro + DTE (principal)
+### CU-02/03/04 - Venta + cobro + DTE (principal)
 
 | Campo | Valor |
 |---|---|
@@ -64,7 +64,7 @@ flowchart LR
 
 ---
 
-## 2. Secuencia — venta efectivo + boleta
+## 2. Secuencia - venta efectivo + boleta
 
 ```mermaid
 sequenceDiagram
@@ -87,7 +87,7 @@ sequenceDiagram
     App-->>Cajero: Venta lista / PDF / ticket
 ```
 
-### Secuencia — venta tarjeta TUU (Kozen)
+### Secuencia - venta tarjeta TUU (Kozen)
 
 ```mermaid
 sequenceDiagram
@@ -191,14 +191,14 @@ classDiagram
 
 ## 5. Despliegue
 
-Ver [05-arquitectura.md](./05-arquitectura.md) §8.
+Ver [05-arquitectura.md](./05-arquitectura.md) ver Seccion 8.
 
 Datos persistidos relevantes:
 
-- `tbl_dpay` — transacción POS (tenant)
-- `tbl_documento` — DTE
-- `tbl_payment_intent` — cola Hub (`admin_dtemite`)
+- `tbl_dpay` - transacción POS (tenant)
+- `tbl_documento` - DTE
+- `tbl_payment_intent` - cola Hub (`admin_dtemite`)
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

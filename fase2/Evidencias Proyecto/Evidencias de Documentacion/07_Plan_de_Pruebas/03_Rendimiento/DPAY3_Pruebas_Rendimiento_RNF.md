@@ -38,7 +38,7 @@ Dispositivo Celular Android. Fuente: cronometro del QA. Evidencia: 03_Rendimient
 | Login credenciales + biometria | 1.0 s | 1.5 s | Login < 3 s (RNF-01.1) | SI |
 | Carga de catalogo | 1.0 s | 1.0 s | Catalogo < 5 s con 500 productos (RNF-01.3) | Parcial (volumen no verificado) |
 | Redireccion Webpay (QR->checkout) | ~10 s | ~10 s | < 10 s (RNF-01.5) | En el borde (04/10; decision «< 10 s» o «≤ 10 s» abierta) |
-| Emision DTE | — | — | < 15 s (RNF-01.4) | Pendiente |
+| Emision DTE | - | - | < 15 s (RNF-01.4) | Pendiente |
 
 > RNF-01.1 se evalua sobre el tiempo de login, no sobre el arranque en frio. El arranque WiFi (5 s) se registra pero no incumple el RNF de login. El caso mas exigente de login es 4G primera vez: 2.5 s < 3 s.
 
@@ -53,7 +53,7 @@ Evidencia: 03_Rendimiento/metricas-laboratorio-20260927.txt y .json. Proxy sim 1
 | API login (RTT, HTTP 400) | < 3 s | 0.234 s | 0.157 s | 0.155 s | 0.159 s | 0.151 s | 0.171 s | 0.234 s | SI |
 
 
-## 5. Celular Android Webpay E2E (04/10/2026) — MTC-13
+## 5. Celular Android Webpay E2E (04/10/2026) - MTC-13
 
 Dispositivo Celular Android + cliente Chrome misma WiFi LAN (proxy 192.168.1.7:8787). Cronometro QA: escaneo QR -> pantalla formulario webpay3gint.
 

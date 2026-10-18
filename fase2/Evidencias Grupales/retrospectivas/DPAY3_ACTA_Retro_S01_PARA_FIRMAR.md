@@ -1,16 +1,16 @@
-# Acta de retrospectiva — Sprint 1 (para firmar)
+# Acta de retrospectiva - Sprint 1 (para firmar)
 
-_Anexo técnico + constancia de asistencia — D-PAY 3.0_
+_Anexo técnico + constancia de asistencia - D-PAY 3.0_
 
-- **Proyecto:** D-PAY 3.0 — POS móvil multi-pasarela (DTemite)
-- **Asignatura:** Capstone APT122 — Duoc UC 2026-2
+- **Proyecto:** D-PAY 3.0 - POS móvil multi-pasarela (DTemite)
+- **Asignatura:** Capstone APT122 - Duoc UC 2026-2
 - **Entregable Drive:** 06 Evidencia de Retrospectiva
 - **Product Owner:** José Robles Rocha (Dtemite)
 - **Docente guía:** Fabián Alcántara Guajardo
 - **Documento:** DOC-06 / Retro S01 + Acta
 - **Referencia técnica:** DPAY3_Retro_S01.docx (misma carpeta)
-- **Ventana sprint:** 08/09 — 21/09/2026 (semanas 5-6)
-- **Estado:** Cerrado — pendiente firmas
+- **Ventana sprint:** 08/09 - 21/09/2026 (semanas 5-6)
+- **Estado:** Cerrado - pendiente firmas
 
 ---
 > Este archivo reúne el contenido acordado de la retrospectiva S1 y la hoja de firmas. Cada integrante puede firmar a mano (imprimir/escanear) o enviar confirmación por correo/Discord citando este documento.
@@ -21,17 +21,17 @@ _Anexo técnico + constancia de asistencia — D-PAY 3.0_
 | Campo | Valor |
 |---|---|
 | Sprint Goal | Base multi-pasarela: detección de dispositivo, factory y cobro Webpay sin hardware Kozen. |
-| Sprint Goal cumplido | Sí — Webpay sandbox + efectivo operativos en Honor (evidencia 19/09). |
+| Sprint Goal cumplido | Sí - Webpay sandbox + efectivo operativos en Honor (evidencia 19/09). |
 | Asistentes | Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer |
 | Facilitador | Pablo Gutierrez (Scrum Master) |
 | Formato | Start / Stop / Continue |
-| Fecha retrospectiva | Por confirmar — cierre estimado 19–21/09/2026 |
+| Fecha retrospectiva | Por confirmar - cierre estimado 19–21/09/2026 |
 
 
 ## 2. Qué funcionó (Continue)
 
 - Arquitectura PaymentGateway (factory + strategy) con pruebas unitarias verdes desde el inicio.
-- Detección automática TUU_KOZEN vs GENERIC_MOBILE — caso Honor resuelto.
+- Detección automática TUU_KOZEN vs GENERIC_MOBILE - caso Honor resuelto.
 - Proxy Webpay + SQLite permitió cobrar sin terminal Kozen.
 - Evidencia QA: matriz de trazabilidad y nomenclatura de capturas.
 - Commits frecuentes y PRs revisados (#7, #8, #9).
@@ -42,7 +42,7 @@ _Anexo técnico + constancia de asistencia — D-PAY 3.0_
 - Trello sin actualización automática (falta codigo/.env.trello).
 - Sin hardware Kozen: casos TUU bloqueados.
 - App.test.tsx no carga (@react-navigation).
-- Capturas acumuladas en _por-clasificar — reorden en dos sesiones.
+- Capturas acumuladas en _por-clasificar - reorden en dos sesiones.
 - Priorización real: COD-00..05 vs backlog planificado HU-01..03.
 
 

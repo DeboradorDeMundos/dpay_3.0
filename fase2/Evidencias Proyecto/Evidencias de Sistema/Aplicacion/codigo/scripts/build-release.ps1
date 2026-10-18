@@ -8,8 +8,8 @@
 # El APK instalado funciona sin PC, sin Metro, sin adb reverse.
 #
 # Uso:
-#   .\scripts\build-release.ps1              # Universal (TUU / tienda) — USAR ESTE en Kozen P8 (armeabi-v7a)
-#   .\scripts\build-release.ps1 -PosOnly     # Solo arm64 — NO instalar en Kozen P8 (rompe libVisionCamera.so)
+#   .\scripts\build-release.ps1              # Universal (TUU / tienda) - USAR ESTE en Kozen P8 (armeabi-v7a)
+#   .\scripts\build-release.ps1 -PosOnly     # Solo arm64 - NO instalar en Kozen P8 (rompe libVisionCamera.so)
 
 param(
     [switch]$PosOnly

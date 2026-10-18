@@ -9,7 +9,7 @@ _D-PAY 3.0 - Semanas 9-10 (06/10 - 17/10/2026)_
 - **Fecha:** 2026-10-16
 - **Autor:** Reinhartd Munzenmayer (QA)
 - **Equipo:** Diego Madrid, Pablo Gutierrez, Reinhartd Munzenmayer
-- **Estado:** **Cerrado** — acta `DPAY3_ACTA_Retro_S03.docx` firmada 15/10/2026 (3/3, remota)
+- **Estado:** **Cerrado** - acta `DPAY3_ACTA_Retro_S03.docx` firmada 15/10/2026 (3/3, remota)
 - **Repositorio:** https://github.com/DeboradorDeMundos/dpay_3.0
 
 > Ante diferencia con el acta firmada prevalece `DPAY3_ACTA_Retro_S03.docx`. `DPAY3_Retro_S03.docx` puede quedar desfasado; preferir este `.md` + acta.
@@ -41,7 +41,7 @@ Estado verificado al 14/10/2026; confirmado en sesion Retro S3 del 15/10/2026.
 | 1 | Comprobante D-PAY post-Transbank + TC-WP-04 declined Celular Android | Reinhartd Munzenmayer (QA) | CERRADO 04/10 (sesion QA posterior a la retro) | TC-WP-TBK_OK_comprobante-debito_2000_20261004_CelularAndroid.jpg; TC-WP-04_DECLINED_pago-no-completado_3500_20261004_CelularAndroid.jpg; CLASIFICACION-CAPTURAS-2026-10-04.md |
 | 2a | Re-test DEF-NET-01/03 sin USB | Reinhartd Munzenmayer (QA) | Abierto (sin evidencia de re-test) | Solo FAIL 03/10 en capturas/defectos/TC-WP-DEF-NET-* |
 | 2b | DEF-DOC-01 timeout 300 s (oficial) | Reinhartd Munzenmayer (QA) | Cerrado 12/10: timeout oficial 300 s | codigo/src/services/paymentGateway/webpayCheckoutConstants.ts |
-| 3 | Efectivo + boleta 39 -> DTE + folio servidor | Diego Madrid / Reinhartd Munzenmayer | Pendiente (sin evidencia despues del 04/10) | — |
+| 3 | Efectivo + boleta 39 -> DTE + folio servidor | Diego Madrid / Reinhartd Munzenmayer | Pendiente (sin evidencia despues del 04/10) | - |
 | 4 | Mock @react-navigation (D-01) | Diego Madrid | Abierto (ver 07_Plan_de_Pruebas/00_Plan_maestro/DPAY3_Listado_Defectos.md) | 01_Unitarias/jest-hu06Tuu-factory-deteccion-output-20261011.txt |
 
 
@@ -49,7 +49,7 @@ Estado verificado al 14/10/2026; confirmado en sesion Retro S3 del 15/10/2026.
 
 | Accion S1 | Responsable | Estado al 11/10 | Nota |
 |---|---|---|---|
-| .env.trello + automatizacion (D-02) | Reinhartd Munzenmayer | Abierto (workaround manual) | — |
+| .env.trello + automatizacion (D-02) | Reinhartd Munzenmayer | Abierto (workaround manual) | - |
 | Log Metro TC-DEV-02 | Reinhartd Munzenmayer | Abierto | No hay log en COD-01-HU01-deteccion/logs/ |
 | Sync tbl_dpay / id_mediopago Webpay | Diego Madrid | Por iniciar | MATRIZ-TRAZABILIDAD.md: fila Sync tbl_dpay sin implementar |
 
@@ -76,7 +76,7 @@ Técnica Scrum: **tres listas**. Acordado en acta 15/10/2026 (copia literal en `
 
 ### Stop (qué dejar de hacer)
 
-- Narrar TC-064 bloqueado tras sesión Kozen de Diego Madrid (13/10).
+- Narrar TC-064 / TC-RG-01 **Parcial** tras sesión Kozen de Diego Madrid (13/10).
 - Mezclar timeout **120 s** en informes (oficial **300 s**).
 - Confundir cancelación en terminal con rechazo del emisor.
 
