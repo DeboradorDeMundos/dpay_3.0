@@ -1,4 +1,4 @@
-# Product Backlog — D-PAY 3.0
+# Product Backlog - D-PAY 3.0
 
 **POS móvil de DTemite: vender, cobrar y emitir DTE**
 
@@ -12,13 +12,13 @@
 | **Equipo** | Diego Madrid, Pablo Gutiérrez, Reinhartd Munzenmayer |
 | **Docente guía** | Fabián Alcántara Guajardo |
 | **Metodología** | Scrum |
-| **Revisión** | v2.0 — 9 septiembre 2026 |
+| **Revisión** | v2.0 - 9 septiembre 2026 |
 
 ---
 
 ## 1. Introducción
 
-Este backlog describe **D-PAY completo**: el POS móvil que DTemite encarga para entrar al rubro de venta en terreno. Las historias cubren autenticación, venta, cobro, DTE, historial, impresión y Payment Hub — no un módulo de pasarelas.
+Este backlog describe **D-PAY completo**: el POS móvil que DTemite encarga para entrar al rubro de venta en terreno. Las historias cubren autenticación, venta, cobro, DTE, historial, impresión y Payment Hub - no un módulo de pasarelas.
 
 Priorización:
 
@@ -59,7 +59,7 @@ Ver [01-vision.md](./01-vision.md) y [00-ecosistema-dtemite.md](./00-ecosistema-
 
 ---
 
-## 3. Backlog priorizado — producto MVP
+## 3. Backlog priorizado - producto MVP
 
 | ID | Historia de usuario | Criterios de aceptación (resumen) | Prioridad | Pts. | Sprint | Estado |
 |---|---|---|---|---|---|---|
@@ -82,7 +82,7 @@ Ver [01-vision.md](./01-vision.md) y [00-ecosistema-dtemite.md](./00-ecosistema-
 
 ---
 
-## 4. Backlog futuro — post producto
+## 4. Backlog futuro - post producto
 
 | ID | Historia | Resumen | Prioridad | Pts. |
 |---|---|---|---|---|
@@ -130,13 +130,13 @@ HU-14 Pruebas (después de HU-07)
 
 | Sprint | Semanas | Objetivo | Historias | Puntos |
 |---|---|---|---|---|
-| **Sprint 0** | 1–4 | Definir el producto D-PAY completo | HU-13 (parcial) | — |
+| **Sprint 0** | 1–4 | Definir el producto D-PAY completo | HU-13 (parcial) | - |
 | **Sprint 1** | 5–6 | Identidad + venta base | HU-01, HU-02, HU-03, HU-13 | ~21 |
 | **Sprint 2** | 7–8 | Documento, cobro, inicio DTE | HU-04, HU-05, HU-06, HU-07 | ~31 |
 | **Sprint 3** | 9–10 | DTE cierre + post-venta; informe S10 | HU-07, HU-08, HU-09 | ~15 |
 | **Sprint 4** | 11–12 | Impresión, Hub, settings | HU-10, HU-11, HU-12 | ~16 |
 | **Sprint 5** | 13–15 | Pruebas, APK, docs finales | HU-14 | 8 |
-| **Sprint 6–7** | 16–18 | Defensa | — | — |
+| **Sprint 6–7** | 16–18 | Defensa | - | - |
 
 ---
 

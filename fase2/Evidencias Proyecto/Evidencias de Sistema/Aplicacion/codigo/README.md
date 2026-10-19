@@ -1,11 +1,11 @@
-# D-PAY — POS móvil de DTemite
+# D-PAY - POS móvil de DTemite
 
 [![React Native](https://img.shields.io/badge/React%20Native-0.75.5-61DAFB?style=flat-square&logo=react)](https://reactnative.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=flat-square&logo=android)](https://developer.android.com/)
 [![Duoc UC](https://img.shields.io/badge/Duoc%20UC-San%20Bernardo-003366?style=flat-square)](https://www.duoc.cl/)
 
-**Proyecto Capstone — Ingeniería en Informática**  
+**Proyecto Capstone - Ingeniería en Informática**  
 Duoc UC, Sede San Bernardo · 2026
 
 **D-PAY** es el punto de venta móvil de DTemite: vender, cobrar y emitir **DTE** al SII desde un Android (celular o terminal Kozen). Stack: **React Native + TypeScript**.
@@ -22,7 +22,7 @@ La app se integra a la plataforma cloud de DTemite (API REST + Legacy PHP). Docu
 | **Pablo Gutiérrez** | Desarrollo / arquitectura |
 | **Reinhartd Munzenmayer** | Desarrollo / QA |
 
-**Institución:** Duoc UC — San Bernardo  
+**Institución:** Duoc UC - San Bernardo  
 **Repositorio:** [github.com/DeboradorDeMundos/dpay_3.0](https://github.com/DeboradorDeMundos/dpay_3.0)
 
 ---
@@ -110,7 +110,7 @@ Mismos flujos de venta y DTE. El cobro del producto es **efectivo**. Tarjeta en 
 ### Anulación
 - **Documentos tributarios:** emisión de Nota de Crédito (NC total o corrección)
 - **Pagos sin DTE:** anulación vía API `PUT /pos/transaccion/{id}/anular`
-- **Sin restricción por flag de login** (`permite_nota_credito`) — habilitado para pruebas Capstone
+- **Sin restricción por flag de login** (`permite_nota_credito`) - habilitado para pruebas Capstone
 - Modal simplificado por defecto (NC total); modal extendido si `ncCorreccionMonto` está activo en ajustes
 
 ### Impresión
@@ -303,18 +303,18 @@ Flujo unificado desde **Mis Ventas** (`MySalesScreen`):
 |---|---|---|
 | Boleta / Factura / DTE | Nota de Crédito total o corrección | `emitCreditNote()` → legacy PHP |
 | Pago recibido (sin DTE) | Anular transacción | `PUT /pos/transaccion/{id}/anular` |
-| Nota de crédito | No anulable | — |
+| Nota de crédito | No anulable | - |
 
 ### Comportamiento Capstone
 
 Para pruebas con un solo sistema de demostración:
 
-- **`permite_nota_credito` del login se ignora** — siempre habilitado en la app
+- **`permite_nota_credito` del login se ignora** - siempre habilitado en la app
 - **El botón Anular no depende de `emitirDocumento`** en configuración
 - Por defecto se muestra modal simplificado de NC total
 - Si se activa **"NC por corrección de monto"** en ajustes, aparece opción de corrección parcial
 
-> La emisión de NC requiere sesión activa y contraseña codificada (`b64pass`) guardada al login. Si se usa solo patrón/biometría sin regenerar contraseña, puede fallar la NC — volver a ingresar contraseña resuelve el caso.
+> La emisión de NC requiere sesión activa y contraseña codificada (`b64pass`) guardada al login. Si se usa solo patrón/biometría sin regenerar contraseña, puede fallar la NC - volver a ingresar contraseña resuelve el caso.
 
 ---
 
@@ -381,18 +381,18 @@ npm run lint           # ESLint
 
 ## Roadmap Capstone
 
-### Fase 1 — Definir el producto
+### Fase 1 - Definir el producto
 - [x] Vision: D-PAY como POS completo de DTemite
 - [x] Backlog HU-01 a HU-14
 - [x] Arquitectura, RF/RNF, UML
 
-### Fase 2 — Estabilizar y evidenciar el POS
+### Fase 2 - Estabilizar y evidenciar el POS
 - [ ] Flujo login → venta → cobro → DTE demostrable en QA
 - [ ] Historial, NC, impresión, Payment Hub
 - [ ] Matriz de pruebas + informe S10
 - [ ] APK Semana 15
 
-### Fase 3 — Defensa
+### Fase 3 - Defensa
 - [ ] Video del flujo de caja
 - [ ] Presentación y `3.4_APT122`
 

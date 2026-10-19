@@ -1,4 +1,4 @@
-# Metodología Scrum — D-PAY 3.0
+# Metodología Scrum - D-PAY 3.0
 
 ---
 
@@ -29,13 +29,13 @@ En Fase 1 el equipo priorizó en ausencia de PO formal. Desde v2.0 el PO es Jos�
 
 ---
 
-## 3. Tiempo — 18 semanas
+## 3. Tiempo - 18 semanas
 
 | Fase | Semanas | Sprints | Objetivo |
 |---|---|---|---|
-| **Fase 1 — Definición** | 1–4 | Sprint 0 | Vision del producto D-PAY, backlog, arquitectura |
-| **Fase 2 — Desarrollo** | 5–15 | Sprint 1–5 | POS usable: venta, cobro, DTE, post-venta |
-| **Fase 3 — Cierre** | 16–18 | Sprint 6–7 | Informe, video, defensa |
+| **Fase 1 - Definición** | 1–4 | Sprint 0 | Vision del producto D-PAY, backlog, arquitectura |
+| **Fase 2 - Desarrollo** | 5–15 | Sprint 1–5 | POS usable: venta, cobro, DTE, post-venta |
+| **Fase 3 - Cierre** | 16–18 | Sprint 6–7 | Informe, video, defensa |
 
 Sprints de **2 semanas**. Capacidad ~18–22 pts.
 
@@ -84,13 +84,13 @@ Inicio de sprint, ≤ 2 h. Entrada: backlog. Salida: Sprint Goal + tareas.
 
 | Sprint | Comprometido | Completado | Notas |
 |---|---|---|---|
-| 0 | — | — | Definición del producto |
-| 1 | ~21 | — | Login + venta |
-| 2 | ~31 | — | Cobro + DTE (partir HU-07) |
-| 3 | ~15 | — | Post-venta + informe S10 |
-| 4 | ~16 | — | Impresión, Hub, settings |
-| 5 | 8 | — | Pruebas + APK |
-| 6–7 | — | — | Defensa |
+| 0 | - | - | Definición del producto |
+| 1 | ~21 | - | Login + venta |
+| 2 | ~31 | - | Cobro + DTE (partir HU-07) |
+| 3 | ~15 | - | Post-venta + informe S10 |
+| 4 | ~16 | - | Impresión, Hub, settings |
+| 5 | 8 | - | Pruebas + APK |
+| 6–7 | - | - | Defensa |
 
 ---
 
@@ -159,4 +159,4 @@ Inicio de sprint, ≤ 2 h. Entrada: backlog. Salida: Sprint Goal + tareas.
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

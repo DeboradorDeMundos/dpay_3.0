@@ -1,6 +1,6 @@
-# Checklist de cumplimiento — Capstone APT122
+# Checklist de cumplimiento - Capstone APT122
 
-**Proyecto:** D-PAY 3.0 — POS móvil de DTemite  
+**Proyecto:** D-PAY 3.0 - POS móvil de DTemite  
 **Docente:** Fabián Alcántara Guajardo  
 **Metodología:** Scrum (Opción 2)  
 **Revisión:** 9 septiembre 2026
@@ -82,7 +82,7 @@
 
 | # | Requisito | Cumple |
 |---|---|---|
-| 1 | Nombre | D-PAY 3.0 — POS móvil de DTemite |
+| 1 | Nombre | D-PAY 3.0 - POS móvil de DTemite |
 | 2 | Problema y público | ERP no llega al mostrador |
 | 3 | Tecnologías | RN, API DTemite, TUU, SII |
 | 4 | Cómo ejecutar | `codigo/` |
@@ -128,4 +128,4 @@ Fase 2 se concentra en **estabilizar, evidenciar y defender** este POS, no en in
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

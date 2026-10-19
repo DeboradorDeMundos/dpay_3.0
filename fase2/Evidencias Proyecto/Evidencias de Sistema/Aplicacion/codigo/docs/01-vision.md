@@ -1,4 +1,4 @@
-# Product Vision — D-PAY 3.0
+# Product Vision - D-PAY 3.0
 
 **POS móvil de DTemite: vender, cobrar y emitir DTE desde el celular**
 
@@ -6,8 +6,8 @@
 
 | Campo | Valor |
 |---|---|
-| **Institución** | Duoc UC — Escuela de Informática y Telecomunicaciones |
-| **Asignatura** | DSY1102 / PTY4614-001V — Capstone (Sección 001) |
+| **Institución** | Duoc UC - Escuela de Informática y Telecomunicaciones |
+| **Asignatura** | DSY1102 / PTY4614-001V - Capstone (Sección 001) |
 | **Empresa mandante** | DTemite |
 | **Contacto empresa** | José Robles Rocha |
 | **Equipo** | Diego Madrid, Pablo Gutiérrez, Reinhartd Munzenmayer |
@@ -16,8 +16,8 @@
 | **Docente guía** | Fabián Alcántara Guajardo |
 | **Metodología** | Scrum |
 | **Repositorio** | github.com/DeboradorDeMundos/dpay_3.0 |
-| **Duración Capstone** | 18 semanas — Semestre 2026-2 |
-| **Revisión** | v2.0 — 9 septiembre 2026 |
+| **Duración Capstone** | 18 semanas - Semestre 2026-2 |
+| **Revisión** | v2.0 - 9 septiembre 2026 |
 
 ---
 
@@ -27,7 +27,7 @@
 
 DTemite quiere **emprender un rubro nuevo**: el punto de venta en terreno. El comercio no puede llevar el ERP al mostrador, a la feria ni al delivery. Necesita un sistema en el celular que, en un solo flujo, venda, cobre y deje el documento tributario emitido.
 
-Ese producto es **D-PAY**: un **DTemite compacto para celular** (y terminal POS). El equipo Capstone **diseña y desarrolla D-PAY completo** — no un módulo aislado — integrado a la plataforma cloud de la empresa (API multi-tenant, emisión SII, registro de transacciones).
+Ese producto es **D-PAY**: un **DTemite compacto para celular** (y terminal POS). El equipo Capstone **diseña y desarrolla D-PAY completo** - no un módulo aislado - integrado a la plataforma cloud de la empresa (API multi-tenant, emisión SII, registro de transacciones).
 
 El criterio de “situación real” del Capstone se cumple: empresa mandante, normativa SII, pagos reales (TUU) y un problema de negocio genuino (abrir un canal móvil para un ERP que hoy vive en escritorio).
 
@@ -66,11 +66,11 @@ Sin un producto móvil, DTemite:
 
 Crear **D-PAY** como línea de producto nueva:
 
-1. **Venta** — calculadora, catálogo, scanner, cliente, tipo de documento.
-2. **Cobro** — efectivo y tarjeta (TUU en terminal Kozen).
-3. **DTE** — emisión conforme SII, firma TED, PDF.
-4. **Post-venta** — historial, notas de crédito, impresión Bluetooth.
-5. **Integración** — misma API y `tbl_dpay` del ERP; Payment Hub para cobros remotos.
+1. **Venta** - calculadora, catálogo, scanner, cliente, tipo de documento.
+2. **Cobro** - efectivo y tarjeta (TUU en terminal Kozen).
+3. **DTE** - emisión conforme SII, firma TED, PDF.
+4. **Post-venta** - historial, notas de crédito, impresión Bluetooth.
+5. **Integración** - misma API y `tbl_dpay` del ERP; Payment Hub para cobros remotos.
 
 D-PAY no reemplaza el ERP. Lo **extiende al punto de venta**.
 
@@ -221,9 +221,9 @@ El ERP ya factura. El problema es **dónde** ocurre la venta. Un POS móvil es u
 
 | Fase | Semanas | Foco |
 |---|---|---|
-| **Fase 1 — Definición** | 1–4 | Visión del producto completo, backlog, arquitectura, exposición |
-| **Fase 2 — Desarrollo** | 5–15 | Completar, estabilizar y evidenciar D-PAY (venta → cobro → DTE → post-venta) |
-| **Fase 3 — Cierre** | 16–18 | Informe, video demo del flujo completo, defensa |
+| **Fase 1 - Definición** | 1–4 | Visión del producto completo, backlog, arquitectura, exposición |
+| **Fase 2 - Desarrollo** | 5–15 | Completar, estabilizar y evidenciar D-PAY (venta → cobro → DTE → post-venta) |
+| **Fase 3 - Cierre** | 16–18 | Informe, video demo del flujo completo, defensa |
 
 ---
 

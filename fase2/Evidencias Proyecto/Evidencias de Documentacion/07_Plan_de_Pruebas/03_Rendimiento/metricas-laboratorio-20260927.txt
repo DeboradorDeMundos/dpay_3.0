@@ -1,4 +1,4 @@
-DOC-07 / 03_Rendimiento — mediciones de laboratorio
+DOC-07 / 03_Rendimiento - mediciones de laboratorio
 Fecha: 2026-09-27
 PC: Windows, localhost
 Proxy: http://127.0.0.1:8787  PROVIDER=sim

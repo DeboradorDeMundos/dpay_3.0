@@ -1,0 +1,8 @@
+Plan maestro 5–8 páginas.
+Archivo: DPAY3_Plan_Pruebas_v1.0.docx
+
+Casos mínimos:
+- Webpay aprobado / rechazado / error de conexión
+- Auto-select si hay una sola pasarela
+- Regresión TUU/Kozen
+- Efectivo offline

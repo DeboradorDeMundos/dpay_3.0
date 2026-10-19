@@ -1,11 +1,11 @@
-# Retrospectivas Scrum — D-PAY 3.0
+# Retrospectivas Scrum - D-PAY 3.0
 
 Plantilla y registro de retrospectivas al cierre de cada sprint.  
 **Formato:** Start / Stop / Continue + acciones concretas.
 
 ---
 
-## Sprint 0 — Fase 1 (Semanas 1–4)
+## Sprint 0 - Fase 1 (Semanas 1–4)
 
 **Fecha retrospectiva:** _Completar post exposición S4 (05/09/2026)_  
 **Participantes:** Diego Madrid, Pablo Gutiérrez, Reinhartd Munzenmayer
@@ -39,7 +39,7 @@ Plantilla y registro de retrospectivas al cierre de cada sprint.
 
 ---
 
-## Sprint 1 — _(Semanas 5–6)_
+## Sprint 1 - _(Semanas 5–6)_
 
 **Fecha:** _  
 **Sprint Goal cumplido:** ☐ Sí ☐ Parcial ☐ No
@@ -55,21 +55,21 @@ _(Completar al cierre sprint)_
 
 ---
 
-## Sprint 2 — _(Semanas 7–8)_
+## Sprint 2 - _(Semanas 7–8)_
 
-_(Plantilla idéntica — completar post Sprint 2 Review)_
+_(Plantilla idéntica - completar post Sprint 2 Review)_
 
 ---
 
-## Sprint 3 — _(Semanas 9–10 — incluye informe avance)_
+## Sprint 3 - _(Semanas 9-10 - incluye informe avance)_
 
-**Hito académico:** Informe avance 12–17 octubre (20%)
+**Hito académico:** Informe avance 12-17 octubre (20%)
 
 ### Evidencia retrospectiva para evaluación
 
-- [ ] Acta retrospectiva firmada por los 3 integrantes
+- [x] Acta retrospectiva firmada por los 3 integrantes (15/10/2026, remota)
 - [ ] Acciones de mejora aplicadas visibles en Sprint 4
-- [ ] Publicado en `fase2/grupales/retrospectivas/`
+- [x] Publicado en `06_Evidencia_Retrospectiva/Sprint_03/` (`DPAY3_ACTA_Retro_S03.docx`)
 
 ---
 
@@ -83,7 +83,7 @@ _(Completar en Fase 2)_
 
 | Sprint | Problema detectado | Mejora aplicada | Resultado |
 |---|---|---|---|
-| 0 | — | Documentación adelantada vs código | Base sólida Fase 1 |
+| 0 | - | Documentación adelantada vs código | Base sólida Fase 1 |
 | 1 | _Pendiente_ | | |
 | 2 | _Pendiente_ | | |
 | 3 | _Pendiente_ | | |
