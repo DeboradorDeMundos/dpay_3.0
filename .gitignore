@@ -33,3 +33,6 @@ codigo/.env.trello.local
 
 # Evidencias de dispositivo / QA (carpeta local CAPSTONE, no el repo)
 /Evidencias_dpay/
+
+# Borradores/actas PARA_FIRMAR en Grupales (solo equipo local; no rubrica APT en GitHub)
+fase2/Evidencias Grupales/retrospectivas/
