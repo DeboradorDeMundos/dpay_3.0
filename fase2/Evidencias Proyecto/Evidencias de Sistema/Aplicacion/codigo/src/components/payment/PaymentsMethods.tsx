@@ -6,6 +6,7 @@ import { useSalesStore } from '../../stores/salesStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useAuthStore } from '../../stores/authStore';
 import { formatCurrency } from '../../utils/format';
+import { roundCashAmount } from '../../utils/cashRounding';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { CashInput } from './CashInput';
 import { TipModal } from './TipModal';
@@ -543,10 +544,12 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
     setPaymentMethodSale(_paymentMethod);
 
-    // Calcular y guardar vuelto si es efectivo
+    // Calcular y guardar vuelto si es efectivo.
+    // El vuelto se calcula contra el total redondeado (Ley 20.956); el DTE y
+    // tbl_dpay más abajo siguen usando el monto exacto, sin efecto tributario.
     if (_paymentMethod === 'Efectivo') {
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
-      const change = cashNumber - getTotal();
+      const change = cashNumber - roundCashAmount(getTotal());
       setChangeSale(formatCurrency(change));
     } else {
       setChangeSale(null);
@@ -653,10 +656,10 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     if (method.tuuMethod) {
       await processTuuPayment(method, -1);
     } else {
-      // Efectivo: continuar sin propina
+      // Efectivo: continuar sin propina (vuelto contra total redondeado, Ley 20.956)
       setPaymentMethodSale('Efectivo');
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
-      const change = cashNumber - getTotal();
+      const change = cashNumber - roundCashAmount(getTotal());
       setChangeSale(formatCurrency(change));
 
       let tuuPaymentData: Sale['tuuPaymentData'] | undefined;
@@ -682,11 +685,12 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     if (method.tuuMethod) {
       await processTuuPayment(method, tipAmount);
     } else {
-      // Efectivo: sumar propina al vuelto
+      // Efectivo: el redondeo (Ley 20.956) se aplica al monto final, es decir,
+      // total + propina; no se redondean por separado.
       setPaymentMethodSale('Efectivo');
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
       const totalWithTip = getTotal() + tipAmount;
-      const change = cashNumber - totalWithTip;
+      const change = cashNumber - roundCashAmount(totalWithTip);
       setChangeSale(formatCurrency(change));
 
       let tuuPaymentData: Sale['tuuPaymentData'] | undefined;
