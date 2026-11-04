@@ -61,6 +61,7 @@ interface SalesState {
   addItem: (item: CartItem) => void;
   editItem: (item: CartItem, index: number) => void;
   removeItem: (index: number) => void;
+  setCurrentSaleItems: (items: CartItem[]) => void; // Reemplaza las líneas (ej. redondeo en efectivo)
   clearCart: () => void;
   setNewSale: () => void;
   setCurrentSale: (index: number) => void;
@@ -179,6 +180,17 @@ export const useSalesStore = create<SalesState>((set, get) => ({
       };
       set({ sales: newSales });
       debouncedSave('sales', JSON.stringify(newSales));
+    }
+  },
+
+  setCurrentSaleItems: (items) => {
+    const { sales, currentSale } = get();
+    const newSales = [...sales];
+    if (newSales[currentSale]) {
+      newSales[currentSale] = { ...newSales[currentSale], results: items };
+      set({ sales: newSales });
+      // Inmediato: SaleCompleted lee estas líneas para emitir el DTE
+      immediateSave('sales', JSON.stringify(newSales));
     }
   },
 

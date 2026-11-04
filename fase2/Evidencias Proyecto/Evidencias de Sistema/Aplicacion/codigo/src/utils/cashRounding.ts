@@ -12,8 +12,11 @@
  *   medios quedan excluidos (Decreto 1266, art. 3).
  * - Se aplica sobre el monto final a pagar (Decreto 1266, art. 4); en D-PAY eso
  *   es el total de la venta más la propina, si la hay.
- * - No tiene efecto tributario: la boleta o factura (DTE) y lo que se registra
- *   en tbl_dpay se emiten por el monto exacto, sin redondear (art. 1 y 5).
+ *
+ * Decisión de producto (29-10-2026): en efectivo, la boleta o factura y tbl_dpay
+ * se emiten por el total ya redondeado. El ajuste se aplica a una línea de
+ * producto (applyCashRoundingToItems) porque el SII exige que el total del DTE
+ * cuadre con la suma de las líneas; neto e IVA se recalculan desde ahí.
  */
 
 /**
@@ -46,4 +49,64 @@ export const roundCashAmount = (amount: number): number => {
  */
 export const getCashRoundingAdjustment = (amount: number): number => {
   return roundCashAmount(amount) - Math.round(amount);
+};
+
+/** Campos mínimos de una línea de venta que necesita el ajuste. */
+export interface RoundableItem {
+  value: number;
+  count: number;
+  total: number;
+}
+
+/**
+ * Ajusta las líneas de la venta para que el pago en efectivo quede redondeado.
+ *
+ * El monto final (total de líneas + propina) se redondea a la decena y la
+ * diferencia se suma o resta a la última línea, así el DTE cuadra con lo
+ * cobrado. La propina no forma parte del DTE, por lo que la suma de líneas
+ * resultante es: redondeo(total + propina) - propina.
+ *
+ * Si la línea elegida tiene cantidad mayor a 1, se separa una unidad con el
+ * precio ajustado, porque el SII exige MontoItem = cantidad x precio.
+ * Si el ajuste dejaría un precio <= 0, se usa la línea de mayor precio.
+ *
+ * @param items - Líneas de la venta con el precio exacto (no se mutan).
+ * @param tip - Propina en pesos; 0 si no hay.
+ * @returns Nuevas líneas con el ajuste aplicado, o las mismas si no hay ajuste.
+ *
+ * @example
+ * // Venta $3.234 sin propina -> la línea queda en $3.230
+ * applyCashRoundingToItems([{ value: 3234, count: 1, total: 3234 }]);
+ */
+export const applyCashRoundingToItems = <T extends RoundableItem>(
+  items: T[],
+  tip: number = 0,
+): T[] => {
+  if (items.length === 0) return items;
+
+  const itemsTotal = items.reduce((sum, item) => sum + item.total, 0);
+  const finalAmount = Math.round(itemsTotal + Math.max(0, tip));
+  const adjustment = roundCashAmount(finalAmount) - finalAmount;
+  if (adjustment === 0) return items;
+
+  let index = items.length - 1;
+  if (items[index].value + adjustment <= 0) {
+    index = items.reduce((best, item, i) => (item.value > items[best].value ? i : best), 0);
+  }
+
+  const target = items[index];
+  const adjustedValue = target.value + adjustment;
+  if (adjustedValue <= 0) return items;
+
+  const adjustedLine: T = { ...target, count: 1, value: adjustedValue, total: adjustedValue };
+  if (target.count <= 1) {
+    return items.map((item, i) => (i === index ? adjustedLine : item));
+  }
+
+  const remainingLine: T = {
+    ...target,
+    count: target.count - 1,
+    total: target.total - target.value,
+  };
+  return [...items.slice(0, index), remainingLine, adjustedLine, ...items.slice(index + 1)];
 };

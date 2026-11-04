@@ -6,7 +6,7 @@ import { useSalesStore } from '../../stores/salesStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useAuthStore } from '../../stores/authStore';
 import { formatCurrency } from '../../utils/format';
-import { roundCashAmount } from '../../utils/cashRounding';
+import { applyCashRoundingToItems, roundCashAmount } from '../../utils/cashRounding';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { CashInput } from './CashInput';
 import { TipModal } from './TipModal';
@@ -95,6 +95,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   // Selectores optimizados - solo extraer lo necesario
   const setPaymentMethodSale = useSalesStore(state => state.setPaymentMethodSale);
   const setChangeSale = useSalesStore(state => state.setChangeSale);
+  const setCurrentSaleItems = useSalesStore(state => state.setCurrentSaleItems);
   const sales = useSalesStore(state => state.sales);
   const currentSale = useSalesStore(state => state.currentSale);
   const documentType = useSalesStore(state => state.documentType);
@@ -532,6 +533,18 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
   };
 
   /**
+   * Efectivo: ajusta las líneas de la venta en el store para que el DTE y
+   * tbl_dpay salgan por el total redondeado (ver utils/cashRounding).
+   * @param tip Propina en pesos; entra en el redondeo pero no en las líneas.
+   * @returns Líneas ajustadas, para calcular neto/IVA sin esperar al store.
+   */
+  const applyCashRoundingToSale = (tip: number) => {
+    const roundedItems = applyCashRoundingToItems(sales[currentSale]?.results ?? [], tip);
+    setCurrentSaleItems(roundedItems);
+    return roundedItems;
+  };
+
+  /**
    * Guarda método efectivo, vuelto y navega a SaleCompleted
    */
   const saveMethodAndGoToNextPage = (_paymentMethod: string) => {
@@ -544,13 +557,14 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
     setPaymentMethodSale(_paymentMethod);
 
-    // Calcular y guardar vuelto si es efectivo.
-    // El vuelto se calcula contra el total redondeado (Ley 20.956); el DTE y
-    // tbl_dpay más abajo siguen usando el monto exacto, sin efecto tributario.
+    // Efectivo: vuelto contra el total redondeado (Ley 20.956) y líneas ajustadas
+    // para que el DTE y tbl_dpay salgan por ese mismo total.
+    let saleItems = sales[currentSale]?.results ?? [];
     if (_paymentMethod === 'Efectivo') {
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
-      const change = cashNumber - roundCashAmount(getTotal());
+      const change = cashNumber - roundCashAmount(getTotal() + currentTipAmount);
       setChangeSale(formatCurrency(change));
+      saleItems = applyCashRoundingToSale(currentTipAmount);
     } else {
       setChangeSale(null);
     }
@@ -560,7 +574,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
 
     if (documentType && sales[currentSale]) {
       const [neto, exento, iva, totalWithIVA] = calculateTotalsByDocType(
-        sales[currentSale].results,
+        saleItems,
         documentType.id
       );
 
@@ -595,7 +609,7 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     }
 
     navigation.replace('SaleCompleted', {
-      sale: sales[currentSale],
+      sale: { ...sales[currentSale], results: saleItems },
       tuuTransactionId: tuuPaymentData?.response.sequenceNumber,
       tuuPaymentData
     });
@@ -656,19 +670,20 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     if (method.tuuMethod) {
       await processTuuPayment(method, -1);
     } else {
-      // Efectivo: continuar sin propina (vuelto contra total redondeado, Ley 20.956)
+      // Efectivo sin propina: vuelto y DTE contra el total redondeado (Ley 20.956)
       setPaymentMethodSale('Efectivo');
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
       const change = cashNumber - roundCashAmount(getTotal());
       setChangeSale(formatCurrency(change));
+      const saleItems = applyCashRoundingToSale(0);
 
       let tuuPaymentData: Sale['tuuPaymentData'] | undefined;
       if (documentType && sales[currentSale]) {
-        const [neto, exento] = calculateTotalsByDocType(sales[currentSale].results, documentType.id);
+        const [neto, exento] = calculateTotalsByDocType(saleItems, documentType.id);
         tuuPaymentData = buildCashPaymentData(neto, exento, 0);
       }
       navigation.replace('SaleCompleted', {
-        sale: sales[currentSale],
+        sale: { ...sales[currentSale], results: saleItems },
         tuuTransactionId: tuuPaymentData?.response.sequenceNumber,
         tuuPaymentData,
       });
@@ -685,21 +700,22 @@ export const PaymentsMethods: React.FC<PaymentsMethodsProps> = ({
     if (method.tuuMethod) {
       await processTuuPayment(method, tipAmount);
     } else {
-      // Efectivo: el redondeo (Ley 20.956) se aplica al monto final, es decir,
-      // total + propina; no se redondean por separado.
+      // Efectivo con propina: el redondeo (Ley 20.956) se aplica al monto final,
+      // total + propina. La propina va exacta; el ajuste lo absorbe el DTE.
       setPaymentMethodSale('Efectivo');
       const cashNumber = parseInt(cash.replace(/\./g, ''), 10);
       const totalWithTip = getTotal() + tipAmount;
       const change = cashNumber - roundCashAmount(totalWithTip);
       setChangeSale(formatCurrency(change));
+      const saleItems = applyCashRoundingToSale(tipAmount);
 
       let tuuPaymentData: Sale['tuuPaymentData'] | undefined;
       if (documentType && sales[currentSale]) {
-        const [neto, exento] = calculateTotalsByDocType(sales[currentSale].results, documentType.id);
+        const [neto, exento] = calculateTotalsByDocType(saleItems, documentType.id);
         tuuPaymentData = buildCashPaymentData(neto, exento, tipAmount);
       }
       navigation.replace('SaleCompleted', {
-        sale: sales[currentSale],
+        sale: { ...sales[currentSale], results: saleItems },
         tuuTransactionId: tuuPaymentData?.response.sequenceNumber,
         tuuPaymentData,
       });
