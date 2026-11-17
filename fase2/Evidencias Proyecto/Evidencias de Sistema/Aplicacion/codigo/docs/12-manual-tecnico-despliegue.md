@@ -1,4 +1,4 @@
-# Manual Técnico y Despliegue — D-PAY 3.0
+# Manual Técnico y Despliegue - D-PAY 3.0
 
 **Capstone APT122 · Duoc UC · 2026-2**
 
@@ -12,7 +12,7 @@ D-PAY es el **POS móvil** de DTemite: una APK Android que consume la plataforma
 [Dispositivo Android + APK D-PAY]
         │ HTTPS
         ▼
-[DTemite Cloud — pro.dtemite.cl / proqa.dtemite.cl]
+[DTemite Cloud - pro.dtemite.cl / proqa.dtemite.cl]
         │
         ├── REST API (bearer token)
         ├── Legacy PHP (DTE → SII)
@@ -28,7 +28,7 @@ D-PAY es el **POS móvil** de DTemite: una APK Android que consume la plataforma
 
 | Componente | Versión mínima |
 |---|---|
-| Windows 10/11 o macOS | — |
+| Windows 10/11 o macOS | - |
 | Node.js | 18+ (recomendado 20 LTS) |
 | npm | 9+ |
 | JDK | 17 o 21 |
@@ -79,10 +79,10 @@ Copy-Item android\keystore.properties.example android\keystore.properties
 ### 3.5 Ejecutar en desarrollo
 
 ```powershell
-# Terminal 1 — Metro
+# Terminal 1 - Metro
 npm start
 
-# Terminal 2 — dispositivo USB
+# Terminal 2 - dispositivo USB
 adb devices
 adb reverse tcp:8081 tcp:8081
 npm run android
@@ -101,7 +101,7 @@ Release usa API **producción**: `https://pro.dtemite.cl/api`
 
 ---
 
-## 4. Docker — entorno de desarrollo reproducible
+## 4. Docker - entorno de desarrollo reproducible
 
 > La guía Capstone exige Dockerfile y docker-compose. En proyectos **mobile**, el contenedor estandariza **herramientas Node** (lint, CI); la compilación Android requiere SDK en el host.
 
@@ -144,8 +144,8 @@ Las credenciales DTemite QA se obtienen del PO (José Robles Rocha).
 | Release (APK) | pro.dtemite.cl | sistema.dtemite.cl | Producción |
 
 Archivos clave:
-- `codigo/src/services/apiClient.ts` — base URL REST
-- `codigo/src/services/api.ts` — URLs emisión DTE
+- `codigo/src/services/apiClient.ts` - base URL REST
+- `codigo/src/services/api.ts` - URLs emisión DTE
 
 Ver también: `codigo/CONFIGURACION_ENTORNOS.md`
 
@@ -164,8 +164,8 @@ npm test               # Jest
 ```
 
 Scripts PowerShell adicionales en `codigo/scripts/`:
-- `build-release.ps1` — bundle JS + APK
-- `dev-pos.ps1` — entorno POS automatizado
+- `build-release.ps1` - bundle JS + APK
+- `dev-pos.ps1` - entorno POS automatizado
 
 ---
 
@@ -208,4 +208,4 @@ Documentación: `codigo/ENDPOINTS_DTEMITE.md`
 
 ---
 
-**Revisión:** v1.0 — 29 agosto 2026
+**Revisión:** v1.0 - 29 agosto 2026

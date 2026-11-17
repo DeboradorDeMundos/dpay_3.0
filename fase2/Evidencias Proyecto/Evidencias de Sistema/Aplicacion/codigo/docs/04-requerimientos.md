@@ -1,6 +1,6 @@
-# Requerimientos Funcionales y No Funcionales — D-PAY 3.0
+# Requerimientos Funcionales y No Funcionales - D-PAY 3.0
 
-**POS móvil de DTemite — Capstone Duoc UC 2026-2**
+**POS móvil de DTemite - Capstone Duoc UC 2026-2**
 
 ---
 
@@ -16,9 +16,9 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 
 ---
 
-## 2. Requerimientos funcionales — D-PAY
+## 2. Requerimientos funcionales - D-PAY
 
-### RF-01 — Autenticación y sesión
+### RF-01 - Autenticación y sesión
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -30,7 +30,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-01.5 | Descargar CAFs, catálogo y clientes al primer login | Must | Implementado |
 | RF-01.6 | Cerrar sesión y limpiar token | Must | Implementado |
 
-### RF-02 — Gestión de ventas
+### RF-02 - Gestión de ventas
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-02.7 | Persistir carrito y ventas locales en MMKV; reintentar sync (`mySalesStore`) | Should | Implementado |
 | RF-02.8 | Crear producto rápido (`POST /producto/rapido`) si el tenant lo permite | Could | Implementado |
 
-### RF-03 — Cobro
+### RF-03 - Cobro
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -54,7 +54,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-03.5 | Capturar `authCode`, last4, comisiones y registrar en `POST /pos/transaccion` | Must | Implementado |
 | RF-03.6 | Registrar transacciones fallidas con `detalle_error` | Must | Implementado |
 
-### RF-04 — Emisión DTE
+### RF-04 - Emisión DTE
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -65,7 +65,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-04.5 | Generar PDF del documento | Should | Implementado |
 | RF-04.6 | Vincular DTE a transacción (`PUT /pos/transaccion/{id}/dte`) | Must | Implementado |
 
-### RF-05 — Historial y anulaciones
+### RF-05 - Historial y anulaciones
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -76,7 +76,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-05.5 | Sincronizar ventas pendientes de forma manual | Should | Implementado |
 | RF-05.6 | Compartir documento por SMS o email (`ShareScreen`) | Should | Implementado |
 
-### RF-06 — Impresión
+### RF-06 - Impresión
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -84,7 +84,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-06.2 | Configurar impresión automática (documento / voucher / ambos) | Should | Implementado |
 | RF-06.3 | Imprimir TED (PDF417) en el ticket | Should | Implementado |
 
-### RF-07 — Payment Hub
+### RF-07 - Payment Hub
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -92,7 +92,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 | RF-07.2 | Procesar cobro local y reportar resultado al Hub | Should | Implementado |
 | RF-07.3 | El Hub registra el resultado en `tbl_dpay` del tenant | Must | Implementado (backend) |
 
-### RF-08 — Configuración
+### RF-08 - Configuración
 
 | ID | Requerimiento | Prioridad | Estado |
 |---|---|---|---|
@@ -103,7 +103,7 @@ Ver [00-ecosistema-dtemite.md](./00-ecosistema-dtemite.md).
 
 ---
 
-## 3. Requerimientos de plataforma (DTemite — consumo)
+## 3. Requerimientos de plataforma (DTemite - consumo)
 
 D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 
@@ -130,7 +130,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 
 ## 5. Requerimientos no funcionales
 
-### RNF-01 — Rendimiento
+### RNF-01 - Rendimiento
 
 | ID | Requerimiento | Métrica | Prioridad |
 |---|---|---|---|
@@ -139,7 +139,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-01.3 | Carga de catálogo (500 productos) | < 5 s | Should |
 | RNF-01.4 | Emisión DTE | < 15 s incluyendo firma | Should |
 
-### RNF-02 — Seguridad
+### RNF-02 - Seguridad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -150,7 +150,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-02.5 | Keystore y `.env` fuera de Git | Must |
 | RNF-02.6 | API keys del Hub hasheadas en backend | Must (plataforma) |
 
-### RNF-03 — Disponibilidad
+### RNF-03 - Disponibilidad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -158,7 +158,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-03.2 | Sync al recuperar red | Should |
 | RNF-03.3 | Transacciones fallidas auditables | Must |
 
-### RNF-04 — Usabilidad
+### RNF-04 - Usabilidad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -167,7 +167,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-04.3 | Venta completable en pocos taps | Should |
 | RNF-04.4 | Tema claro y oscuro | Could |
 
-### RNF-05 — Compatibilidad
+### RNF-05 - Compatibilidad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -176,7 +176,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-05.3 | Smartphone Android 10+ para flujos sin TUU | Must |
 | RNF-05.4 | iOS | Won't |
 
-### RNF-06 — Mantenibilidad
+### RNF-06 - Mantenibilidad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -184,14 +184,14 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-06.2 | Separación stores / services / screens | Must |
 | RNF-06.3 | Contrato API documentado | Should |
 
-### RNF-07 — Escalabilidad
+### RNF-07 - Escalabilidad
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
 | RNF-07.1 | Multi-tenant: un cliente = una BD PostgreSQL | Must (plataforma) |
 | RNF-07.2 | Varios terminales por comercio (Hub) | Should |
 
-### RNF-08 — Cumplimiento
+### RNF-08 - Cumplimiento
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -199,7 +199,7 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 | RNF-08.2 | Tipos 33, 34, 39, 41, 61 | Must |
 | RNF-08.3 | PCI: no manejar PAN en servidores propios (TUU) | Must |
 
-### RNF-09 — Operación
+### RNF-09 - Operación
 
 | ID | Requerimiento | Prioridad |
 |---|---|---|
@@ -236,4 +236,4 @@ D-PAY no implementa el ERP. Exige que la plataforma de la empresa cumpla:
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

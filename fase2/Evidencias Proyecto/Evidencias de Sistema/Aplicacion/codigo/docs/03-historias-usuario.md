@@ -1,4 +1,4 @@
-# Historias de Usuario — D-PAY 3.0
+# Historias de Usuario - D-PAY 3.0
 
 Detalle del Product Backlog: criterios de aceptación, tareas y dependencias.
 
@@ -6,9 +6,9 @@ Detalle del Product Backlog: criterios de aceptación, tareas y dependencias.
 
 ---
 
-## EP-01 — Identidad y sesión
+## EP-01 - Identidad y sesión
 
-### HU-01 — Login multi-tenant
+### HU-01 - Login multi-tenant
 
 **Como** comercio cliente de DTemite,  
 **quiero** entrar a D-PAY con RUT de empresa, usuario y clave,  
@@ -38,7 +38,7 @@ Ninguna.
 
 ---
 
-### HU-02 — PIN y biometría
+### HU-02 - PIN y biometría
 
 **Como** cajero,  
 **quiero** bloquear D-PAY con PIN o huella,  
@@ -57,9 +57,9 @@ Ninguna.
 
 ---
 
-## EP-02 — Venta
+## EP-02 - Venta
 
-### HU-03 — Armar la venta
+### HU-03 - Armar la venta
 
 **Como** cajero,  
 **quiero** armar una venta con calculadora, catálogo o scanner,  
@@ -80,7 +80,7 @@ Ninguna.
 
 ---
 
-### HU-04 — Documento y cliente
+### HU-04 - Documento y cliente
 
 **Como** cajero,  
 **quiero** elegir tipo de DTE y cliente,  
@@ -99,9 +99,9 @@ Ninguna.
 
 ---
 
-## EP-03 — Cobro
+## EP-03 - Cobro
 
-### HU-05 — Efectivo
+### HU-05 - Efectivo
 
 **Como** cajero,  
 **quiero** cobrar en efectivo,  
@@ -119,7 +119,7 @@ Ninguna.
 
 ---
 
-### HU-06 — Tarjeta TUU (Kozen)
+### HU-06 - Tarjeta TUU (Kozen)
 
 **Como** cajero con terminal Kozen,  
 **quiero** cobrar crédito o débito con TUU,  
@@ -139,9 +139,9 @@ Ninguna.
 
 ---
 
-## EP-04 — Tributario
+## EP-04 - Tributario
 
-### HU-07 — Emisión DTE
+### HU-07 - Emisión DTE
 
 **Como** comercio,  
 **quiero** que al cobrar se emita el DTE al SII,  
@@ -163,9 +163,9 @@ Ninguna.
 
 ---
 
-## EP-05 — Post-venta
+## EP-05 - Post-venta
 
-### HU-08 — Historial
+### HU-08 - Historial
 
 **Como** cajero,  
 **quiero** ver mis ventas,  
@@ -183,7 +183,7 @@ Ninguna.
 
 ---
 
-### HU-09 — Nota de crédito y anulación
+### HU-09 - Nota de crédito y anulación
 
 **Como** cajero,  
 **quiero** anular o corregir una venta,  
@@ -201,7 +201,7 @@ Ninguna.
 
 ---
 
-### HU-10 — Impresión Bluetooth
+### HU-10 - Impresión Bluetooth
 
 **Como** cajero,  
 **quiero** imprimir el ticket,  
@@ -219,9 +219,9 @@ Ninguna.
 
 ---
 
-## EP-06 — Integraciones
+## EP-06 - Integraciones
 
-### HU-11 — Payment Hub
+### HU-11 - Payment Hub
 
 **Como** integrador externo,  
 **quiero** enviar un cobro al POS,  
@@ -239,7 +239,7 @@ Ninguna.
 
 ---
 
-### HU-12 — Configuración del POS
+### HU-12 - Configuración del POS
 
 **Como** cajero,  
 **quiero** ajustar el POS a mi local,  
@@ -258,9 +258,9 @@ Ninguna.
 
 ---
 
-## EP-07 — Calidad Capstone
+## EP-07 - Calidad Capstone
 
-### HU-13 — Documentación del producto
+### HU-13 - Documentación del producto
 
 **Como** equipo,  
 **quiero** documentar D-PAY como producto completo,  
@@ -278,7 +278,7 @@ Ninguna.
 
 ---
 
-### HU-14 — Pruebas del flujo POS
+### HU-14 - Pruebas del flujo POS
 
 **Como** equipo,  
 **quiero** probar venta → cobro → DTE → historial,  
@@ -297,7 +297,7 @@ Ver matriz en [11-plan-pruebas-evidencias.md](./11-plan-pruebas-evidencias.md). 
 ## Plantilla
 
 ```markdown
-### HU-XX — [Título]
+### HU-XX - [Título]
 
 **Como** [rol],
 **quiero** [acción],
@@ -306,4 +306,4 @@ Ver matriz en [11-plan-pruebas-evidencias.md](./11-plan-pruebas-evidencias.md). 
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

@@ -1,4 +1,4 @@
-# Postman — Payment Hub D-PAY (desarrollo)
+# Postman - Payment Hub D-PAY (desarrollo)
 
 ## Importar
 

@@ -1,4 +1,4 @@
-# Pendientes para la reunión del equipo — 11/10/2026
+# Pendientes para la reunión del equipo - 11/10/2026
 
 D-PAY 3.0 · Sprint 3 (06/10 – 17/10/2026) · Preparado por Reinhartd Munzenmayer (QA).
 
@@ -10,7 +10,7 @@ Todos los tiempos están en segundos (s).
 - **Quién publica en Git:** **Pablo Gutiérrez y Diego Madrid** publican, revisan y actualizan (actas firmadas PR #17, 2.2/2.3/2.4/2.6, README de fase2, carpeta `reinhard/`, retiro Docker pendiente de commit si aplica). Reinhartd no mergea, no sube Word al repo ni reparte commits.
 - **Sin exposición oral:** la evaluación de esta entrega de Fase 2 es documental + GitHub. No se prepara pptx ni ensayo oral. El indicador 8 de las planillas (equipo / exposición oral) se conserva; si el docente igual evalúa oral, el equipo lo confirmará. No es un riesgo pendiente de Reinhartd.
 - **Dispositivo QA:** en documentos y nombres de evidencia se llama «Celular Android» (sufijo `CelularAndroid`). Las actas firmadas S01/S02 dicen «Honor» y no se tocan.
-- **TC-064:** queda «Bloqueado: en espera de ejecución por Diego Madrid (TUU/Kozen en producción)». No es fallo: D-PAY 2.0 sigue en producción.
+- **TC-064 / TC-RG-01:** **Parcial** (13/10/2026, Kozen P8 Neo, Diego Madrid): débito $2.000 aprobado; crédito $5.000 cancelado (no declined emisor); Jest 17/17 (11/10). Falta crédito aprobado (y rechazo emisor si el plan lo exige). No es «Bloqueado»: D-PAY 2.0 sigue en producción y la regresión manual ya tiene capturas en `Sprint_03/capturas_20261013/`.
 - **Timeout de checkout Webpay:** valor oficial **300 s** (`WEBPAY_CHECKOUT_TIMEOUT_SEC`). DEF-DOC-01 cerrado al alinear la documentación. La captura TC-WP-TIMEOUT del 03/10 coincide con 300 s; no se recaptura.
 
 ## 2. Decisiones pendientes
@@ -22,17 +22,17 @@ Todos los tiempos están en segundos (s).
 | 4 | RNF-04.3 / EC-RNF-01 en segundos | «< 120 s» (hoy dice «2 minutos») | Catálogo RNF y DAS |
 | 5 | RNF de plataforma (RNF-02.6, RNF-07.x) | Mantener como «Must (plataforma)» / N/A o sacarlos del catálogo | Conteo de Must cumplidos |
 | 6 | RNF-06.4 (ESLint y Jest en verde antes de merge) | Aprobar o descartar | Hoy está NOK por D-01 |
-| 7 | Incorporar EC-RNF-06…09 y las correcciones del DAS en la versión 1.0.3 | Sí / No / parcial | Ver §4 |
+| 7 | Incorporar EC-RNF-06…09 y las correcciones del DAS en la versión 1.0.3 | Sí / No / parcial | Ver ver Seccion 4 |
 | 8 | Volumen de catálogo para RNF-01.3 | Cargar 500 productos en QA o rebajar el criterio | MTC-12 queda Parcial hasta resolverlo |
 
 ## 3. Preguntas por persona
 
 ### Diego Madrid (arquitectura, Webpay, línea base TUU/Kozen)
 
-1. ¿Cuándo puede ejecutar TC-064 (cobro crédito y débito en Kozen P8 Neo con la build actual)? Necesitamos captura del comprobante o una constancia escrita con fecha, monto, tipo y resultado.
+1. TC-064 / TC-RG-01: sesión Kozen del **13/10** registrada (débito aprobado + crédito cancelado). ¿Puede recapturar **crédito aprobado** (*Pago exitoso*) y, si aplica, rechazo emisor, con la build actual?
 2. Versión de Android del celular QA: ¿la puede confirmar con «Ajustes → Acerca del teléfono» o `adb shell getprop ro.build.version.release`? Hoy figura «por confirmar».
 3. D-01 (`App.test.tsx` no carga por `@react-navigation`): ¿lo toma en este sprint (mock o `transformIgnorePatterns`)?
-4. DAS 1.0.3: ¿acepta las correcciones de §4 (RNF-01.2 y RNF-01.5 en la meta de desempeño, escenarios de portabilidad y de pagos fallidos, restricciones sin Docker / sin NFC, HU del MVP, CU-04 tipo 0, metadatos)?
+4. DAS 1.0.3: ¿acepta las correcciones de ver Seccion 4 (RNF-01.2 y RNF-01.5 en la meta de desempeño, escenarios de portabilidad y de pagos fallidos, restricciones sin Docker / sin NFC, HU del MVP, CU-04 tipo 0, metadatos)?
 5. Túnel HTTPS para Webpay por red móvil (WWAN): ¿se hace en Sprint 3 o queda solo LAN?
 6. Sincronización `tbl_dpay` / `id_mediopago` Webpay: ¿sigue «por iniciar»?
 7. RNF-06.3: ¿la colección Postman de `codigo/docs/postman/` está vigente?
@@ -48,17 +48,17 @@ Todos los tiempos están en segundos (s).
 5. Carpetas individuales de Diego y Pablo en `fase2/individuales/` (indicador de aporte equitativo): las publican, revisan y actualizan Pablo y Diego.
 6. Diario 2.1 de Fase 2: estado por integrante.
 
-### Reinhartd Munzenmayer (QA) — compromisos propios
+### Reinhartd Munzenmayer (QA) - compromisos propios
 
 1. Re-test DEF-NET-01/03 (TC-063) sin USB, con proxy en LAN y con proxy apagado. Es lo que falta para cerrar el criterio «error de conexión» de HU-06.
 2. Captura TC-WP-TIMEOUT del 03/10 coincide con el timeout oficial 300 s; no se recaptura.
 3. Completar MTC-11 con 5 muestras de login en 4G y MTC-13 con 5 muestras de apertura Webpay.
 4. Log Metro TC-DEV-02 (acción S1 abierta).
-5. Proponer al equipo la corrección del catálogo RNF (ver §4: nombres de evidencia renombrados y «Honor» en observaciones).
+5. Proponer al equipo la corrección del catálogo RNF (ver ver Seccion 4: nombres de evidencia renombrados y «Honor» en observaciones).
 
 ### José Robles Rocha (Product Owner, Dtemite)
 
-1. ¿Acepta que TC-064 se cierre con la ejecución de Diego en producción (D-PAY 2.0), más las pruebas unitarias `hu06Tuu`?
+1. ¿Acepta **TC-064 Parcial** (13/10 Kozen + Jest 17/17) hasta recaptura de crédito aprobado, o exige cierre total antes de declarar HU-06 regresión TUU cerrada?
 2. RNF-01.5: ¿«< 10 s» o «≤ 10 s» es aceptable para el negocio?
 3. ¿Hay un comercio QA con 500 productos para validar RNF-01.3?
 4. UAT / Review formal: no hay registro de aceptación del PO. ¿Puede validar en la Review S03?
@@ -79,27 +79,27 @@ No se editó el DAS ni el catálogo RNF. Ver el detalle en el informe QA del 11/
 | 7 | DAS, Escenarios | Sin escenario de portabilidad (Kozen vs celular), pagos fallidos (RNF-03.2) ni fallo del proxy | Agregar EC-RNF-06…09 |
 | 8 | DAS, Metadatos | Portada 1.0, tabla 1.0.2; revisión 04-10 pero historial solo 01-10; sin fecha de aprobación; «Gutierrez» sin tilde; Anexos «1-» vacío | Corregir en 1.0.3 |
 | 9 | Catálogo RNF (CSV/XLSX) | Evidencias `metricas-honor-*.txt` ya se llaman `metricas-celular-android-*.txt`; observaciones dicen «Honor» | Regenerar el catálogo con los nombres nuevos |
-| 10 | Catálogo RNF, RNF-01.2 / RNF-05.2 | Dice «Bloqueado» sin el responsable | «Bloqueado: en espera de ejecución por Diego Madrid (TUU/Kozen en producción)» |
+| 10 | Catálogo RNF, RNF-01.2 / RNF-05.2 | Decía «Bloqueado» | **Parcial** v1.0.2 (16/10): evidencia Kozen 13/10 + Jest 11/10; falta crédito aprobado |
 | 11 | Catálogo RNF, RNF-01.5 | Columna DAS «No figura en el DAS» | Se resuelve con el punto 1 |
 
 ## 5. Cierre de documentos 06 y 07
 
 | Documento | Estado | Qué falta | Quién |
 |-----------|--------|-----------|-------|
-| 06 · `DPAY3_ACTA_Retro_S01.docx` + anexo | Finalizado | — (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
-| 06 · `DPAY3_ACTA_Retro_S02.docx` + anexo | Finalizado | — (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
-| 06 · `DPAY3_Retro_S03` | Falta sesión | Fecha, asistentes, Start/Stop/Continue, acciones, acta firmada | Pablo (facilita), los 3 firman |
+| 06 · `DPAY3_ACTA_Retro_S01.docx` + anexo | Finalizado | - (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
+| 06 · `DPAY3_ACTA_Retro_S02.docx` + anexo | Finalizado | - (firmada 04/10; Pablo y Diego publican, revisan y actualizan vía PR #17) | Pablo y Diego |
+| 06 · `DPAY3_Retro_S03` + acta | **Cerrado** 15/10/2026 | Acta firmada 3/3 (remota); seguimiento técnico en `DPAY3_Retro_S03.md` v0.5 | - |
 | 06 · `DPAY3_Retro_S04…S07` | Falta sesión (plantillas) | Se llenan en cada sprint | Equipo |
-| 06 · `LEEME_FIRMAS_RETROS.md` | Finalizado | — | — |
+| 06 · `LEEME_FIRMAS_RETROS.md` | Finalizado | - | - |
 | 07 · `DPAY3_Plan_Pruebas_v1.0` | Falta | TC-063 re-test, TC-064, TC-03/08/09 DTE, RNF-01.4; RNF-01.5 | Reinhartd, Diego, Pablo |
 | 07 · `DPAY3_Catalogo_CSY4111_por_tipo` | Falta | MTC-12 (volumen 500) y MTC-13 (5 muestras / umbral) Parciales; UAT no ejecutado | Reinhartd, PO |
 | 07 · `DPAY3_Listado_Defectos` | Falta | Cerrar o re-testear D-01, DEF-NET-01/03; D-02. DEF-DOC-01 cerrado (timeout 300 s) | Diego (D-01), Reinhartd (re-test) |
 | 07 · `01_Unitarias` | Falta | D-01 en verde; captura de la terminal | Diego, Reinhartd |
 | 07 · `02_Integracion` | Falta | Re-test TC-063 sin USB; túnel WWAN si se decide | Reinhartd, Diego |
 | 07 · `03_Rendimiento` | Falta | RNF-01.4 DTE; 5 muestras RNF-01.1 y RNF-01.5; volumen RNF-01.3 | Reinhartd, Pablo (flujo DTE) |
-| 07 · `04_Seguridad` | Finalizado | — (proxy HTTP LAN fuera de RNF-02.3; WWAN requiere HTTPS) | — |
-| 07 · `DPAY3_Pruebas_S01` | Finalizado | — | — |
-| 07 · `DPAY3_Pruebas_S02` | Finalizado | — (arrastre a S3 declarado) | — |
-| 07 · `DPAY3_Pruebas_S03` | Falta | Ejecución de TC-03/08/09, RNF-01.4, TC-063; TC-064 bloqueado | Reinhartd, Diego, Pablo |
+| 07 · `04_Seguridad` | Finalizado | - (proxy HTTP LAN fuera de RNF-02.3; WWAN requiere HTTPS) | - |
+| 07 · `DPAY3_Pruebas_S01` | Finalizado | - | - |
+| 07 · `DPAY3_Pruebas_S02` | Finalizado | - (arrastre a S3 declarado) | - |
+| 07 · `DPAY3_Pruebas_S03` | Falta | Ejecución de TC-03/08/09, RNF-01.4, TC-063; TC-064 **Parcial** (13/10 Kozen) | Reinhartd, Diego, Pablo |
 | 07 · `DPAY3_Pruebas_S04…S07` | Falta (plantillas) | Se llenan en cada sprint | Equipo |
 | Ambos · Versión de Android del celular QA | Falta dato | Confirmar la versión de Android del celular QA | Diego o Reinhartd |

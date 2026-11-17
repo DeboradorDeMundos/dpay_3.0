@@ -202,11 +202,11 @@ PRs desde un **fork** no reciben secrets; use una rama del mismo repo.
 |---|---|---|---|
 | Probar login | `trello-setup.cmd` | Run workflow | `GET /members/me` |
 | Listar columnas | `lists` | al sincronizar | `GET /boards/{id}/lists` |
-| Listar cards | `cards` | — | `GET /boards/{id}/cards` |
-| Crear card | — | issue/PR sin enlace Trello | `POST /cards` |
+| Listar cards | `cards` | - | `GET /boards/{id}/cards` |
+| Crear card | - | issue/PR sin enlace Trello | `POST /cards` |
 | Mover de columna | `move` | según evento | `PUT /cards/{id}` `idList` |
 | Comentar | `comment` | cada sync | `POST /cards/{id}/actions/comments` |
-| Adjuntar URL (PR) | — | sí | `POST /cards/{id}/attachments` |
+| Adjuntar URL (PR) | - | sí | `POST /cards/{id}/attachments` |
 
 ### 7.2 Lo que la API permite y el CLI aún no envuelve
 

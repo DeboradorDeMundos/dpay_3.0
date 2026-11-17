@@ -1,4 +1,4 @@
-# Demo Postman — sistema externo `devdiego`
+# Demo Postman - sistema externo `devdiego`
 
 Simula un **partner** que cobra en el POS D-PAY usando solo `X-Api-Key`.
 
@@ -25,18 +25,18 @@ Simula un **partner** que cobra en el POS D-PAY usando solo `X-Api-Key`.
 
 ---
 
-## Paso 0 — Crear integrador y API key (Admin DTemite)
+## Paso 0 - Crear integrador y API key (Admin DTemite)
 
 Esto lo hace **una vez** alguien con acceso admin (no usa Postman partner).
 
-### Opción A — Panel Admin POS (UI)
+### Opción A - Panel Admin POS (UI)
 
 1. Crear integrador nombre: `devdiego` (o `Sistema externo demo`).
-2. Copiar **`api_key`** (`dph_...`) — solo se muestra al crear o rotar.
+2. Copiar **`api_key`** (`dph_...`) - solo se muestra al crear o rotar.
 3. Vincular integrador al cliente RUT **`77000333-4`**.
 4. Verificar terminal **`6010B232561701920`** con **`external_payment_enabled = true`**.
 
-### Opción B — API admin (sesión DTemite)
+### Opción B - API admin (sesión DTemite)
 
 **Crear integrador:**
 
@@ -73,16 +73,16 @@ O con integrador ya creado:
 
 ---
 
-## Paso 1 — Importar en Postman
+## Paso 1 - Importar en Postman
 
 1. Postman → **Import** → seleccionar los 2 JSON de esta carpeta.
-2. Arriba a la derecha elegir environment **D-PAY Hub — devdiego (QA)**.
+2. Arriba a la derecha elegir environment **D-PAY Hub - devdiego (QA)**.
 3. Editar variable **`api_key`** → pegar tu `dph_...`.
 4. **Save**.
 
 ---
 
-## Paso 2 — Preparar el POS
+## Paso 2 - Preparar el POS
 
 1. POS conectado (USB + scrcpy opcional).
 2. D-PAY logueado (usuario `diegotest` / empresa devdiego).
@@ -91,26 +91,26 @@ O con integrador ya creado:
 
 ---
 
-## Paso 3 — Ejecutar la demo (orden)
+## Paso 3 - Ejecutar la demo (orden)
 
-### Carpeta `00 — Pre-demo`
+### Carpeta `00 - Pre-demo`
 
 1. **Listar TODOS los terminales** → confirma API key OK.
 2. **Listar terminales ONLINE** → debe aparecer al menos 1.
    - Si vacío: activar modo pasarela y esperar ~30 s (heartbeat).
 
-### Carpeta `01 — Demo cobro simple`
+### Carpeta `01 - Demo cobro simple`
 
 3. **Crear cobro (payment_only)** → en ~5 s aparece en POS.
 4. En el POS: Débito/Crédito → TUU → aprobar.
 5. **Consultar intent por ID (poll)** → repetir hasta `status: succeeded`.
 6. Opcional: **Consultar por external_id**.
 
-### Carpeta `02 — Demo cobro con documento`
+### Carpeta `02 - Demo cobro con documento`
 
 7. **Crear cobro (with_document)** → POS muestra líneas y cliente.
 
-### Carpeta `03 — Cancelar cobro`
+### Carpeta `03 - Cancelar cobro`
 
 8. Crear un cobro, **no** pagar en POS → **Cancelar intent (partner)**.
 
@@ -118,7 +118,7 @@ O con integrador ya creado:
 
 ## Qué mirar en cada respuesta
 
-### Crear cobro — 200 OK
+### Crear cobro - 200 OK
 
 ```json
 {
@@ -136,14 +136,14 @@ O con integrador ya creado:
 
 Postman guarda automáticamente `intent_id` y `external_id` en el environment.
 
-### Poll — estados posibles
+### Poll - estados posibles
 
 | status | Significado |
 |--------|-------------|
 | `pending` | Esperando POS |
 | `claimed` | POS abrió pantalla |
 | `processing` | TUU en curso |
-| `succeeded` | ✅ Listo — ver `dpay_transaccion_id` |
+| `succeeded` | ✅ Listo - ver `dpay_transaccion_id` |
 | `failed` | Tarjeta rechazada |
 | `cancelled` | Cancelado |
 | `expired` | Venció (15 min default) |

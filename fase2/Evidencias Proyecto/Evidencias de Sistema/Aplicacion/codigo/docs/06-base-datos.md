@@ -1,4 +1,4 @@
-# Base de Datos — D-PAY sobre la plataforma DTemite
+# Base de Datos - D-PAY sobre la plataforma DTemite
 
 D-PAY no tiene una base propia. Persiste en el **PostgreSQL multi-tenant de DTemite**: la venta del celular es la misma fila que el ERP ve en oficina (`tbl_dpay`, `tbl_documento`).
 
@@ -405,11 +405,11 @@ Según `codigo/ANALISIS_DPAY.md`:
 | Métrica | Valor actual | Objetivo |
 |---|---|---|
 | Campos enviados | 32/42 (~76%) | ≥ 35/42 (~83%) |
-| authCode, last4 | ✅ Implementado | — |
+| authCode, last4 | ✅ Implementado | - |
 | dispositivo | ✅ Hardcoded POS PRO2 | Dinámico con DeviceInfo |
 | ip_origen | ⚠️ Pendiente | NetInfo |
-| marca_tarjeta | ⚠️ Pendiente confirmación TUU | — |
+| marca_tarjeta | ⚠️ Pendiente confirmación TUU | - |
 
 ---
 
-**Revisión:** v1.0 — 28 agosto 2026
+**Revisión:** v1.0 - 28 agosto 2026

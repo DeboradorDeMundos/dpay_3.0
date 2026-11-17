@@ -1,4 +1,4 @@
-# Plan de Pruebas y Evidencias — D-PAY 3.0
+# Plan de Pruebas y Evidencias - D-PAY 3.0
 
 **Capstone APT122 · Scrum**  
 **Versión:** 2.0 · 9 septiembre 2026
@@ -24,7 +24,7 @@ Validar que **D-PAY funciona como POS completo**: el cajero entra, vende, cobra,
 
 ---
 
-## 3. Matriz de casos — producto
+## 3. Matriz de casos - producto
 
 | ID | Módulo | Escenario | Resultado esperado | Prioridad | Evidencia |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@ Validar que **D-PAY funciona como POS completo**: el cajero entra, vende, cobra,
 
 **Leyenda:** Pendiente · Parcial · OK
 
-Si no hay Kozen en la demo, TC-06/07 se documentan como bloqueados por hardware y la defensa usa TC-03.
+TC-06/07 en S1 quedaron Bloqueado (HW); en S3 TC-064 / TC-RG-01 es Parcial (13/10/2026, Kozen P8 Neo). Ver DOC-07 Sprint_03.
 
 ---
 
@@ -122,4 +122,4 @@ Nombres: `TC-03_efectivo_boleta_2026-10-15.png`. Video ≤ 10 min: login → ven
 
 ---
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026

@@ -1,4 +1,4 @@
-# Sprint Backlog — D-PAY 3.0
+# Sprint Backlog - D-PAY 3.0
 
 Trabajo por sprint. Se actualiza en cada Planning.
 
@@ -7,7 +7,7 @@ Trabajo por sprint. Se actualiza en cada Planning.
 
 ---
 
-## Sprint 0 — Fase 1 (Semanas 1–4)
+## Sprint 0 - Fase 1 (Semanas 1–4)
 
 **Goal:** Definir D-PAY como POS completo de DTemite (no como módulo de pasarelas).
 
@@ -15,8 +15,8 @@ Trabajo por sprint. Se actualiza en cada Planning.
 
 | ID | Item | SP | Responsable | Estado |
 |---|---|---|---|---|
-| S0-01 | Autoevaluación `1.1` | — | Cada uno | Hecho |
-| S0-02 | Diario `1.2` | — | Cada uno | Hecho |
+| S0-01 | Autoevaluación `1.1` | - | Cada uno | Hecho |
+| S0-02 | Diario `1.2` | - | Cada uno | Hecho |
 | S0-03 | Análisis ERP DTemite vs alcance POS | 5 | Pablo | Hecho |
 | S0-04 | Product Vision v2.0 (producto completo) | 3 | Equipo | En progreso |
 | S0-05 | Product Backlog v2.0 (HU-01 a HU-14) | 3 | Equipo | En progreso |
@@ -98,7 +98,7 @@ Trabajo por sprint. Se actualiza en cada Planning.
 
 ---
 
-## Sprint 6–7 — Fase 3 (Semanas 16–18)
+## Sprint 6–7 - Fase 3 (Semanas 16–18)
 
 | ID | Item | Fecha | Estado |
 |---|---|---|---|
@@ -111,4 +111,4 @@ Trabajo por sprint. Se actualiza en cada Planning.
 
 **Actualizar en cada Planning.**
 
-**Revisión:** v2.0 — 9 septiembre 2026
+**Revisión:** v2.0 - 9 septiembre 2026
